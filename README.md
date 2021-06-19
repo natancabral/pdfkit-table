@@ -7,7 +7,8 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 ## Examples
 
 [view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document.pdf) | 
-[full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js) |
+[full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-example.js) |
+[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js) |
 [both](https://github.com/natancabral/pdfkit-table/blob/main/example/)
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
@@ -24,6 +25,8 @@ npm install pdfkit-table
   const fs = require("fs");
   const PDFDocument = require("pdfkit-table");
   const doc = new PDFDocument({ margin: 30, size: 'A4' });
+  // file name
+  doc.pipe(fs.createWriteStream("./file-table.pdf"));
 
   // the magic:
   doc.table( table, options );
@@ -70,13 +73,14 @@ npm install pdfkit-table
         price4: '$4', 
       },
       { 
-        options: { fontSize: 10, separation: true} },
+        options: { fontSize: 10, separation: true},
         name: 'bold:Name 2', 
         description: 'bold:Lorem ipsum dolor.', 
         price1: 'bold:$1', 
         price3: '$3', 
         price2: '$2', 
         price4: '$4', 
+      },
       { 
         name: 'Name 3', 
         description: 'Lorem ipsum dolor.', 
@@ -121,7 +125,7 @@ npm install pdfkit-table
   const fs = require("fs");
   const PDFDocument = require("pdfkit-table");
   const doc = new PDFDocument({ margin: 30, size: 'A4', });
-
+  // file name
   doc.pipe(fs.createWriteStream("./file-table.pdf"));
 
   // ------------------
