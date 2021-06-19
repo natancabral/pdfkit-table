@@ -276,7 +276,7 @@ datas: [
 
 ## ToDo
 
-- renderer function. Like renderer: (value) => { return `$${value}`}
+- renderer function on cell. Like renderer: (value) => { return `$${value}`}
 - load json file - require | string
 - sample with database
 - setFontFamily {String}
