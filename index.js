@@ -16,24 +16,36 @@ class PDFDocumentWithTables extends PDFDocument {
    */
   table(table, options) {
 
-    let startX = this.page.margins.left,
-      startY = this.y;
-
     if( !options || typeof options !== 'object' ) options = {};
 
-    options.hasOwnProperty('x') && (startX = options.x);
-    options.hasOwnProperty('y') && (startY = options.y);
+    table || (table = {})
+    table.headers || (table.headers = []);
+    table.datas || (table.datas = [])
+    table.rows || (table.rows = [])
 
     const columnCount     = table.headers.length;
     const columnSpacing   = options.columnSpacing || 5; // 15
     const columnSizes     = options.columnSizes || [];
-    const columnPositions = []; // 0,10,20,30,100 |  |  |  |     |
+    const columnPositions = []; // 0, 10, 20, 30, 100
     const rowSpacing      = options.rowSpacing || 3; // 5
     const usableWidth     = options.width || this.page.width - this.page.margins.left - this.page.margins.right;
 
-    const prepareHeader   = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8));
+    const prepareHeader   = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8) );
     const prepareRow      = options.prepareRow || (() => this.font("Helvetica").fontSize(8) );
     
+    const columnContainerWidth = usableWidth / columnCount;
+    const columnWidth     = columnContainerWidth - columnSpacing;
+    const maxY            = this.page.height - this.page.margins.bottom;
+
+    let startX            = options.x || this.page.margins.left;
+    let startY            = options.y || this.y;
+    let rowBottomY        = 0;
+
+    this.on("pageAdded", () => {
+      startY = this.page.margins.top;
+      rowBottomY = 0;
+    });
+
     const prepareRowOptions = ( row ) => {
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
       row.options.hasOwnProperty('fontFamily') && this.font(row.options.fontFamily); 
@@ -45,7 +57,7 @@ class PDFDocumentWithTables extends PDFDocument {
       
       let result = 0;
      
-      // reconhece se é uma linha object, content with property
+      // if row is object, content with property and options
       if( !Array.isArray(row) && typeof row === 'object' && !row.hasOwnProperty('property') ){
         const cells = []; 
         // get all properties names on header
@@ -81,17 +93,6 @@ class PDFDocumentWithTables extends PDFDocument {
 
       return result + rowSpacing;
     };
-
-    const columnContainerWidth = usableWidth / columnCount;
-    const columnWidth = columnContainerWidth - columnSpacing;
-    const maxY = this.page.height - this.page.margins.bottom;
-
-    let rowBottomY = 0;
-
-    this.on("pageAdded", () => {
-      startY = this.page.margins.top;
-      rowBottomY = 0;
-    });
 
     // Allow the user to override style for headers
     prepareHeader();
@@ -170,7 +171,6 @@ class PDFDocumentWithTables extends PDFDocument {
     // ------------------------------------------------------------------------------
     // data -------------------------------------------------------------------------
     // ------------------------------------------------------------------------------
-    table.datas || (table.datas = [])
     table.datas.forEach((row, i) => {
       const rowHeight = computeRowHeight(row);
 
@@ -254,7 +254,6 @@ class PDFDocumentWithTables extends PDFDocument {
     // ------------------------------------------------------------------------------
     // rows -------------------------------------------------------------------------
     // ------------------------------------------------------------------------------
-    table.rows || (table.rows = [])
     table.rows.forEach((row, i) => {
       const rowHeight = computeRowHeight(row);
 
@@ -286,6 +285,9 @@ class PDFDocumentWithTables extends PDFDocument {
         .stroke()
         .opacity(1); // Reset opacity after drawing the line
     });
+    // ------------------------------------------------------------------------------
+    // rows -------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------
 
     this.x = startX;
     this.y = rowBottomY; // position y final;
