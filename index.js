@@ -46,7 +46,7 @@ class PDFDocumentWithTables extends PDFDocument {
       rowBottomY = 0;
     });
 
-    const prepareRowOptions = ( row ) => {
+    const prepareRowOptions = (row) => {
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
       row.options.hasOwnProperty('fontFamily') && this.font(row.options.fontFamily); 
       row.options.hasOwnProperty('fontSize') && this.fontSize(row.options.fontSize); 
@@ -196,7 +196,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
       let posX = startX; 
       // Print all cells of the current row
-      table.headers.forEach(({property,width}) => {
+      table.headers.forEach(({property,width,renderer}, index) => {
 
         let text = row[property];
         let origText = row[property];
@@ -220,6 +220,9 @@ class PDFDocumentWithTables extends PDFDocument {
           this.fontSize( size < 7 ? 7 : size );
           text = text.replace(`size${size}:`,'');
         }
+
+        // renderer column
+        renderer && (text = renderer(text, index, i, row)) // text-cell, index-column, index-line, row 
 
         this.text(text, posX, startY, {
           width: width,
@@ -266,11 +269,14 @@ class PDFDocumentWithTables extends PDFDocument {
       // Allow the user to override style for rows
       prepareRow(row, i);
 
-      // Print all cells of the current row
-      row.forEach((cell, i) => {
+      row.forEach((cell, index) => {
+        // renderer column
+        if( typeof table.headers[index] === 'object' ){
+          table.headers[index].renderer && (cell = table.headers[index].renderer(cell, index, i, row)) // text-cell, index-column, index-line, row
+        }
         // const posX = startX + i * columnContainerWidth;
-        this.text(cell, columnPositions[i], startY, {
-          width: columnSizes[i], // columnWidth
+        this.text(cell, columnPositions[index], startY, {
+          width: columnSizes[index], // columnWidth
           align: "left",
         });
       });

@@ -29,7 +29,7 @@ npm install pdfkit-table
   // file name
   doc.pipe(fs.createWriteStream("./file-table.pdf"));
   
-  // paramns  
+  // table  
   const table = { 
     headers: [],
     datas: [/* complex data */],
@@ -71,8 +71,10 @@ npm install pdfkit-table
       { label:"Description", property: 'description', width: 150, renderer: null }, 
       { label:"Price 1", property: 'price1', width: 100, renderer: null }, 
       { label:"Price 2", property: 'price2', width: 100, renderer: null }, 
-      { label:"Price 3", property: 'price3', width: 100, renderer: null }, 
-      { label:"Price 4", property: 'price4', width: 43, renderer: null },
+      { label:"Price 3", property: 'price3', width: 80, renderer: null }, 
+      { label:"Price 4", property: 'price4', width: 43, 
+        renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` } 
+      },
     ],
     datas: [
       { 
@@ -81,7 +83,7 @@ npm install pdfkit-table
         price1: '$1', 
         price3: '$ 3', 
         price2: '$2', 
-        price4: '$4', 
+        price4: '4', 
       },
       { 
         options: { fontSize: 10, separation: true},
@@ -90,13 +92,13 @@ npm install pdfkit-table
         price1: 'bold:$1', 
         price3: '$3', 
         price2: '$2', 
-        price4: '$4', 
+        price4: '4', 
       },
       { 
         name: 'Name 3', 
         description: 'Lorem ipsum dolor.', 
         price1: 'bold:$1', 
-        price4: '$4', 
+        price4: '4', 
         price2: '$2', 
         price3: { 
           label: 'PRICE $3', options: { fontSize: 12 } 
@@ -110,7 +112,7 @@ npm install pdfkit-table
         "$ 105,99",
         "$ 105,99",
         "$ 105,99",
-        "$ 105,99",
+        "105.99",
       ],
       [
         "Tire",
@@ -118,7 +120,7 @@ npm install pdfkit-table
         "$ 105,99",
         "$ 105,99",
         "$ 105,99",
-        "$ 105,99",
+        "105.99",
       ],
     ],
   };
@@ -154,6 +156,10 @@ npm install pdfkit-table
 
 - <code>Array.&lt;object&gt;</code>
   - headers <code>Array.&lt;object&gt;</code> | <code>Array.[]</code>
+    - label <code>String</code>
+    - property <code>String</code>
+    - width <code>Number</code>
+    - renderer <code>Function</code> function(value, indexColumn, indexRow, row) => { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
 
@@ -173,7 +179,7 @@ const table = {
   // complex headers work with ROWS and DATAS  
   headers: [
     { label:"Name", property: 'name', width: 100, renderer: null },
-    { label:"Age", property: 'age', width: 100, renderer: null },
+    { label:"Age", property: 'age', width: 100, renderer: renderer: (value) => `U$ ${Number(value).toFixed(1)}` },
   ],
   // complex content
   datas: [
