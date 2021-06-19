@@ -13,7 +13,7 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
 
-## Start
+## Install
 
 ```bash
 npm install pdfkit-table
@@ -25,12 +25,20 @@ npm install pdfkit-table
   const fs = require("fs");
   const PDFDocument = require("pdfkit-table");
   const doc = new PDFDocument({ margin: 30, size: 'A4' });
+  
   // file name
   doc.pipe(fs.createWriteStream("./file-table.pdf"));
+  
+  // paramns  
+  const table = { 
+    headers: [],
+    datas: [/* complex data */],
+    rows: [/* or simple data */],
+  }
+  const options = {}
 
-  // the magic:
+  // the magic
   doc.table( table, options );
-  //...
 
 ```
 
@@ -140,7 +148,12 @@ npm install pdfkit-table
 ```
 
 ## Table
- 
+
+- <code>Array.&lt;object&gt;</code>
+  - headers <code>Array.&lt;object&gt;</code> | <code>Array.[]</code>
+  - datas <code>Array.&lt;object&gt;</code>
+  - rows <code>Array.[]</code>
+
 Example code:
 ```js
 const table = {
@@ -174,7 +187,7 @@ const table = {
 
 ```
 
-### Options Table
+### Options
 
 | Properties           | description       |
 -----------------------|-------------------|
@@ -255,6 +268,7 @@ datas: [
 ## ToDo
 
 - renderer function. Like renderer: (value) => { return `$${value}`}
+- load json file - require | string
 - setFontFamily {String}
 - setBoldFontFamily {String}
 - verticalLines {Boolean}
