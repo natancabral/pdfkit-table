@@ -70,13 +70,13 @@ npm install pdfkit-table
         price4: '$4', 
       },
       { 
+        options: { fontSize: 10, separation: true} },
         name: 'bold:Name 2', 
         description: 'bold:Lorem ipsum dolor.', 
         price1: 'bold:$1', 
         price3: '$3', 
         price2: '$2', 
         price4: '$4', 
-          options: { fontSize: 10, separation: true} },
       { 
         name: 'Name 3', 
         description: 'Lorem ipsum dolor.', 
@@ -157,7 +157,7 @@ const table = {
   ],
   // complex content
   datas: [
-    { name: 'Jack', age: 32, },
+    { name: 'bold:Jack', age: 32, },
     // age is object value with style options
     { name: 'Maria', age: { label: 30 , options: { fontSize: 12 }}, },
   ],
@@ -170,9 +170,9 @@ const table = {
 
 ```
 
-## Options TABLE
+### Options Table
 
-| *Properties*         | description       |
+| Properties           | description       |
 -----------------------|-------------------|
 | **width**            | width of table    |
 | **x**                | position x (left) |
