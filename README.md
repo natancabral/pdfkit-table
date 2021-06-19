@@ -35,10 +35,13 @@ npm install pdfkit-table
     datas: [/* complex data */],
     rows: [/* or simple data */],
   }
+  // options
   const options = {}
-
   // the magic
   doc.table( table, options );
+
+  // done!
+  doc.end();
 
 ```
 
