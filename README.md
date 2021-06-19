@@ -12,11 +12,13 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
 
-### Start
+## Start
 
 ```bash
 npm install pdfkit-table
 ```
+
+## Use
 
 ```js
   const fs = require("fs");
@@ -40,7 +42,7 @@ npm install pdfkit-table
       ["England", "33%", "+4.44%"],
     ],
   };
-  doc.moveDown().table( tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+  doc.table( tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
   // end code
 ```
 
@@ -59,9 +61,32 @@ npm install pdfkit-table
       { label:"Price 4", property: 'price4', width: 43, renderer: null },
     ],
     datas: [
-      {description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '$4',name: 'Name 1', },
-      {name: 'bold:Name 2', description: 'bold:Lorem ipsum dolor.', price1: 'bold:$1', price3: '$3', price2: '$2', price4: '$4', options: { fontSize: 8, separation: true}},
-      {name: 'Name 3', description: 'Lorem ipsum dolor.', price1: 'bold:$1', price4: '$4', price2: '$2', price3: {label:'PRICE $3', options: { fontSize: 12 }}, },
+      { 
+        name: 'Name 1', 
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', 
+        price1: '$1', 
+        price3: '$ 3', 
+        price2: '$2', 
+        price4: '$4', 
+      },
+      { 
+        name: 'bold:Name 2', 
+        description: 'bold:Lorem ipsum dolor.', 
+        price1: 'bold:$1', 
+        price3: '$3', 
+        price2: '$2', 
+        price4: '$4', 
+          options: { fontSize: 10, separation: true} },
+      { 
+        name: 'Name 3', 
+        description: 'Lorem ipsum dolor.', 
+        price1: 'bold:$1', 
+        price4: '$4', 
+        price2: '$2', 
+        price3: { 
+          label: 'PRICE $3', options: { fontSize: 12 } 
+        }, 
+      },
     ],
     rows: [
       [
@@ -95,15 +120,18 @@ npm install pdfkit-table
   // require
   const fs = require("fs");
   const PDFDocument = require("pdfkit-table");
-  const doc = new PDFDocument({
-    margin: 30, 
-  });
+  const doc = new PDFDocument({ margin: 30, size: 'A4', });
 
   doc.pipe(fs.createWriteStream("./file-table.pdf"));
 
-  // table code
+  // ------------------
+  // table code here
+  // ------------------
 
-  doc.pipe(res); // HTTP response only to show pdf
+  // if your run express.js server:
+  // HTTP response only to show pdf
+  doc.pipe(res);
+  // done
   doc.end();
 ```
 
@@ -127,22 +155,22 @@ const table = {
     { label:"Name", property: 'name', width: 100, renderer: null },
     { label:"Age", property: 'age', width: 100, renderer: null },
   ],
-  // simple content (works fine!)
-  rows: [
-    ['Jack', '32'], // row 1
-    ['Maria', '30'], // row 2
-  ]
   // complex content
   datas: [
     { name: 'Jack', age: 32, },
     // age is object value with style options
     { name: 'Maria', age: { label: 30 , options: { fontSize: 12 }}, },
   ],
+  // simple content (works fine!)
+  rows: [
+    ['Jack', '32'], // row 1
+    ['Maria', '30'], // row 2
+  ]
 };
 
 ```
 
-## Options
+## Options TABLE
 
 | *Properties*         | description       |
 -----------------------|-------------------|
@@ -160,8 +188,8 @@ Example code:
 const options = {
   // properties
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
-  x: 500, // {Number} default: undefined
-  y: 500, // {Number} default: undefined
+  x: 0, // {Number} default: undefined | doc.x
+  y: 0, // {Number} default: undefined | doc.y
   columnSpacing: 5, // {Number} default: 5
   rowSpacing: 3, // {Number} default: 3
   // functions
@@ -169,6 +197,65 @@ const options = {
   prepareRow: (row, i) => doc.font("Helvetica").fontSize(8), // {Function} 
 }
 ```
+
+#### Options Row
+
+- separation {Booleon} 
+- fontSize {Number}
+- fontFamily {String}
+
+```js
+datas: [
+  // options row
+  { name: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold', separation: true } },
+]
+``` 
+
+#### Options Cell
+
+- fontSize {Number}
+- fontFamily {String}
+
+```js
+datas: [
+  // options cell | value is object | label is string
+  { name: { label: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold' } },
+]
+``` 
+
+#### Fonts Family
+
+- 'Courier'
+  - 'Courier-Bold'
+  - 'Courier-Oblique'
+  - 'Courier-BoldOblique'
+- 'Helvetica'
+  - 'Helvetica-Bold'
+  - 'Helvetica-Oblique'
+  - 'Helvetica-BoldOblique'
+- 'Symbol'
+- 'Times-Roman'
+  - 'Times-Bold'
+  - 'Times-Italic'
+  - 'Times-BoldItalic'
+- 'ZapfDingbats'
+
+## ToDo
+
+- renderer function. Like renderer: (value) => { return `$${value}`}
+- setFontFamily {String}
+- setBoldFontFamily {String}
+- verticalLines {Boolean}
+- verticalLinesWidth {Number}
+- verticalLinesColor {String}
+- horizontalLines {Boolean}
+- horizontalLinesWidth {Number}
+- horizontalLinesColor {String}
+- tableLine {Boolean}
+- tableLineWidth {Number}
+- tableLineColor {String}
+- backgroundColor  {String}
+- striped {Boolean} (corsimcornao)
 
 ## License
 

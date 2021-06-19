@@ -18,24 +18,21 @@ class PDFDocumentWithTables extends PDFDocument {
 
     let startX = this.page.margins.left,
       startY = this.y;
-    options || (options = {});
 
-    if( typeof options !== 'object' ) return;
+    if( !options || typeof options !== 'object' ) options = {};
 
     options.hasOwnProperty('x') && (startX = options.x);
     options.hasOwnProperty('y') && (startY = options.y);
 
-    const columnCount = table.headers.length;
-    const columnSpacing = options.columnSpacing || 5; // 15
-    const columnSizes = options.columnSizes || [];
+    const columnCount     = table.headers.length;
+    const columnSpacing   = options.columnSpacing || 5; // 15
+    const columnSizes     = options.columnSizes || [];
     const columnPositions = []; // 0,10,20,30,100 |  |  |  |     |
-    const rowSpacing = options.rowSpacing || 3; // 5
-    const usableWidth =
-      options.width ||
-      this.page.width - this.page.margins.left - this.page.margins.right;
+    const rowSpacing      = options.rowSpacing || 3; // 5
+    const usableWidth     = options.width || this.page.width - this.page.margins.left - this.page.margins.right;
 
-    const prepareHeader = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8));
-    const prepareRow = options.prepareRow || (() => this.font("Helvetica").fontSize(8) );
+    const prepareHeader   = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8));
+    const prepareRow      = options.prepareRow || (() => this.font("Helvetica").fontSize(8) );
     
     const prepareRowOptions = ( row ) => {
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
@@ -90,12 +87,10 @@ class PDFDocumentWithTables extends PDFDocument {
     const maxY = this.page.height - this.page.margins.bottom;
 
     let rowBottomY = 0;
-    // let tableMaxHeightY = 0;
 
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
       rowBottomY = 0;
-      // tableMaxHeightY = 0;
     });
 
     // Allow the user to override style for headers
@@ -126,8 +121,10 @@ class PDFDocumentWithTables extends PDFDocument {
         // Print all headers
         let lastPosition = startX;
         table.headers.forEach(({label,width}, i) => {
+          
           //this.fillColor('red').strokeColor('#777777');
           
+          // background
           this.rect(lastPosition, startY - 5, width - 1, rowHeight + 3)
           .fillColor('grey')
           .fillOpacity(.1)
@@ -136,10 +133,12 @@ class PDFDocumentWithTables extends PDFDocument {
           .fill()
           .stroke();
 
-          this.fillColor('black') // restore color
+          // restore color
+          this.fillColor('black')
           .fillOpacity(1)
           .strokeOpacity(1);
 
+          // write
           this.text(label, lastPosition + 2, startY, {
             width: width,
             align: "left",
@@ -159,13 +158,14 @@ class PDFDocumentWithTables extends PDFDocument {
 
     // Refresh the y coordinate of the bottom of the headers row
     rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
-    // console.log('rowBottomY',rowBottomY,'startY',startY,'computeRowH', computeRowHeight(table.headers));
 
     // Separation line between headers and rows
     this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
       .lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
       .lineWidth(1)
       .stroke();
+
+    // complex data
 
     // ------------------------------------------------------------------------------
     // data -------------------------------------------------------------------------
@@ -176,12 +176,8 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      if (startY + 2 * rowHeight < maxY) {
-        startY = rowBottomY + rowSpacing;
-      }
-      else {
-        this.addPage();
-      }
+      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + rowSpacing;
+      else this.addPage();
 
       // Allow the user to override style for rows
       prepareRow(row, i);
@@ -201,17 +197,15 @@ class PDFDocumentWithTables extends PDFDocument {
       let posX = startX; 
       // Print all cells of the current row
       table.headers.forEach(({property,width}) => {
-        // const posX = startX + i * columnContainerWidth;
-        // const posX = columnPositions[i];
-        // const cWidth = columnWidth;
-        // const cWidth = columnSizes[i];
+
         let text = row[property];
         let origText = row[property];
 
+        // cell object
         if(typeof text === 'object' ){
-          text = String(text.label);
-          origText = String(text.label);
-          row[property].hasOwnProperty('options') && prepareRowOptions(row[property]);
+          text = String(text.label); // get label
+          origText = String(text.label); // get label
+          row[property].hasOwnProperty('options') && prepareRowOptions(row[property]); // set style
         }
         
         // bold
@@ -255,6 +249,8 @@ class PDFDocumentWithTables extends PDFDocument {
     // end data ---------------------------------------------------------------------
     // ------------------------------------------------------------------------------
 
+    // simple data
+
     // ------------------------------------------------------------------------------
     // rows -------------------------------------------------------------------------
     // ------------------------------------------------------------------------------
@@ -264,12 +260,8 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      if (startY + 2 * rowHeight < maxY) {
-        startY = rowBottomY + rowSpacing;
-      }
-      else {
-        this.addPage();
-      }
+      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + rowSpacing;
+      else this.addPage();
 
       // Allow the user to override style for rows
       prepareRow(row, i);
@@ -277,16 +269,10 @@ class PDFDocumentWithTables extends PDFDocument {
       // Print all cells of the current row
       row.forEach((cell, i) => {
         // const posX = startX + i * columnContainerWidth;
-        const posX = columnPositions[i];
-        // const cWidth = columnWidth;
-        const cWidth = columnSizes[i];
-        this.text(cell, posX, startY, {
-          width: cWidth,
+        this.text(cell, columnPositions[i], startY, {
+          width: columnSizes[i], // columnWidth
           align: "left",
         });
-
-        // tableMaxHeightY = this.y > tableMaxHeightY ? this.y : tableMaxHeightY; 
-        // console.log(this.y,tableMaxHeightY);
       });
 
       // Refresh the y coordinate of the bottom of this row
@@ -302,8 +288,8 @@ class PDFDocumentWithTables extends PDFDocument {
     });
 
     this.x = startX;
-    this.y = rowBottomY; //tableMaxHeightY;
-    this.moveDown();
+    this.y = rowBottomY; // position y final;
+    this.moveDown(); // break
 
     return this;
   }
