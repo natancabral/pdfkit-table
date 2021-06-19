@@ -16,13 +16,13 @@ class PDFDocumentWithTables extends PDFDocument {
    */
   table(table, options) {
 
-    if( !options || typeof options !== 'object' ) options = {};
-
     table || (table = {})
+    options || (options = {})
+
     table.headers || (table.headers = []);
     table.datas || (table.datas = [])
     table.rows || (table.rows = [])
-
+    
     const columnCount     = table.headers.length;
     const columnSpacing   = options.columnSpacing || 5; // 15
     const columnSizes     = options.columnSizes || [];
@@ -37,9 +37,9 @@ class PDFDocumentWithTables extends PDFDocument {
     const columnWidth     = columnContainerWidth - columnSpacing;
     const maxY            = this.page.height - this.page.margins.bottom;
 
-    let startX            = options.x || this.page.margins.left;
-    let startY            = options.y || this.y;
-    let rowBottomY        = 0;
+    const startX          = options.x || this.page.margins.left;
+      let startY          = options.y || this.y;
+      let rowBottomY      = 0;
 
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
@@ -213,6 +213,7 @@ class PDFDocumentWithTables extends PDFDocument {
           this.font('Helvetica-Bold');
           text = text.replace('bold:','');
         }
+
         // size
         if( text.indexOf('size') === 0 ){
           let size = String(text).substr(4,2).replace(':','').replace('+','') >> 0;
