@@ -201,8 +201,8 @@ const table = {
 | Properties           | Type                  | Default            | Description       |
 -----------------------|-----------------------|--------------------|-------------------|
 | **width**            | <code>Number</code>   | undefined          | width of table    |
-| **x**                | <code>Number</code>   | undefined | dox.x  | position x (left) |
-| **y**                | <code>Number</code>   | undefined | dox.y  | position y (top)  |
+| **x**                | <code>Number</code>   | undefined | doc.x  | position x (left) |
+| **y**                | <code>Number</code>   | undefined | doc.y  | position y (top)  |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **rowSpacing**       | <code>Number</code>   | 3                  |                   |
 | **prepareHeader**    | <code>Function</code> | Function           |                   |
