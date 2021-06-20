@@ -159,7 +159,12 @@ or
 
 ```js
 const json = require('./table.json');
-doc.table( json );
+// if json file is array
+Array.isArray(json) ? 
+// any tables
+json.forEach( table => doc.table( table, table.options || {} ) ) : 
+// one table
+doc.table( json, json.options || {} ) ;
 ```
 
 ### Example 4 - Full Code

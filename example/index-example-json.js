@@ -22,8 +22,12 @@ const json = require("./table.json");
 // to save on server
 doc.pipe(fs.createWriteStream("./document.pdf"));
 
-// if file json is array
-Array.isArray(json) && json.forEach( table => doc.table( table, table.options || {} ) );
+// if json file is array
+Array.isArray(json) ? 
+// any tables
+json.forEach( table => doc.table( table, table.options || {} ) ) : 
+// one table
+doc.table( json, json.options || {} ) ;
 
 // done
 doc.end();
