@@ -3,7 +3,7 @@
     "headers": [
       { "label":"Name", "property":"name", "width":100 },
       { "label":"Age", "property":"age", "width":100 },
-      { "label":"Year", "property":"year", "width":100 }
+      { "label":"Year", "property":"year", "width":100, "renderer": "function(value, i, irow){ return value + '('+(irow+2)+')'; }" }
     ],
     "datas": [
       { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },

@@ -15,7 +15,7 @@ class PDFDocumentWithTables extends PDFDocument {
    * @returns 
    */
   table(table, options) {
-
+  
     typeof table === 'string' && ( table = JSON.parse(table) );
 
     table || (table = {});
@@ -44,11 +44,15 @@ class PDFDocumentWithTables extends PDFDocument {
       let startY          = options.y || this.y;
       let rowBottomY      = 0;
       let tableWidth      = 0;
-
+  
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
       rowBottomY = 0;
     });
+
+    const fEval = (str) => {
+      let f = null; eval('f = ' + str); return f;
+    }
 
     const prepareRowOptions = (row) => {
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
@@ -125,8 +129,16 @@ class PDFDocumentWithTables extends PDFDocument {
 
         // Print all headers
         let lastPosition = startX;
-        table.headers.forEach(({label,width}, i) => {
+        table.headers.forEach(({label, width, renderer}, i) => {
           
+          // renderer && (table.headers[i].renderer = fEval(renderer));
+
+          if(renderer && typeof renderer === 'string') {
+            table.headers[i].renderer = fEval(renderer);
+            // console.log('A',renderer);
+            // console.log('B',table.headers[i].renderer);
+          }
+
           width = width >> 0; // number
           //this.fillColor('red').strokeColor('#777777');
           
@@ -214,22 +226,22 @@ class PDFDocumentWithTables extends PDFDocument {
           // origText = String(text.label); // get label
           row[property].hasOwnProperty('options') && prepareRowOptions(row[property]); // set style
         }
-        
+
         // bold
-        if( text.indexOf('bold:') === 0 ){
+        if( String(text).indexOf('bold:') === 0 ){
           this.font('Helvetica-Bold');
           text = text.replace('bold:','');
         }
 
         // size
-        if( text.indexOf('size') === 0 ){
+        if( String(text).indexOf('size') === 0 ){
           let size = String(text).substr(4,2).replace(':','').replace('+','') >> 0;
           this.fontSize( size < 7 ? 7 : size );
           text = text.replace(`size${size}:`,'');
         }
 
         // renderer column
-        renderer && (text = renderer(text, index, i, row)) // text-cell, index-column, index-line, row 
+        renderer && (text = renderer(text, index, i, row)) // value, index-column, index-row, row 
 
         this.text(text, posX, startY, {
           width: width,

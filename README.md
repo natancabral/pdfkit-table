@@ -46,10 +46,10 @@ npm install pdfkit-table
 
 ```
 
-### Example 1 - Simple Array Table
+### Example 1 - Simple Array
 ```js
   // requires 
-  const tableArray = {
+  const table = {
     headers: ["Country", "Conversion rate", "Trend"],
     rows: [
       ["Switzerland", "12%", "+1.12%"],
@@ -57,7 +57,7 @@ npm install pdfkit-table
       ["England", "33%", "+4.44%"],
     ],
   };
-  doc.table( tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+  doc.table( table, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
   // end code
 ```
 
@@ -135,6 +135,7 @@ npm install pdfkit-table
 ### Example 3 - Json
 
 ```js
+// renderer function inside json file
 const tableJson = `{ 
   "headers": [
     { "label":"Name", "property":"name", "width":100 },
@@ -144,7 +145,9 @@ const tableJson = `{
   "datas": [
     { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
     { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
-    { "name":"Name 3", "age":"Age 3", "year":"Year 3" }
+    { "name":"Name 3", "age":"Age 3", "year":"Year 3",
+        "renderer": "function(value, i, irow){ return value + `(${(1+irow)})`; }"
+    }
   ],
   "rows": [
     ["Name 4", "Age 4", "Year 4"]
@@ -190,7 +193,7 @@ doc.table( json, json.options || {} ) ;
 
 ## Table
 
-- <code>Array.&lt;object&gt;</code>
+- <code>Array.&lt;object&gt;</code> | <code>JSON</code>
   - headers <code>Array.&lt;object&gt;</code> | <code>Array.[]</code>
     - label <code>String</code>
     - property <code>String</code>
@@ -295,20 +298,20 @@ datas: [
 
 #### Fonts Family
 
-- 'Courier'
-  - 'Courier-Bold'
-  - 'Courier-Oblique'
-  - 'Courier-BoldOblique'
-- 'Helvetica'
-  - 'Helvetica-Bold'
-  - 'Helvetica-Oblique'
-  - 'Helvetica-BoldOblique'
-- 'Symbol'
-- 'Times-Roman'
-  - 'Times-Bold'
-  - 'Times-Italic'
-  - 'Times-BoldItalic'
-- 'ZapfDingbats'
+- Courier
+  - Courier-Bold
+  - Courier-Oblique
+  - Courier-BoldOblique
+- Helvetica
+  - Helvetica-Bold
+  - Helvetica-Oblique
+  - Helvetica-BoldOblique
+- Symbol
+- Times-Roman
+  - Times-Bold
+  - Times-Italic
+  - Times-BoldItalic
+- ZapfDingbats
 
 ## ToDo
 
@@ -328,6 +331,14 @@ datas: [
 - tableLineColor {String}
 - backgroundColor  {String}
 - striped {Boolean} (corsimcornao)
+
+## Changelogs
+
+### 0.1.31
+
++ renderer function on json file. { "renderer": "function(value, icol, irow, row){ return (value+1) + `(${(irow+2)})`; }" }
++ fix width table and separation lines size 
++ **Thank you, contributors!**
 
 ## License
 
