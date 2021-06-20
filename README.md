@@ -9,6 +9,7 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 [view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document.pdf) | 
 [full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-example.js) |
 [server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js) |
+[json example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example-json.js) |
 [both](https://github.com/natancabral/pdfkit-table/blob/main/example/)
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
