@@ -287,9 +287,11 @@ datas: [
 datas: [
   // bold
   { name: 'bold:Jack' },
+  // size{n}
   { name: 'size20:Maria' },
   { name: 'size8:Will' },
-  { name: 'San' },
+   // normal
+ { name: 'San' },
 ]
 ``` 
 
