@@ -29,7 +29,7 @@ npm install pdfkit-table
   // file name
   doc.pipe(fs.createWriteStream("./file-table.pdf"));
   
-  // table  
+  // table
   const table = { 
     headers: [],
     datas: [/* complex data */],
@@ -131,8 +131,38 @@ npm install pdfkit-table
   });
 ```
 
+### Example 3 - Json
 
-### Example 3 - Full Code
+```js
+const tableJson = `{ 
+  "headers": [
+    { "label":"Name", "property":"name", "width":100 },
+    { "label":"Age", "property":"age", "width":100 },
+    { "label":"Year", "property":"year", "width":100 }
+  ],
+  "datas": [
+    { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
+    { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
+    { "name":"Name 3", "age":"Age 3", "year":"Year 3" }
+  ],
+  "rows": [
+    ["Name 4", "Age 4", "Year 4"]
+  ],
+  "options": {
+    "width": 300
+  }
+}`
+doc.table( tableJson );
+```
+
+or
+
+```js
+const json = require('./table.json');
+doc.table( json );
+```
+
+### Example 4 - Full Code
 ```js
   // require
   const fs = require("fs");

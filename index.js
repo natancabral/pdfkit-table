@@ -16,12 +16,15 @@ class PDFDocumentWithTables extends PDFDocument {
    */
   table(table, options) {
 
-    table || (table = {})
-    options || (options = {})
+    typeof table === 'string' && ( table = JSON.parse(table) );
+
+    table || (table = {});
+    options || (options = {});
 
     table.headers || (table.headers = []);
-    table.datas || (table.datas = [])
-    table.rows || (table.rows = [])
+    table.datas || (table.datas = []);
+    table.rows || (table.rows = []);
+    table.options && (options = table.options);
     
     const columnCount     = table.headers.length;
     const columnSpacing   = options.columnSpacing || 5; // 15
@@ -40,6 +43,7 @@ class PDFDocumentWithTables extends PDFDocument {
     const startX          = options.x || this.page.margins.left;
       let startY          = options.y || this.y;
       let rowBottomY      = 0;
+      let tableWidth      = 0;
 
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
@@ -123,10 +127,11 @@ class PDFDocumentWithTables extends PDFDocument {
         let lastPosition = startX;
         table.headers.forEach(({label,width}, i) => {
           
+          width = width >> 0; // number
           //this.fillColor('red').strokeColor('#777777');
           
           // background
-          this.rect(lastPosition, startY - 5, width - 1, rowHeight + 3)
+          this.rect(lastPosition, startY - 5, width - 0, rowHeight + 3)
           .fillColor('grey')
           .fillOpacity(.1)
           .strokeColor('black')
@@ -140,7 +145,7 @@ class PDFDocumentWithTables extends PDFDocument {
           .strokeOpacity(1);
 
           // write
-          this.text(label, lastPosition + 2, startY, {
+          this.text(label, lastPosition + 0, startY, {
             width: width,
             align: "left",
           })
@@ -159,10 +164,12 @@ class PDFDocumentWithTables extends PDFDocument {
 
     // Refresh the y coordinate of the bottom of the headers row
     rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
+    tableWidth = columnPositions[columnPositions.length-1] + columnSizes[columnSizes.length-1];
 
     // Separation line between headers and rows
     this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-      .lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
+      //.lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
+      .lineTo(tableWidth, rowBottomY - rowSpacing * 0.5)
       .lineWidth(1)
       .stroke();
 
@@ -199,12 +206,12 @@ class PDFDocumentWithTables extends PDFDocument {
       table.headers.forEach(({property,width,renderer}, index) => {
 
         let text = row[property];
-        let origText = row[property];
+        // let origText = row[property];
 
         // cell object
         if(typeof text === 'object' ){
           text = String(text.label); // get label
-          origText = String(text.label); // get label
+          // origText = String(text.label); // get label
           row[property].hasOwnProperty('options') && prepareRowOptions(row[property]); // set style
         }
         
@@ -243,7 +250,9 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Separation line between rows
       this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-        .lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
+        //.lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
+        //.lineTo(posX, rowBottomY - rowSpacing * 0.5)
+        .lineTo(tableWidth, rowBottomY - rowSpacing * 0.5)
         .lineWidth(.5)
         .opacity(.5)
         .stroke()
@@ -286,7 +295,8 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Separation line between rows
       this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-        .lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
+        //.lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
+        .lineTo(tableWidth, rowBottomY - rowSpacing * 0.5)
         .lineWidth(.5)
         .opacity(.5)
         .stroke()

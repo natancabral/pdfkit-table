@@ -17,7 +17,7 @@
  });
  
  // to save on server
- doc.pipe(fs.createWriteStream("./file-table.pdf"));
+ doc.pipe(fs.createWriteStream("./document.pdf"));
  
  // -----------------------------------------------------------------------------------------------------
  // Simple Table with Array
