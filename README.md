@@ -159,7 +159,7 @@ npm install pdfkit-table
     - label <code>String</code>
     - property <code>String</code>
     - width <code>Number</code>
-    - renderer <code>Function</code> function(value, indexColumn, indexRow, row) => { return value }
+    - renderer <code>Function</code> function(value, indexColumn, indexRow, row) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
 
@@ -179,7 +179,7 @@ const table = {
   // complex headers work with ROWS and DATAS  
   headers: [
     { label:"Name", property: 'name', width: 100, renderer: null },
-    { label:"Age", property: 'age', width: 100, renderer: renderer: (value) => `U$ ${Number(value).toFixed(1)}` },
+    { label:"Age", property: 'age', width: 100, renderer: (value) => `U$ ${Number(value).toFixed(1)}` },
   ],
   // complex content
   datas: [
