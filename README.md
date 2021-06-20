@@ -266,9 +266,10 @@ const options = {
 #### Options Row
 
 - separation {Booleon} 
+- String
+  - **bold:|size{n}:** - 'Jack' | 'bold:Jack' | 'size11:Jack' | 'size20:Jack'
 - fontSize {Number}
 - fontFamily {String}
-- **bold:|size{n}:** - 'Jack' | 'bold:Jack' | 'size11:Jack' | 'size20:Jack'
 
 ```js
 datas: [
