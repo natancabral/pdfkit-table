@@ -265,9 +265,9 @@ const options = {
 
 #### Options Row
 
-- separation {Booleon} 
-- fontSize {Number}
-- fontFamily {String}
+- separation <code>{Booleon}</code>
+- fontSize <code>{Number}</code>
+- fontFamily <code>{String}</code>
 
 ```js
 datas: [
@@ -297,8 +297,8 @@ datas: [
 
 #### Options Cell
 
-- fontSize {Number}
-- fontFamily {String}
+- fontSize <code>{Number}</code>
+- fontFamily <code>{String}</code>
 
 ```js
 datas: [
@@ -329,6 +329,7 @@ datas: [
 - [Suggestions / Issues / Fixes](https://github.com/natancabral/pdfkit-table/issues)
 - renderer function on cell. Like renderer: (value) => { return `$${value}`}
 - sample with database
+- alignment
 - setFontFamily {String}
 - setBoldFontFamily {String}
 - verticalLines {Boolean}
@@ -345,11 +346,15 @@ datas: [
 
 ## Changelogs
 
+### 0.1.32
+
++ spacing cell and header alignment
++ **Thank you, contributors!**
+
 ### 0.1.31
 
 + renderer function on json file. { "renderer": "function(value, icol, irow, row){ return (value+1) + `(${(irow+2)})`; }" }
 + fix width table and separation lines size 
-+ **Thank you, contributors!**
 
 ## License
 

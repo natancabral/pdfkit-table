@@ -54,6 +54,19 @@ class PDFDocumentWithTables extends PDFDocument {
       let f = null; eval('f = ' + str); return f;
     }
 
+    const separationsRow = (xStart, xEnd, y, strokeWidth, strokeOpacity ) => {
+      strokeOpacity || (strokeOpacity = 0.5);
+      strokeWidth || (strokeWidth = 0.5);
+      this.moveTo(xStart, y - rowSpacing * 0.5)
+      //.lineTo(startX + usableWidth, rowBottomY- rowSpacing * 0.5)
+      //.lineTo(psX, rowBottomY- rowSpacing * 0.5)
+      .lineTo(xEnd, y - rowSpacing * 0.5 )
+      .lineWidth(strokeWidth)
+      .opacity(strokeOpacity)
+      .stroke()
+      .opacity(1); // Reset opacity after drawing the line
+    }
+
     const prepareRowOptions = (row) => {
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
       row.options.hasOwnProperty('fontFamily') && this.font(row.options.fontFamily); 
@@ -179,17 +192,9 @@ class PDFDocumentWithTables extends PDFDocument {
     tableWidth = columnPositions[columnPositions.length-1] + columnSizes[columnSizes.length-1];
 
     // Separation line between headers and rows
-    this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-      //.lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
-      .lineTo(tableWidth, rowBottomY - rowSpacing * 0.5)
-      .lineWidth(1)
-      .stroke();
+    separationsRow( startX, tableWidth, rowBottomY, 1, 1 );
 
-    // complex data
-
-    // ------------------------------------------------------------------------------
     // data -------------------------------------------------------------------------
-    // ------------------------------------------------------------------------------
     table.datas.forEach((row, i) => {
       const rowHeight = computeRowHeight(row);
 
@@ -205,12 +210,8 @@ class PDFDocumentWithTables extends PDFDocument {
       if( row.hasOwnProperty('options') ){
         if( row.options.hasOwnProperty('separation') ){
             // Separation line between rows
-            this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-              .lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
-              .lineWidth(1)
-              .opacity(1)
-              .stroke();
-        }
+            separationsRow( startX, tableWidth, rowBottomY, 1, 1);
+          }
       }
 
       let posX = startX; 
@@ -261,14 +262,8 @@ class PDFDocumentWithTables extends PDFDocument {
       rowBottomY = Math.max(startY + rowHeight, rowBottomY);
 
       // Separation line between rows
-      this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-        //.lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
-        //.lineTo(posX, rowBottomY - rowSpacing * 0.5)
-        .lineTo(tableWidth, rowBottomY - rowSpacing * 0.5)
-        .lineWidth(.5)
-        .opacity(.5)
-        .stroke()
-        .opacity(1); // Reset opacity after drawing the line
+      separationsRow( startX, tableWidth, rowBottomY );
+
     });
     // ------------------------------------------------------------------------------
     // end data ---------------------------------------------------------------------
@@ -306,13 +301,8 @@ class PDFDocumentWithTables extends PDFDocument {
       rowBottomY = Math.max(startY + rowHeight, rowBottomY);
 
       // Separation line between rows
-      this.moveTo(startX, rowBottomY - rowSpacing * 0.5)
-        //.lineTo(startX + usableWidth, rowBottomY - rowSpacing * 0.5)
-        .lineTo(tableWidth, rowBottomY - rowSpacing * 0.5)
-        .lineWidth(.5)
-        .opacity(.5)
-        .stroke()
-        .opacity(1); // Reset opacity after drawing the line
+      separationsRow( startX, tableWidth, rowBottomY );
+
     });
     // ------------------------------------------------------------------------------
     // rows -------------------------------------------------------------------------
