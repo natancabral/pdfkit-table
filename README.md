@@ -136,7 +136,7 @@ npm install pdfkit-table
 
 ```js
 // renderer function inside json file
-const tableJson = `{ 
+const tableJson = '{ 
   "headers": [
     { "label":"Name", "property":"name", "width":100 },
     { "label":"Age", "property":"age", "width":100 },
@@ -155,7 +155,7 @@ const tableJson = `{
   "options": {
     "width": 300
   }
-}`
+}';
 doc.table( tableJson );
 ```
 
@@ -315,8 +315,8 @@ datas: [
 
 ## ToDo
 
+- [Suggestions / Issues / Fixes](https://github.com/natancabral/pdfkit-table/issues)
 - renderer function on cell. Like renderer: (value) => { return `$${value}`}
-- load json file - require | string
 - sample with database
 - setFontFamily {String}
 - setBoldFontFamily {String}

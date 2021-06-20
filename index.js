@@ -31,7 +31,7 @@ class PDFDocumentWithTables extends PDFDocument {
     const columnSizes     = options.columnSizes || [];
     const columnPositions = []; // 0, 10, 20, 30, 100
     const rowSpacing      = options.rowSpacing || 3; // 5
-    const usableWidth     = options.width || this.page.width - this.page.margins.left - this.page.margins.right;
+    const usableWidth     = String(options.width).replace(/[^0-9]/g,'') || this.page.width - this.page.margins.left - this.page.margins.right;
 
     const prepareHeader   = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8) );
     const prepareRow      = options.prepareRow || (() => this.font("Helvetica").fontSize(8) );
