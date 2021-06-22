@@ -349,11 +349,11 @@ datas: [
 ### 0.1.33
 
 + Function **tableToJson**
-  - const table = tableToJson('#id_table') <code>{Object}</code>. 
   - import {tableToJson} from 'pdfkit-table';
+  - const table = tableToJson('#id_table'); <code>{Object}</code>
 + Function **allTablesToJson**
-  - const tables = allTablesToJson() <code>{Array}</code>. 
   - import {allTablesToJson} from 'pdfkit-table';
+  - const tables = allTablesToJson(); <code>{Array}</code>
 
 ### 0.1.32
 
