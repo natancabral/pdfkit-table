@@ -346,6 +346,11 @@ datas: [
 
 ## Changelogs
 
+### 0.1.33
+
++ const table = tableToJson('#id_table') <code>{Object}</code>. import {tableToJson} from 'pdfkit-table';
++ const tables = allTablesToJson() <code>{Array}</code>. import {allTablesToJson} from 'pdfkit-table';
+
 ### 0.1.32
 
 + spacing cell and header alignment
@@ -381,3 +386,4 @@ The MIT License.
 - code base - [andronio](https://www.andronio.me/2017/09/02/pdfkit-tables/)
 - ideas - [giuseppe-santoro](https://github.com/foliojs/pdfkit/issues/29#issuecomment-56504943)
 - influence [voilab](https://github.com/voilab/voilab-pdf-table)
+- **Marcos Aurelio P. Araujo**, thanks for give me the challenge.
