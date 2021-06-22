@@ -57,7 +57,11 @@ npm install pdfkit-table
       ["England", "33%", "+4.44%"],
     ],
   };
-  doc.table( table, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+  doc.table( table, { 
+    // A4 595.28 x 841.89 (portrait) (about width sizes)
+    width: 300,
+    //columnsSize: [ 200, 100, 100 ],
+  }); 
   // end code
 ```
 
@@ -242,6 +246,7 @@ const table = {
 | **width**            | <code>Number</code>   | undefined          | width of table    |
 | **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
 | **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
+| **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **rowSpacing**       | <code>Number</code>   | 3                  |                   |
 | **prepareHeader**    | <code>Function</code> | Function           |                   |
@@ -345,6 +350,10 @@ datas: [
 - striped {Boolean} (corsimcornao)
 
 ## Changelogs
+
+### 0.1.34
+
++ add **columnsSize** on options = {} // only to simple table
 
 ### 0.1.33
 

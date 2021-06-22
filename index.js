@@ -25,26 +25,30 @@ class PDFDocumentWithTables extends PDFDocument {
     table.datas || (table.datas = []);
     table.rows || (table.rows = []);
     table.options && (options = table.options);
-    
-    const columnCount     = table.headers.length;
-    const columnSpacing   = options.columnSpacing || 5; // 15
-    const columnSizes     = options.columnSizes || [];
-    const columnPositions = []; // 0, 10, 20, 30, 100
-    const rowSpacing      = options.rowSpacing || 3; // 5
-    const usableWidth     = String(options.width).replace(/[^0-9]/g,'') || this.page.width - this.page.margins.left - this.page.margins.right;
 
-    const prepareHeader   = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8) );
-    const prepareRow      = options.prepareRow || (() => this.font("Helvetica").fontSize(8) );
+    options.columnsSize || (options.columnsSize = []);
+
+      let columnIsDefined  = options.columnsSize.length ? true : false ; 
+    const columnsCountSize = options.columnsSize.length; // pre-defined coluns size
+    const columnCount      = table.headers.length;
+    const columnSpacing    = options.columnSpacing || 5; // 15
+    const columnSizes      = options.columnsSize;
+    const columnPositions  = []; // 0, 10, 20, 30, 100
+    const rowSpacing       = options.rowSpacing || 3; // 5
+    const usableWidth      = String(options.width).replace(/[^0-9]/g,'') || this.page.width - this.page.margins.left - this.page.margins.right;
+
+    const prepareHeader    = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8) );
+    const prepareRow       = options.prepareRow || (() => this.font("Helvetica").fontSize(8) );
     
     const columnContainerWidth = usableWidth / columnCount;
-    const columnWidth     = columnContainerWidth - columnSpacing;
-    const maxY            = this.page.height - this.page.margins.bottom;
+    const columnWidth      = columnContainerWidth - columnSpacing;
+    const maxY             = this.page.height - this.page.margins.bottom;
 
-    const startX          = options.x || this.page.margins.left;
-      let startY          = options.y || this.y;
-      let rowBottomY      = 0;
-      let tableWidth      = 0;
-  
+    const startX           = options.x || this.page.margins.left;
+      let startY           = options.y || this.y;
+      let rowBottomY       = 0;
+      let tableWidth       = 0;
+
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
       rowBottomY = 0;
@@ -121,27 +125,47 @@ class PDFDocumentWithTables extends PDFDocument {
     // Check to have enough room for header and first rows. default 3
     if (startY + 2 * computeRowHeight(table.headers) > maxY) this.addPage();
 
+    let lastPosition = 0; // x position head
+
     if(table.headers && table.headers.length > 0){
 
       if(typeof table.headers[0] === 'string' ){
 
-        //Print all headers
+        if( columnIsDefined ){
+
+          lastPosition = startX;
+          // print headers
+          table.headers.forEach((header, i) => {
+            this.text(header, lastPosition, startY, {
+              width: columnSizes[i] >> 0,
+              align: "left",
+            });
+            columnPositions.push(lastPosition);
+            lastPosition += columnSizes[i] >> 0;
+          });
+          
+        } else {
+
+        // print headers
         table.headers.forEach((header, i) => {
-          const posX = startX + i * columnContainerWidth;
-          this.text(header, posX, startY, {
+
+          lastPosition = startX + i * columnContainerWidth;
+          this.text(header, lastPosition, startY, {
             width: columnWidth,
             align: "left",
           });
           columnSizes.push(columnWidth);
-          columnPositions.push(posX);
+          columnPositions.push(lastPosition);
         });
 
+        }
+        
       }else{
 
         let rowHeight = computeRowHeight(table.headers);
 
         // Print all headers
-        let lastPosition = startX;
+        lastPosition = startX;
         table.headers.forEach(({label, width, renderer}, i) => {
           
           // renderer && (table.headers[i].renderer = fEval(renderer));
@@ -319,6 +343,8 @@ class PDFDocumentWithTables extends PDFDocument {
 module.exports = PDFDocumentWithTables;
 
 function t2j( element ){
+
+  if( !element ) return;
 
     let head = [];
     let data = [];
