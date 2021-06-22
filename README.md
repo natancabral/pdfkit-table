@@ -348,7 +348,9 @@ datas: [
 
 ### 0.1.33
 
-+ const table = tableToJson('#id_table') <code>{Object}</code>. import {tableToJson} from 'pdfkit-table';
++ tableToJson
+  - const table = tableToJson('#id_table') <code>{Object}</code>. 
+  - import {tableToJson} from 'pdfkit-table';
 + const tables = allTablesToJson() <code>{Array}</code>. import {allTablesToJson} from 'pdfkit-table';
 
 ### 0.1.32
