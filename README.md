@@ -351,6 +351,15 @@ datas: [
 
 ## Changelogs
 
+### 0.1.35
+
++ add **title** <code>{String}</code>
+  - const table = { title: "", };
+  - const options = { title: "", };
++ add **subtitle** <code>{String}</code>
+  - const table = { subtitle: "", };
+  - const options = { subtitle: "", };
+
 ### 0.1.34
 
 + add **columnsSize** on options = {} // only to simple table

@@ -28,6 +28,9 @@ class PDFDocumentWithTables extends PDFDocument {
 
     options.columnsSize || (options.columnsSize = []);
 
+    const title            = table.title    ? table.title    : ( options.title    ? options.title    : '' ) ;
+    const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle ? options.subtitle : '' ) ;
+
       let columnIsDefined  = options.columnsSize.length ? true : false ; 
     const columnsCountSize = options.columnsSize.length; // pre-defined coluns size
     const columnCount      = table.headers.length;
@@ -44,10 +47,49 @@ class PDFDocumentWithTables extends PDFDocument {
     const columnWidth      = columnContainerWidth - columnSpacing;
     const maxY             = this.page.height - this.page.margins.bottom;
 
-    const startX           = options.x || this.page.margins.left;
-      let startY           = options.y || this.y;
+      let startX           = options.x || this.x || this.page.margins.left ;
+      let startY           = options.y || this.y ;
       let rowBottomY       = 0;
       let tableWidth       = 0;
+
+    // if options.x === null 
+    // reset position to margins.left
+    if( options.x === null || options.x === -1 ){
+      startX = this.page.margins.left;
+    }
+
+    const createTitle = ( data, size, opacity ) => {
+      // Title
+      if( !data ) return;
+
+      // get height line
+      let cellHeight = 0;
+      // if string
+      if(typeof data === 'string' ){
+        // font size
+        this.fontSize( size ).opacity( opacity );
+        // get height line
+        cellHeight = this.heightOfString( data, {
+          width: usableWidth,
+          align: "left",
+        });
+        // write 
+        this.text( data, startX, startY ).opacity( 1 ); // moveDown( 0.5 )
+        // startY += cellHeight;
+        startY = this.y + 2;
+        // else object
+      } else if(typeof data === 'object' ){
+        // title object
+        data.label && this.fontSize( data.fontSize || size ).text( data.label, startX, startY );
+      }  
+    }
+
+    createTitle( title, 12, 1 );
+    createTitle( subtitle, 9, 0.7 );
+
+    if( title || subtitle ){
+      startY += 3;
+    }
 
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
