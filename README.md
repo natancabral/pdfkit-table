@@ -50,6 +50,8 @@ npm install pdfkit-table
 ```js
   // requires 
   const table = {
+    title: "Title",
+    subtitle: "Subtitle",
     headers: ["Country", "Conversion rate", "Trend"],
     rows: [
       ["Switzerland", "12%", "+1.12%"],
@@ -243,6 +245,8 @@ const table = {
 
 | Properties           | Type                  | Default            | Description       |
 -----------------------|-----------------------|--------------------|-------------------|
+| **title**            | <code>String</code>   | undefined          | title             |
+| **subtitle**         | <code>String</code>   | undefined          | subtitle          |
 | **width**            | <code>Number</code>   | undefined          | width of table    |
 | **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
 | **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
@@ -257,6 +261,8 @@ Example code:
 ```js
 const options = {
   // properties
+  title: "Title",
+  title: "Subtitle",
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
   x: 0, // {Number} default: undefined | doc.x
   y: 0, // {Number} default: undefined | doc.y
@@ -350,6 +356,11 @@ datas: [
 - striped {Boolean} (corsimcornao)
 
 ## Changelogs
+
+### 0.1.36
+
++ Fix position x, y of title
++ **options.x**: **null** | **-1** // reset position to margins.left
 
 ### 0.1.35
 

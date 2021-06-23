@@ -87,6 +87,7 @@ class PDFDocumentWithTables extends PDFDocument {
     createTitle( title, 12, 1 );
     createTitle( subtitle, 9, 0.7 );
 
+    // add space after title
     if( title || subtitle ){
       startY += 3;
     }
