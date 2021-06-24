@@ -4,8 +4,8 @@ const PDFDocument = require("pdfkit");
 
 class PDFDocumentWithTables extends PDFDocument {
   
-  constructor(options) {
-    super(options);
+  constructor(option) {
+    super(option);
   }
 
   /**
@@ -84,6 +84,10 @@ class PDFDocumentWithTables extends PDFDocument {
       }  
     }
 
+    // add a new page before crate table
+    options.addPage && this.addPage( option );
+
+    // create title and subtitle
     createTitle( title, 12, 1 );
     createTitle( subtitle, 9, 0.7 );
 
@@ -92,6 +96,7 @@ class PDFDocumentWithTables extends PDFDocument {
       startY += 3;
     }
 
+    // add fire
     this.on("pageAdded", () => {
       startY = this.page.margins.top;
       rowBottomY = 0;

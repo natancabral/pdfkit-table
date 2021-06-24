@@ -253,6 +253,7 @@ const table = {
 | **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **rowSpacing**       | <code>Number</code>   | 3                  |                   |
+| **addPage**          | <code>Boolean</code>  | false              | add table on new page |
 | **prepareHeader**    | <code>Function</code> | Function           |                   |
 | **prepareRow**       | <code>Function</code> | Function           |                   |
 
@@ -356,6 +357,11 @@ datas: [
 - striped {Boolean} (corsimcornao)
 
 ## Changelogs
+
+### 0.1.37
+
++ **addPage**  <code>{String}</code> - Add table on new page.
+  - const options = { addPage: true, }; 
 
 ### 0.1.36
 
