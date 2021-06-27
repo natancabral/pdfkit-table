@@ -27,12 +27,12 @@ class PDFDocumentWithTables extends PDFDocument {
     table.options && (options = table.options);
 
     options.columnsSize || (options.columnsSize = []);
+    options.addPage || (options.addPage = false);
 
     const title            = table.title    ? table.title    : ( options.title    ? options.title    : '' ) ;
     const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle ? options.subtitle : '' ) ;
 
       let columnIsDefined  = options.columnsSize.length ? true : false ; 
-    const columnsCountSize = options.columnsSize.length; // pre-defined coluns size
     const columnCount      = table.headers.length;
     const columnSpacing    = options.columnSpacing || 5; // 15
     const columnSizes      = options.columnsSize;
@@ -85,7 +85,9 @@ class PDFDocumentWithTables extends PDFDocument {
     }
 
     // add a new page before crate table
-    options.addPage && this.addPage( option );
+    if( options.addPage === true) {
+      this.addPage(); // option );
+    }
 
     // create title and subtitle
     createTitle( title, 12, 1 );
@@ -118,6 +120,27 @@ class PDFDocumentWithTables extends PDFDocument {
       .stroke()
       .opacity(1); // Reset opacity after drawing the line
     }
+
+    // add background
+    const addBackground = ( x, y, width, height, fillColor, fillOpacity, fontColor ) => {
+      fillColor || (fillColor = 'gray');
+      fillOpacity || (fillOpacity = 0.1);
+      fontColor || (fontColor = 'black');
+      // set
+      this
+      .fillColor(fillColor)
+      .fillOpacity(fillOpacity)
+      .rect( x, y, width, height )
+      .fill()
+      .stroke();
+      // retore
+      this
+      .fillColor('black')
+      .fillOpacity(1)
+      .fill()
+      .stroke();
+    }
+
 
     const prepareRowOptions = (row) => {
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
@@ -177,8 +200,14 @@ class PDFDocumentWithTables extends PDFDocument {
 
     if(table.headers && table.headers.length > 0){
 
+      let rowHeight = computeRowHeight(table.headers);
+
       if(typeof table.headers[0] === 'string' ){
 
+        // background header
+        // addBackground( startX, startY - 5, 100, rowHeight + rowSpacing );
+
+        // we have columnSizes[] complete
         if( columnIsDefined ){
 
           lastPosition = startX;
@@ -194,52 +223,35 @@ class PDFDocumentWithTables extends PDFDocument {
           
         } else {
 
-        // print headers
-        table.headers.forEach((header, i) => {
+          // print headers
+          table.headers.forEach((header, i) => {
 
-          lastPosition = startX + i * columnContainerWidth;
-          this.text(header, lastPosition, startY, {
-            width: columnWidth,
-            align: "left",
+            lastPosition = startX + i * columnContainerWidth;
+            this.text(header, lastPosition, startY, {
+              width: columnWidth,
+              align: "left",
+            });
+            columnSizes.push(columnWidth);
+            columnPositions.push(lastPosition);
+
           });
-          columnSizes.push(columnWidth);
-          columnPositions.push(lastPosition);
-        });
 
         }
         
       }else{
 
-        let rowHeight = computeRowHeight(table.headers);
-
         // Print all headers
         lastPosition = startX;
         table.headers.forEach(({label, width, renderer}, i) => {
-          
-          // renderer && (table.headers[i].renderer = fEval(renderer));
 
           if(renderer && typeof renderer === 'string') {
             table.headers[i].renderer = fEval(renderer);
-            // console.log('A',renderer);
-            // console.log('B',table.headers[i].renderer);
           }
 
           width = width >> 0; // number
-          //this.fillColor('red').strokeColor('#777777');
           
-          // background
-          this.rect(lastPosition, startY - 5, width - 0, rowHeight + 3)
-          .fillColor('grey')
-          .fillOpacity(.1)
-          .strokeColor('black')
-          .strokeOpacity(1)
-          .fill()
-          .stroke();
-
-          // restore color
-          this.fillColor('black')
-          .fillOpacity(1)
-          .strokeOpacity(1);
+          // background header
+          // addBackground( lastPosition, startY - 5, width - 0, rowHeight + 3, '#EEE', 1 );
 
           // write
           this.text(label, lastPosition + 0, startY, {
@@ -286,7 +298,11 @@ class PDFDocumentWithTables extends PDFDocument {
           }
       }
 
+      // add background
+      addBackground( startX, startY - 5, tableWidth - startX, rowHeight + rowSpacing );
+
       let posX = startX; 
+
       // Print all cells of the current row
       table.headers.forEach(({property,width,renderer}, index) => {
 
@@ -357,6 +373,9 @@ class PDFDocumentWithTables extends PDFDocument {
       // Allow the user to override style for rows
       prepareRow(row, i);
 
+      // add background
+      addBackground( startX, startY - 5 , tableWidth - startX, rowHeight + rowSpacing );
+      
       row.forEach((cell, index) => {
         // renderer column
         if( typeof table.headers[index] === 'object' ){
@@ -386,6 +405,21 @@ class PDFDocumentWithTables extends PDFDocument {
 
     return this;
   }
+
+    /**
+   * tables
+   * @param {object} tables 
+   * @returns 
+   */
+  tables(tables) {
+    // if tables is Array
+    Array.isArray( tables ) ?
+    // for each on Array
+    tables.forEach( table => this.table( table, table.options || {} ) ) :
+    // else is tables is a unique table object
+    ( typeof tables === 'object' ? this.table( tables, tables.options || {} ) : null ) ;
+  }
+
 }
 
 module.exports = PDFDocumentWithTables;

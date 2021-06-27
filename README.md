@@ -32,6 +32,7 @@ npm install pdfkit-table
   
   // table
   const table = { 
+    title: '',
     headers: [],
     datas: [/* complex data */],
     rows: [/* or simple data */],
@@ -73,6 +74,8 @@ npm install pdfkit-table
   // require
   // A4 595.28 x 841.89 (portrait) (about width sizes)
   const table = {
+    title: "Title",
+    subtitle: "Subtitle",
     headers: [
       { label:"Name", property: 'name', width: 60, renderer: null },
       { label:"Description", property: 'description', width: 150, renderer: null }, 
@@ -207,6 +210,8 @@ doc.table( json, json.options || {} ) ;
     - renderer <code>Function</code> function(value, indexColumn, indexRow, row) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
+  - title <code>String</code>
+  - subtitle <code>String</code>
 
 Example code:
 ```js
@@ -263,7 +268,7 @@ Example code:
 const options = {
   // properties
   title: "Title",
-  title: "Subtitle",
+  subtitle: "Subtitle",
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
   x: 0, // {Number} default: undefined | doc.x
   y: 0, // {Number} default: undefined | doc.y
@@ -339,6 +344,8 @@ datas: [
 ## ToDo
 
 - [Suggestions / Issues / Fixes](https://github.com/natancabral/pdfkit-table/issues)
+- striped {Boolean} (corsimcornao)
+- colspan - the colspan attribute defines the number of columns a table cell should span.
 - renderer function on cell. Like renderer: (value) => { return `$${value}`}
 - sample with database
 - alignment
@@ -354,13 +361,19 @@ datas: [
 - tableLineWidth {Number}
 - tableLineColor {String}
 - backgroundColor  {String}
-- striped {Boolean} (corsimcornao)
+- margin: marginBottom before, marginTop after
+- add line bottom or line top
 
 ## Changelogs
 
+### 0.1.38
+
++ **tables**  <code>{Function}</code> - Add many tables. 
+  - doc.tables([ table0, table1, table2, ... ]);
+
 ### 0.1.37
 
-+ **addPage**  <code>{String}</code> - Add table on new page.
++ **addPage**  <code>{Boolean}</code> - Add table on new page.
   - const options = { addPage: true, }; 
 
 ### 0.1.36
@@ -425,4 +438,3 @@ The MIT License.
 - code base - [andronio](https://www.andronio.me/2017/09/02/pdfkit-tables/)
 - ideas - [giuseppe-santoro](https://github.com/foliojs/pdfkit/issues/29#issuecomment-56504943)
 - influence [voilab](https://github.com/voilab/voilab-pdf-table)
-- **Marcos Aurelio P. Araujo**, thanks for give me the challenge.

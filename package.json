@@ -4,7 +4,8 @@
   "description": "PdfKit Table. Helps to draw informations in simple tables using pdfkit. #server-side. Generate pdf tables with javascript (PDFKIT plugin) ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "git-push": "git add . && git commit -m 'update' && git push "
   },
   "repository": "git+https://github.com/natancabral/pdfkit-table.git",
   "author": "natancabral",
