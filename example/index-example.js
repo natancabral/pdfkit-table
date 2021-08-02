@@ -75,8 +75,11 @@
  
  doc.table(table, {
    prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-   prepareRow: (row, i) => doc.font("Helvetica").fontSize(8),
- });
+   prepareRow: (row, indexColumn, indexRow, rectRow) => {
+    doc.font("Helvetica").fontSize(8);
+    indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+  },
+});
  
  // if your run express.js server:
  // HTTP response only to show pdf

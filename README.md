@@ -137,7 +137,10 @@ npm install pdfkit-table
 
   doc.table(table, {
     prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-    prepareRow: (row, i) => doc.font("Helvetica").fontSize(8),
+    prepareRow: (row, indexColumn, indexRow, rectRow) => {
+      doc.font("Helvetica").fontSize(8);
+      indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+    },
   });
 ```
 
@@ -259,8 +262,8 @@ const table = {
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **rowSpacing**       | <code>Number</code>   | 3                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
-| **prepareHeader**    | <code>Function</code> | Function           |                   |
-| **prepareRow**       | <code>Function</code> | Function           |                   |
+| **prepareHeader**    | <code>Function</code> | Function           | ()                  |
+| **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow) => {} |
 
 
 Example code:
@@ -276,7 +279,7 @@ const options = {
   rowSpacing: 3, // {Number} default: 3
   // functions
   prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
-  prepareRow: (row, i) => doc.font("Helvetica").fontSize(8), // {Function} 
+  prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8), // {Function} 
 }
 ```
 
@@ -360,11 +363,18 @@ datas: [
 - tableLine {Boolean}
 - tableLineWidth {Number}
 - tableLineColor {String}
-- backgroundColor  {String}
 - margin: marginBottom before, marginTop after
 - add line bottom or line top
+- backgroundColor  {String}
 
 ## Changelogs
+
+### 0.1.39
+
++ **addBackground**  <code>{Function}</code> - Add background peer line. 
+  - doc.addBackground( {x, y, width, height}, fillColor, opacity, fontColor );
++ **prepareRow**  <code>{Function}</code>
+  - const options = { prepareRow: (row, indexColumn, indexRow, rectRow) => { indexColumn === 0 && doc.addBackground(rectRow, 'red', 0.5) } }
 
 ### 0.1.38
 
