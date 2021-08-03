@@ -365,9 +365,26 @@ datas: [
 - tableLineColor {String}
 - margin: marginBottom before, marginTop after
 - add line bottom or line top
-- backgroundColor  {String}
 
 ## Changelogs
+
+### 0.1.41
+
++ **Background** color on header to colorize ***column***
+  - headers: [
+      { label:"Name", property: 'name', ***backgroundColor: 'red', backgroundOpacity: 0.5*** },
+      { label:"Age", property: 'age', ***background: { color: 'green', opacity: 0.5 } }***,
+  ]
++ **Background** color inside row options datas
+  - datas: [
+      { name:"My Name", age: 20, ***options: { backgroundColor: 'red', backgroundOpacity: 0.5 }*** },
+      { name:"My Name", age: 20, ***options: { background: { color: 'green', opacity: 0.5 } }*** },
+  ]
++ **Background** color inside cell options datas
+  - datas: [
+      { name:{ label: "My Name", age: 20, ***options: { backgroundColor: 'red', backgroundOpacity: 0.5 }*** }},
+      { name:{ label: "My Name", age: 20, ***options: { background: { color: 'green', opacity: 0.5 } }*** }},
+  ]
 
 ### 0.1.39
 

@@ -1,4 +1,6 @@
-"use strict";
+// jshint esversion: 6
+// "use strict";
+// https://jshint.com/
 
 const PDFDocument = require("pdfkit");
 
@@ -15,25 +17,25 @@ class PDFDocumentWithTables extends PDFDocument {
    * @param {*} fillOpacity 
    * @param {*} fontColor 
    */
-  addBackground = ( {x, y, width, height}, fillColor, fillOpacity, fontColor ) => {
-    console.log('--');
+  addBackground = ({x, y, width, height}, fillColor, fillOpacity) => {
+    // validate
     fillColor || (fillColor = 'gray');
     fillOpacity || (fillOpacity = 0.1);
-    fontColor || (fontColor = 'black');
+    // fontColor || (fontColor = 'black');
     // set
     this
     .fill(fillColor)
     //.stroke(fillColor)
     .fillOpacity(fillOpacity)
     .rect( x, y + 0.5, width, height )
-    .fill()
-    //.stroke();
+    //.stroke()
+    .fill();
+
     // retore
     this
-    //.restore()
     .fillColor('black')
     .fillOpacity(1)
-    .fill()
+    .fill();
   }
 
   /**
@@ -91,16 +93,16 @@ class PDFDocumentWithTables extends PDFDocument {
       if( !data ) return;
 
       // get height line
-      let cellHeight = 0;
+      // let cellHeight = 0;
       // if string
       if(typeof data === 'string' ){
         // font size
         this.fontSize( size ).opacity( opacity );
         // get height line
-        cellHeight = this.heightOfString( data, {
-          width: usableWidth,
-          align: "left",
-        });
+        // cellHeight = this.heightOfString( data, {
+        //   width: usableWidth,
+        //   align: "left",
+        // });
         // write 
         this.text( data, startX, startY ).opacity( 1 ); // moveDown( 0.5 )
         // startY += cellHeight;
@@ -110,7 +112,7 @@ class PDFDocumentWithTables extends PDFDocument {
         // title object
         data.label && this.fontSize( data.fontSize || size ).text( data.label, startX, startY );
       }  
-    }
+    };
 
     // add a new page before crate table
     if( options.addPage === true) {
@@ -132,50 +134,76 @@ class PDFDocumentWithTables extends PDFDocument {
       rowBottomY = 0;
     });
 
+    // warning - eval can be harmful
     const fEval = (str) => {
       let f = null; eval('f = ' + str); return f;
-    }
+    };
 
-    const separationsRow = (xStart, xEnd, y, strokeWidth, strokeOpacity ) => {
+    const separationsRow = (pStart, pEnd, strokeWidth, strokeOpacity ) => {
+
+      // validate
       strokeOpacity || (strokeOpacity = 0.5);
       strokeWidth || (strokeWidth = 0.5);
-      this.moveTo(xStart, y - rowSpacing * 0.5)
-      //.lineTo(startX + usableWidth, rowBottomY- rowSpacing * 0.5)
-      //.lineTo(psX, rowBottomY- rowSpacing * 0.5)
-      .lineTo(xEnd, y - rowSpacing * 0.5 )
+
+      this.moveTo(pStart.x, pStart.y - rowSpacing * 0.5)
+      .lineTo(pEnd.x, pEnd.y - rowSpacing * 0.5)
       .lineWidth(strokeWidth)
       .opacity(strokeOpacity)
       .stroke()
-      .opacity(1); // Reset opacity after drawing the line
-    }
+      // Reset opacity after drawing the line
+      .opacity(1); 
 
-    // add background
-    // const addBackground = ( {x, y, width, height}, fillColor, fillOpacity, fontColor ) => {
-    //   fillColor || (fillColor = 'gray');
-    //   fillOpacity || (fillOpacity = 0.1);
-    //   fontColor || (fontColor = 'black');
-    //   // set
-    //   this
-    //   .fill(fillColor)
-    //   //.stroke(fillColor)
-    //   .fillOpacity(fillOpacity)
-    //   .rect( x, y, width, height )
-    //   .fill()
-    //   //.stroke();
-    //   // retore
-    //   this
-    //   //.restore()
-    //   .fillColor('black')
-    //   .fillOpacity(1)
-    //   .fill()
-    // }
+    };
 
-    const prepareRowOptions = (row) => {
+    // const separationsRow = (xStart, xEnd, y, strokeWidth, strokeOpacity ) => {
+
+    //   //validate
+    //   strokeOpacity || (strokeOpacity = 0.5);
+    //   strokeWidth || (strokeWidth = 0.5);
+
+    //   this.moveTo(xStart, y - rowSpacing * 0.5)
+    //   //.lineTo(startX + usableWidth, rowBottomY- rowSpacing * 0.5)
+    //   //.lineTo(psX, rowBottomY- rowSpacing * 0.5)
+    //   .lineTo(xEnd, y - rowSpacing * 0.5 )
+    //   .lineWidth(strokeWidth)
+    //   .opacity(strokeOpacity)
+    //   .stroke()
+    //   .opacity(1); // Reset opacity after drawing the line
+      
+    // };
+
+    const prepareRowOptions = (row, rect) => {
+
+      // validate
       if( typeof row !== 'object' || !row.hasOwnProperty('options') ) return; 
+
       row.options.hasOwnProperty('fontFamily') && this.font(row.options.fontFamily); 
       row.options.hasOwnProperty('fontSize') && this.fontSize(row.options.fontSize); 
       row.options.hasOwnProperty('color') && this.fillColor(row.options.color); 
-    }
+
+    };
+
+    const prepareRowBackground = (row, rect) => {
+
+      // validate
+      if( typeof row !== 'object' ) return; 
+
+      row.options && (row = row.options);
+
+      // add backgroundColor
+      if(row.hasOwnProperty('backgroundColor')){
+        const { backgroundColor, backgroundOpacity } = row;
+        // add background
+        this.addBackground(rect, backgroundColor, backgroundOpacity);
+      }
+      // add background
+      if(row.hasOwnProperty('background')){
+        const { color, opacity } = row.background;
+        // add background
+        this.addBackground(rect, color, opacity);
+      }
+      
+    };
     
     const computeRowHeight = (row) => {
       
@@ -237,7 +265,6 @@ class PDFDocumentWithTables extends PDFDocument {
 
           // sum columns sizes
           columnContainerWidth = columnSizes.reduce((acc, curr, index ) => acc + curr, 0);
-          console.log(columnContainerWidth);
   
           // background header
           const rectRow = {
@@ -245,7 +272,8 @@ class PDFDocumentWithTables extends PDFDocument {
             y: startY - 5, 
             width: columnContainerWidth, 
             height: rowHeight + rowSpacing,
-          }
+          };
+          // add background
           this.addBackground( rectRow );
 
           lastPosition = startX;
@@ -267,7 +295,8 @@ class PDFDocumentWithTables extends PDFDocument {
             y: startY - 5, 
             width: columnContainerWidth * table.headers.length - 5, 
             height: rowHeight + rowSpacing,
-          }
+          };
+          // add background
           this.addBackground( rectRow );
           
           // print headers
@@ -303,7 +332,8 @@ class PDFDocumentWithTables extends PDFDocument {
             y: startY - 5, 
             width: width, 
             height: rowHeight + rowSpacing,
-          }
+          };
+          // add background
           this.addBackground( rectRow );
 
           // write
@@ -329,7 +359,10 @@ class PDFDocumentWithTables extends PDFDocument {
     tableWidth = columnPositions[columnPositions.length-1] + columnSizes[columnSizes.length-1];
 
     // Separation line between headers and rows
-    separationsRow( startX, tableWidth, rowBottomY, 1, 1 );
+    separationsRow( 
+      {x: startX, y: rowBottomY}, 
+      {x: tableWidth, y: rowBottomY}, 
+    );
 
     // data -------------------------------------------------------------------------
     table.datas.forEach((row, i) => {
@@ -345,35 +378,49 @@ class PDFDocumentWithTables extends PDFDocument {
         y: startY - 5, 
         width: tableWidth - startX, 
         height: rowHeight + rowSpacing,
-      }
+      };
 
-      // add background
-      //doc.addBackground(rectRow);
-
-      if( row.hasOwnProperty('options') ){
-        if( row.options.hasOwnProperty('separation') ){
-            // Separation line between rows
-            separationsRow( startX, tableWidth, rowBottomY, 1, 1);
-          }
-      }
+      // add background row
+      prepareRowBackground(row, rectRow);
 
       let posX = startX; 
 
       // Print all cells of the current row
       table.headers.forEach(({property,width,renderer}, index) => {
 
+        const rectCell = {
+          x: posX,
+          y: startY - 5,
+          width: width,
+          height: rowHeight + rowSpacing,
+        }
+
         // Allow the user to override style for rows
         prepareRow(row, index, i, rectRow);
         prepareRowOptions(row);
 
         let text = row[property];
-        // let origText = row[property];
 
         // cell object
         if(typeof text === 'object' ){
+
           text = String(text.label); // get label
-          // origText = String(text.label); // get label
-          row[property].hasOwnProperty('options') && prepareRowOptions(row[property]); // set style
+          // row[property].hasOwnProperty('options') && prepareRowOptions(row[property]); // set style
+
+          // options if text cell is object
+          if( row[property].hasOwnProperty('options') ){
+
+            // set font style
+            prepareRowOptions(row[property]);
+            prepareRowBackground(row[property], rectCell);
+
+          }
+    
+        } else {
+
+          // style column by header
+          prepareRowBackground(table.headers[index], rectCell);
+
         }
 
         // bold
@@ -410,7 +457,24 @@ class PDFDocumentWithTables extends PDFDocument {
       rowBottomY = Math.max(startY + rowHeight, rowBottomY);
 
       // Separation line between rows
-      separationsRow( startX, tableWidth, rowBottomY );
+      // separationsRow( startX, tableWidth, rowBottomY );
+      separationsRow( 
+        {x: startX, y: rowBottomY}, 
+        {x: tableWidth, y: rowBottomY}, 
+      );
+
+      // review this code
+      if( row.hasOwnProperty('options') ){
+        if( row.options.hasOwnProperty('separation') ){
+          // Separation line between rows
+          // separationsRow( startX, tableWidth, rowBottomY, 1, 1);
+          separationsRow( 
+            {x: startX, y: rowBottomY}, 
+            {x: tableWidth, y: rowBottomY}, 1, 1 
+          );
+        }
+      }
+      
 
     });
     // ------------------------------------------------------------------------------
@@ -438,9 +502,18 @@ class PDFDocumentWithTables extends PDFDocument {
       }
 
       // add background
-      //doc.addBackground(rectRow);
+      // doc.addBackground(rectRow);
       
       row.forEach((cell, index) => {
+
+        const rectCell = {
+          x: columnPositions[index],
+          y: startY - 5,
+          width: columnSizes[index],
+          height: rowHeight + rowSpacing,
+        }
+
+        prepareRowBackground(table.headers[index], rectCell);
 
         // Allow the user to override style for rows
         prepareRow(row, index, i, rectRow);
@@ -460,7 +533,12 @@ class PDFDocumentWithTables extends PDFDocument {
       rowBottomY = Math.max(startY + rowHeight, rowBottomY);
 
       // Separation line between rows
-      separationsRow( startX, tableWidth, rowBottomY );
+      // separationsRow( startX, tableWidth, rowBottomY );
+      separationsRow( 
+        {x: startX, y: rowBottomY}, 
+        {x: tableWidth, y: rowBottomY}, 
+      );
+      
 
     });
     // ------------------------------------------------------------------------------
@@ -492,66 +570,66 @@ class PDFDocumentWithTables extends PDFDocument {
 
 module.exports = PDFDocumentWithTables;
 
-function t2j( element ){
+// function t2j( element ){
 
-  if( !element ) return;
+//   if( !element ) return;
 
-    let head = [];
-    let data = [];
+//     let head = [];
+//     let data = [];
 
-  const table = element;
-  const rows = table.rows.length;
-    let cells = 0;
-    let text = '';
+//   const table = element;
+//   const rows = table.rows.length;
+//     let cells = 0;
+//     let text = '';
 
-  for( var r = 0; r < rows; r++ ){
-    cells || (cells = table.rows[0].cells.length);
-    let simpleRow = [];
-    for( var c = 0; c < cells; c++ ){
-      text = table.rows[r].cells[c].textContent;
-      if( r === 0 ) {
-        head.push(text);
-      }else {
-        simpleRow.push(text);
-      }
-    }
-    simpleRow.length && data.push(simpleRow);
-  }
+//   for( var r = 0; r < rows; r++ ){
+//     cells || (cells = table.rows[0].cells.length);
+//     let simpleRow = [];
+//     for( var c = 0; c < cells; c++ ){
+//       text = table.rows[r].cells[c].textContent;
+//       if( r === 0 ) {
+//         head.push(text);
+//       }else {
+//         simpleRow.push(text);
+//       }
+//     }
+//     simpleRow.length && data.push(simpleRow);
+//   }
 
-  return {
-    headers: head,
-    datas: [],
-    rows: data,
-  };
+//   return {
+//     headers: head,
+//     datas: [],
+//     rows: data,
+//   };
 
-  // console.log(head, data);
-  // console.log(table.rows);
-  // console.log(table.rows.length);
-  // console.log(table.rows[0].cells);
-  // console.log(table.rows[0].cells[0].textContent);
-  // console.log(table.rows[0].cells[0].cellIndex);
-  // console.log(table.rows[0].innerHTML);
+//   // console.log(head, data);
+//   // console.log(table.rows);
+//   // console.log(table.rows.length);
+//   // console.log(table.rows[0].cells);
+//   // console.log(table.rows[0].cells[0].textContent);
+//   // console.log(table.rows[0].cells[0].cellIndex);
+//   // console.log(table.rows[0].innerHTML);
 
-}
+// }
 
-function tableToJson( idElement ){
-  return t2j( document.getElementById(idElement) );
-}
+// function tableToJson( idElement ){
+//   return t2j( document.getElementById(idElement) );
+// }
 
-function allTablesToJson(){  
+// function allTablesToJson(){  
   
-    let all = [];
+//     let all = [];
 
-  const table = document.getElementsByTagName('table');
-  const rows = table.length;
+//   const table = document.getElementsByTagName('table');
+//   const rows = table.length;
 
-  for( var r = 0; r < rows; r++ ){
-    all.push( t2j(table[r]) );
-  }
+//   for( var r = 0; r < rows; r++ ){
+//     all.push( t2j(table[r]) );
+//   }
   
-  return all;
+//   return all;
 
-}
+// }
 
-module.exports.tableToJson = tableToJson;
-module.exports.allTablesToJson = allTablesToJson;
+// module.exports.tableToJson = tableToJson;
+// module.exports.allTablesToJson = allTablesToJson;
