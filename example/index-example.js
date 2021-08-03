@@ -30,7 +30,7 @@
      ["England", "33%", "+4.44%"],
    ],
  };
- doc.table( tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+ doc.table( tableArray, { width: 300, }); // A4 595.28 x 841.89 (portrait) (about width sizes)
  
  // move to down
  doc.moveDown(); // separate tables
@@ -77,9 +77,33 @@
    prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
    prepareRow: (row, indexColumn, indexRow, rectRow) => {
     doc.font("Helvetica").fontSize(8);
-    indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+    indexColumn === 0 && doc.addBackground(rectRow, (indexRow % 2 ? 'blue' : 'green'), 0.15);
   },
 });
+
+doc.moveDown(1);
+
+const tableArrayColor = {
+  headers: ["Country", "Conversion rate", "Trend"],
+  rows: [
+    ["Switzerland", "12%", "+1.12%"],
+    ["France", "67%", "-0.98%"],
+    ["Brazil", "88%", "2.77%"],
+  ],
+};
+doc.table( tableArrayColor, { 
+  
+  width: 400,
+  x: 150,
+  columnsSize: [200,100,100],
+
+  prepareRow: (row, indexColumn, indexRow, rectRow) => {
+    doc.font("Helvetica").fontSize(10);
+    indexColumn === 0 && doc.addBackground(rectRow, (indexRow % 2 ? 'red' : 'green'), 0.5);
+  },
+
+}); // A4 595.28 x 841.89 (portrait) (about width sizes)
+
  
  // if your run express.js server:
  // HTTP response only to show pdf

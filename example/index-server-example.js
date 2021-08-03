@@ -86,7 +86,7 @@ app.get("/", function (req, res) {
 
   doc.table(table, {
     prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-    prepareRow: (row, i) => doc.font("Helvetica").fontSize(8),
+    prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
   });
 
   // if your run express.js server:

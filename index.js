@@ -71,7 +71,7 @@ class PDFDocumentWithTables extends PDFDocument {
     const prepareHeader    = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8) );
     const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.font("Helvetica").fontSize(8) );
     
-    const columnContainerWidth = usableWidth / columnCount;
+      let columnContainerWidth = usableWidth / columnCount;
     const columnWidth      = columnContainerWidth - columnSpacing;
     const maxY             = this.page.height - this.page.margins.bottom;
 
@@ -232,11 +232,21 @@ class PDFDocumentWithTables extends PDFDocument {
 
       if(typeof table.headers[0] === 'string' ){
 
-        // background header
-        // addBackground( startX, startY - 5, 100, rowHeight + rowSpacing );
-
         // we have columnSizes[] complete
         if( columnIsDefined ){
+
+          // sum columns sizes
+          columnContainerWidth = columnSizes.reduce((acc, curr, index ) => acc + curr, 0);
+          console.log(columnContainerWidth);
+  
+          // background header
+          const rectRow = {
+            x: startX, 
+            y: startY - 5, 
+            width: columnContainerWidth, 
+            height: rowHeight + rowSpacing,
+          }
+          this.addBackground( rectRow );
 
           lastPosition = startX;
           // print headers
@@ -251,6 +261,15 @@ class PDFDocumentWithTables extends PDFDocument {
           
         } else {
 
+          // background header
+          const rectRow = {
+            x: startX, 
+            y: startY - 5, 
+            width: columnContainerWidth * table.headers.length - 5, 
+            height: rowHeight + rowSpacing,
+          }
+          this.addBackground( rectRow );
+          
           // print headers
           table.headers.forEach((header, i) => {
 
@@ -279,7 +298,13 @@ class PDFDocumentWithTables extends PDFDocument {
           width = width >> 0; // number
           
           // background header
-          // addBackground( lastPosition, startY - 5, width - 0, rowHeight + 3, '#EEE', 1 );
+          const rectRow = {
+            x: lastPosition, 
+            y: startY - 5, 
+            width: width, 
+            height: rowHeight + rowSpacing,
+          }
+          this.addBackground( rectRow );
 
           // write
           this.text(label, lastPosition + 0, startY, {
