@@ -27,7 +27,7 @@ class PDFDocumentWithTables extends PDFDocument {
     .fill(fillColor)
     //.stroke(fillColor)
     .fillOpacity(fillOpacity)
-    .rect( x, y + 0.5, width, height )
+    .rect( x, y, width, height )
     //.stroke()
     .fill();
 
@@ -65,11 +65,12 @@ class PDFDocumentWithTables extends PDFDocument {
 
     const columnIsDefined  = options.columnsSize.length ? true : false ; 
     const columnCount      = table.headers.length; // TODO if not have header
-    const columnSpacing    = options.columnSpacing || 5; // 15
+    const columnSpacing    = options.columnSpacing || 3; // 15
     const columnSizes      = options.columnsSize;
     const columnPositions  = []; // 0, 10, 20, 30, 100
-    // const rowSpacing       = options.rowSpacing || 5; // 5
     const usableWidth      = String(options.width).replace(/[^0-9]/g,'') || this.page.width - this.page.margins.left - this.page.margins.right;
+
+    const rowDistance      = 0.5;
 
     const prepareHeader    = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8));
     const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.font("Helvetica").fontSize(8));
@@ -139,14 +140,14 @@ class PDFDocumentWithTables extends PDFDocument {
     };
 
     const separationsRow = (pStart, pEnd, strokeWidth, strokeOpacity) => {
-
+      
       // validate
       strokeOpacity || (strokeOpacity = 0.5);
       strokeWidth || (strokeWidth = 0.5);
 
       // draw
-      this.moveTo(pStart.x, pStart.y + strokeWidth)
-      .lineTo(pEnd.x, pEnd.y)
+      this.moveTo(pStart.x, pStart.y - (rowDistance * 1.5))
+      .lineTo(pEnd.x, pEnd.y - (rowDistance * 1.5))
       .lineWidth(strokeWidth)
       .opacity(strokeOpacity)
       .stroke()
@@ -253,7 +254,7 @@ class PDFDocumentWithTables extends PDFDocument {
       if(typeof table.headers[0] === 'string' ){
 
         // we have columnSizes[] complete
-        if( columnIsDefined ){
+        if(columnIsDefined){
 
           // sum columns sizes
           columnWidth = columnSizes.reduce((acc, curr, index ) => acc + curr, 0);
@@ -261,7 +262,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // background header
           const rectRow = {
             x: startX, 
-            y: startY - columnSpacing, 
+            y: startY - columnSpacing - (rowDistance * 2), 
             width: columnWidth, 
             height: rowHeight + columnSpacing,
           };
@@ -289,7 +290,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // background header
           const rectRow = {
             x: startX, 
-            y: startY - columnSpacing, 
+            y: startY - columnSpacing - (rowDistance * 2), 
             width: columnWidth * table.headers.length - columnSpacing, 
             height: rowHeight + columnSpacing,
           };
@@ -330,7 +331,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // background header
           const rectRow = {
             x: lastPosition, 
-            y: startY - columnSpacing, 
+            y: startY - columnSpacing - (rowDistance * 2), 
             width: width, 
             height: rowHeight + columnSpacing,
           };
@@ -371,16 +372,17 @@ class PDFDocumentWithTables extends PDFDocument {
     // datas ----------------------------------------------------
 
     table.datas.forEach((row, i) => {
+
       const rowHeight = computeRowHeight(row);
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing;
+      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
       else this.addPage();
 
       const rectRow = {
         x: startX, 
-        y: startY - columnSpacing, 
+        y: startY - columnSpacing - (rowDistance * 2), 
         width: tableWidth - startX, 
         height: rowHeight + columnSpacing,
       };
@@ -395,7 +397,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
         const rectCell = {
           x: posX,
-          y: startY - columnSpacing,
+          y: startY - columnSpacing - (rowDistance * 2),
           width: width,
           height: rowHeight + columnSpacing,
         }
@@ -482,16 +484,17 @@ class PDFDocumentWithTables extends PDFDocument {
 
     // rows ----------------------------------------------------
     table.rows.forEach((row, i) => {
+
       const rowHeight = computeRowHeight(row);
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing;
+      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
       else this.addPage();
 
       const rectRow = {
         x: startX, 
-        y: startY - columnSpacing, 
+        y: startY - columnSpacing - (rowDistance * 2), 
         width: tableWidth - startX, 
         height: rowHeight + columnSpacing,
       }
@@ -503,7 +506,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
         const rectCell = {
           x: columnPositions[index],
-          y: startY - columnSpacing,
+          y: startY - columnSpacing - (rowDistance * 2),
           width: columnSizes[index],
           height: rowHeight + columnSpacing,
         }
