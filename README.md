@@ -369,6 +369,11 @@ datas: [
 
 ## Changelogs
 
+### 0.1.43
+
++ Remove **rowSpacing**
++ Fix **columnSpacing**
+
 ### 0.1.41
 
 + **Background** color on header to colorize ***column***
