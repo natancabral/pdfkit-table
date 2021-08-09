@@ -11,7 +11,7 @@
  */
 
 const fs = require("fs");
-const PDFDocument = require("pdfkit-table");
+const PDFDocument = require("./../index");
 const doc = new PDFDocument({
   margin: 30, 
 });
@@ -115,13 +115,13 @@ const table = {
     { label:"Price 4", property: 'price4', width: 63, renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` } },
   ],
   datas: [
-  { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', options: { backgroundColor: 'green', backgroundOpacity: 0.5 } },
-  { name: 'bold:Name 2', description: 'bold:Lorem ipsum dolor.', price1: 'bold:$1', price3: '$3', price2: '$2', price4: '4', options: { fontSize: 10, separation: true } },
-  { name: 'Name 3', description: 'Lorem ipsum dolor.', price1: 'bold:$1', price4: '4.111111', price2: '$2', price3: { label:'PRICE $3', options: { fontSize: 12, backgroundColor: 'red', backgroundOpacity: 0.5 } }, },
-  { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', options: { backgroundColor: 'green', backgroundOpacity: 0.5 } },
-  { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', options: { backgroundColor: 'green', backgroundOpacity: 0.5, separation: true } },
-  { name: 'Name 3', description: 'Lorem ipsum dolor.', price1: 'bold:$1', price4: '4.111111', price2: '$2', price3: { label:'PRICE $3', options: { fontSize: 12, separation: true, backgroundColor: 'red', backgroundOpacity: 0.5 }}, },
-],
+    { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', options: { backgroundColor: 'green', backgroundOpacity: 0.5 } },
+    { name: 'bold:Name 2', description: 'bold:Lorem ipsum dolor.', price1: 'bold:$1', price3: '$3', price2: '$2', price4: '4', options: { fontSize: 10, separation: true } },
+    { name: 'Name 3', description: 'Lorem ipsum dolor.', price1: 'bold:$1', price4: '4.111111', price2: '$2', price3: { label:'PRICE $3', options: { fontSize: 12, backgroundColor: 'red', backgroundOpacity: 0.5 } }, },
+    { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', options: { backgroundColor: 'green', backgroundOpacity: 0.5 } },
+    { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', options: { backgroundColor: 'green', backgroundOpacity: 0.5, separation: true } },
+    { name: 'Name 3', description: 'Lorem ipsum dolor.', price1: 'bold:$1', price4: '4.111111', price2: '$2', price3: { label:'PRICE $3', options: { fontSize: 12, separation: true, backgroundColor: 'red', backgroundOpacity: 0.5 }}, },
+  ],
   rows: [
     [
       "Apple",
@@ -159,6 +159,51 @@ doc.table(table, {
     doc.font("Helvetica").fontSize(8);
   },
 });
+
+// link
+
+const createLink1 = (value, indexColumn, indexRow, row, rectRow, rectCell) => { 
+  // get cell rect
+  const {x, y, width, height} = rectCell;
+  // set link box in doc. (pdf)
+  doc.fill('blue').link( x, y, width, height, value);
+  // return value text
+  return `${value}`; 
+}
+
+const createLink2 = (value, indexColumn, indexRow, row, rectRow, rectCell) => { 
+  const {x, y, width, height} = rectCell;
+  doc
+  .fillColor('blue')
+  .underline( x, y, width, height - 2, { color: '#0000FF' }) // undeline
+  .link( x, y, width, height, value)
+  return `Link Here`; 
+}
+
+const tableLink = {
+  title: 'Table with link',
+  subtitle: 'version 0.1.45',
+  headers: [
+    { label: "Name", property: 'name', width: 100, renderer: null },
+    { label: "Website", property: 'url', width: 100, renderer: createLink1 },
+    { label: "Link To", property: 'url', width: 100, renderer: createLink2 },
+  ],
+  datas: [
+    { name: 'Google', url: 'https://google.com', },
+    { name: 'Duck Duck Go', url: 'https://duckduckgo.com', },
+    { name: 'Bing', url: 'https://bing.com', },
+  ],
+}
+
+doc.table( tableLink, { 
+  prepareRow: () => {
+    doc
+    .font("Helvetica")
+    .fontSize(8)
+    .fillColor('black');
+  } 
+});
+
 
 // if your run express.js server:
 // HTTP response only to show pdf

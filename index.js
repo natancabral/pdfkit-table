@@ -91,6 +91,7 @@ class PDFDocumentWithTables extends PDFDocument {
     }
 
     const createTitle = ( data, size, opacity ) => {
+      
       // Title
       if( !data ) return;
 
@@ -444,7 +445,7 @@ class PDFDocumentWithTables extends PDFDocument {
         }
 
         // renderer column
-        renderer && (text = renderer(text, index, i, row)) // value, index-column, index-row, row 
+        renderer && (text = renderer(text, index, i, row, rectRow, rectCell)) // value, index-column, index-row, row 
 
         this.text(text, posX, startY, {
           width: width,
@@ -518,13 +519,13 @@ class PDFDocumentWithTables extends PDFDocument {
 
         // renderer column
         if( typeof table.headers[index] === 'object' ){
-          table.headers[index].renderer && (cell = table.headers[index].renderer(cell, index, i, row)) // text-cell, index-column, index-line, row
+          table.headers[index].renderer && (cell = table.headers[index].renderer(cell, index, i, row, rectRow, rectCell)) // text-cell, index-column, index-line, row
         }
         // const posX = startX + i * columnWidth;
         this.text(cell, columnPositions[index], startY, {
           width: columnSizes[index], // columnWidthFit
           align: "left",
-        });
+        });rectRow
       });
 
       // Refresh the y coordinate of the bottom of this row
