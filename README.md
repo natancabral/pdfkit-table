@@ -372,6 +372,7 @@ datas: [
 
 + add **rectCell** on renderer
   - renderer = ( value, indexColumn, indexRow, row, rectRow, rectCell ) => {}
+  - Thanks ***Eduardo Miranda***
 
 ### 0.1.44
 
