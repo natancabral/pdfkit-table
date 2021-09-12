@@ -211,7 +211,7 @@ doc.table( json, json.options || {} ) ;
     - label <code>String</code>
     - property <code>String</code>
     - width <code>Number</code>
-    - renderer <code>Function</code> function(value, indexColumn, indexRow, row) { return value }
+    - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
   - title <code>String</code>
@@ -367,6 +367,11 @@ datas: [
 - add line bottom or line top
 
 ## Changelogs
+
+### 0.1.46
+
++ fix addBackground() function to node 8
+  - Thanks ***@mehmetunubol***
 
 ### 0.1.45
 

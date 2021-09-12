@@ -16,7 +16,7 @@ class PDFDocumentWithTables extends PDFDocument {
    * @param {String} fillColor 
    * @param {Number} fillOpacity 
    */
-  addBackground = ({x, y, width, height}, fillColor, fillOpacity) => {
+  addBackground ({x, y, width, height}, fillColor, fillOpacity) {
 
     // validate
     fillColor || (fillColor = 'gray');
