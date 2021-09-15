@@ -130,7 +130,7 @@ class PDFDocumentWithTables extends PDFDocument {
     }
 
     const onFirePageAdded = () => {
-      startX = this.page.margins.left;
+      // startX = this.page.margins.left;
       startY = this.page.margins.top;
       rowBottomY = 0;
       addHeader();
