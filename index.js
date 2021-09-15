@@ -129,11 +129,15 @@ class PDFDocumentWithTables extends PDFDocument {
       startY += 3;
     }
 
-    // add fire
-    this.on("pageAdded", () => {
+    const onFirePageAdded = () => {
+      startX = this.page.margins.left;
       startY = this.page.margins.top;
       rowBottomY = 0;
-    });
+      addHeader();
+    }
+
+    // add fire
+    this.on("pageAdded", onFirePageAdded);
 
     // warning - eval can be harmful
     const fEval = (str) => {
@@ -238,137 +242,147 @@ class PDFDocumentWithTables extends PDFDocument {
       return result + columnSpacing;
     };
 
-    // Allow the user to override style for headers
-    prepareHeader();
+    // Header
 
-    // Check to have enough room for header and first rows. default 3
-    if (startY + 2 * computeRowHeight(table.headers) > maxY) {
-      this.addPage();
-    }
+    const addHeader = () => { 
 
-    let lastPosition = 0; // x position head
+      // Allow the user to override style for headers
+      prepareHeader();
 
-    if(table.headers && table.headers.length > 0){
+      // Check to have enough room for header and first rows. default 3
+      if (startY + 2 * computeRowHeight(table.headers) > maxY) {
+        this.addPage();
+      }
 
-      let rowHeight = computeRowHeight(table.headers);
+      let lastPosition = 0; // x position head
 
-      if(typeof table.headers[0] === 'string' ){
+      if(table.headers && table.headers.length > 0){
 
-        // we have columnSizes[] complete
-        if(columnIsDefined){
+        let rowHeight = computeRowHeight(table.headers);
 
-          // sum columns sizes
-          columnWidth = columnSizes.reduce((acc, curr, index ) => acc + curr, 0);
-  
-          // background header
-          const rectRow = {
-            x: startX, 
-            y: startY - columnSpacing - (rowDistance * 2), 
-            width: columnWidth, 
-            height: rowHeight + columnSpacing,
-          };
+        if(typeof table.headers[0] === 'string' ){
 
-          // add background
-          this.addBackground( rectRow );
+          // we have columnSizes[] complete
+          if(columnIsDefined){
+
+            // sum columns sizes
+            columnWidth = columnSizes.reduce((acc, curr, index ) => acc + curr, 0);
+    
+            // background header
+            const rectRow = {
+              x: startX, 
+              y: startY - columnSpacing - (rowDistance * 2), 
+              width: columnWidth, 
+              height: rowHeight + columnSpacing,
+            };
+
+            // add background
+            this.addBackground( rectRow );
+
+            lastPosition = startX;
+
+            // print headers
+            table.headers.forEach((header, i) => {
+
+              this.text(header, lastPosition, startY, {
+                width: columnSizes[i] >> 0,
+                align: "left",
+              });
+              
+              columnPositions.push(lastPosition);
+              lastPosition += columnSizes[i] >> 0;
+
+            });
+            
+          } else {
+
+            // background header
+            const rectRow = {
+              x: startX, 
+              y: startY - columnSpacing - (rowDistance * 2), 
+              width: columnWidth * table.headers.length - columnSpacing, 
+              height: rowHeight + columnSpacing,
+            };
+
+            // add background
+            this.addBackground( rectRow );
+            
+            // print headers
+            table.headers.forEach((header, i) => {
+
+              lastPosition = startX + i * columnWidth;
+              this.text(header, lastPosition, startY, {
+                width: columnWidthFit,
+                align: "left",
+              });
+
+              columnSizes.push(columnWidthFit);
+              columnPositions.push(lastPosition);
+
+            });
+
+          }
+          
+        }else{
 
           lastPosition = startX;
 
-          // print headers
-          table.headers.forEach((header, i) => {
+          // Print all headers
+          table.headers.forEach(({label, width, renderer}, i) => {
 
-            this.text(header, lastPosition, startY, {
-              width: columnSizes[i] >> 0,
-              align: "left",
-            });
+            if(renderer && typeof renderer === 'string') {
+              table.headers[i].renderer = fEval(renderer);
+            }
+
+            // force number
+            width = width >> 0;
             
-            columnPositions.push(lastPosition);
-            lastPosition += columnSizes[i] >> 0;
+            // background header
+            const rectRow = {
+              x: lastPosition, 
+              y: startY - columnSpacing - (rowDistance * 2), 
+              width: width, 
+              height: rowHeight + columnSpacing,
+            };
 
-          });
-          
-        } else {
+            // add background
+            this.addBackground( rectRow );
 
-          // background header
-          const rectRow = {
-            x: startX, 
-            y: startY - columnSpacing - (rowDistance * 2), 
-            width: columnWidth * table.headers.length - columnSpacing, 
-            height: rowHeight + columnSpacing,
-          };
-
-          // add background
-          this.addBackground( rectRow );
-          
-          // print headers
-          table.headers.forEach((header, i) => {
-
-            lastPosition = startX + i * columnWidth;
-            this.text(header, lastPosition, startY, {
-              width: columnWidthFit,
+            // write
+            this.text(label, lastPosition + 0, startY, {
+              width: width,
               align: "left",
-            });
+            })
 
-            columnSizes.push(columnWidthFit);
+            columnSizes.push(width);
             columnPositions.push(lastPosition);
+            lastPosition += width;
 
           });
+
+          // set style
+          prepareRowOptions(table.headers);
 
         }
-        
-      }else{
-
-        lastPosition = startX;
-
-        // Print all headers
-        table.headers.forEach(({label, width, renderer}, i) => {
-
-          if(renderer && typeof renderer === 'string') {
-            table.headers[i].renderer = fEval(renderer);
-          }
-
-          // force number
-          width = width >> 0;
-          
-          // background header
-          const rectRow = {
-            x: lastPosition, 
-            y: startY - columnSpacing - (rowDistance * 2), 
-            width: width, 
-            height: rowHeight + columnSpacing,
-          };
-
-          // add background
-          this.addBackground( rectRow );
-
-          // write
-          this.text(label, lastPosition + 0, startY, {
-            width: width,
-            align: "left",
-          })
-
-          columnSizes.push(width);
-          columnPositions.push(lastPosition);
-          lastPosition += width;
-
-        });
-
-        // set style
-        prepareRowOptions(table.headers);
-
       }
+
+      // Refresh the y coordinate of the bottom of the headers row
+      rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
+
+      // update table width
+      tableWidth = columnPositions[columnPositions.length-1] + columnSizes[columnSizes.length-1];
+
+      // Separation line between headers and rows
+      separationsRow( 
+        {x: startX, y: rowBottomY}, 
+        {x: tableWidth, y: rowBottomY}, 
+      );
+
     }
 
-    // Refresh the y coordinate of the bottom of the headers row
-    rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
+    addHeader();
 
-    // update table width
-    tableWidth = columnPositions[columnPositions.length-1] + columnSizes[columnSizes.length-1];
-
-    // Separation line between headers and rows
-    separationsRow( 
-      {x: startX, y: rowBottomY}, 
-      {x: tableWidth, y: rowBottomY}, 
-    );
+    // End header
 
     // datas ----------------------------------------------------
 
@@ -378,8 +392,10 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
-      else this.addPage();
+      // if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+      // else this.addPage();
+      startY + 2 * rowHeight >= maxY && this.addPage();
+      startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
       const rectRow = {
         x: startX, 
@@ -445,7 +461,11 @@ class PDFDocumentWithTables extends PDFDocument {
         }
 
         // renderer column
-        renderer && (text = renderer(text, index, i, row, rectRow, rectCell)) // value, index-column, index-row, row 
+        // renderer && (text = renderer(text, index, i, row, rectRow, rectCell)) // value, index-column, index-row, row 
+        // renderer column
+        if(typeof renderer === 'function'){
+          text = renderer(text, index, i, row, rectRow, rectCell); // value, index-column, index-row, row 
+        }
 
         this.text(text, posX, startY, {
           width: width,
@@ -490,8 +510,10 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
-      else this.addPage();
+      // if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+      // else this.addPage();
+      startY + 2 * rowHeight >= maxY && this.addPage();
+      startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
       const rectRow = {
         x: startX, 
@@ -545,6 +567,9 @@ class PDFDocumentWithTables extends PDFDocument {
     this.x = startX;
     this.y = rowBottomY; // position y final;
     this.moveDown(); // break
+
+    // add fire
+    this.off("pageAdded", onFirePageAdded);
 
     return this;
   }

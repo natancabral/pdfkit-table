@@ -368,9 +368,14 @@ datas: [
 
 ## Changelogs
 
+### 0.1.47
+
++ addHeader() function on all add pages
+  - Thanks Anders Wasen ***@QAnders***
+
 ### 0.1.46
 
-+ fix addBackground() function to node 8
++ addBackground() function to node 8
   - Thanks ***@mehmetunubol***
 
 ### 0.1.45
