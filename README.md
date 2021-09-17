@@ -368,6 +368,11 @@ datas: [
 
 ## Changelogs
 
+### 0.1.48
+
++ header height size
++ separate line width
+
 ### 0.1.47
 
 + addHeader() function on all add pages
