@@ -346,31 +346,20 @@ datas: [
 ## ToDo
 
 - [Suggestions / Issues / Fixes](https://github.com/natancabral/pdfkit-table/issues)
-- cellPadding {Array} [5,2,5,2];
 - striped {Boolean} (corsimcornao)
 - colspan - the colspan attribute defines the number of columns a table cell should span.
-- renderer function on cell. Like renderer: (value) => { return `$${value}`}
 - sample with database
 - alignment
-- setFontFamily {String}
-- setBoldFontFamily {String}
 - verticalLines {Boolean}
 - verticalLinesWidth {Number}
 - verticalLinesColor {String}
-- horizontalLines {Boolean}
-- horizontalLinesWidth {Number}
-- horizontalLinesColor {String}
-- tableLine {Boolean}
-- tableLineWidth {Number}
-- tableLineColor {String}
 - margin: marginBottom before, marginTop after
-- add line bottom or line top
 
 ## Changelogs
 
 ### 0.1.49
 
-+ Max size age
++ Max size page
 
 ### 0.1.48
 
