@@ -79,7 +79,7 @@ class PDFDocumentWithTables extends PDFDocument {
     const prepareHeader    = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8));
     const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.font("Helvetica").fontSize(8));
     
-    const maxY             = this.page.height - (this.page.margins.bottom + 5);
+    const maxY             = this.page.height - (this.page.margins.top + this.page.margins.bottom);
 
       let startX           = options.x || this.x || this.page.margins.left;
       let startY           = options.y || this.y;
@@ -213,7 +213,7 @@ class PDFDocumentWithTables extends PDFDocument {
     const computeRowHeight = (row) => {
       
       let result = 0;
-     
+
       // if row is object, content with property and options
       if( !Array.isArray(row) && typeof row === 'object' && !row.hasOwnProperty('property') ){
         const cells = []; 
@@ -236,6 +236,8 @@ class PDFDocumentWithTables extends PDFDocument {
           cell.hasOwnProperty('options') && prepareRowOptions(cell);
         }
 
+        text = String(text).replace('bold:','');
+        
         // calc
         // calc height size of string
         const cellHeight = this.heightOfString(text, {
@@ -320,16 +322,13 @@ class PDFDocumentWithTables extends PDFDocument {
       // Allow the user to override style for headers
       prepareHeader();
 
-      // Check to have enough room for header and first rows. default 3
-      if (startY + 2 * computeRowHeight(table.headers) > maxY) {
-        this.addPage();
-      }
-
+      let rowHeight = computeRowHeight(table.headers);
       let lastPosition = 0; // x position head
 
-      if(table.headers && table.headers.length > 0){
+      // Check to have enough room for header and first rows. default 3
+      // if (startY + 2 * rowHeight > maxY) this.addPage();
 
-        let rowHeight = computeRowHeight(table.headers);
+      if(table.headers && table.headers.length > 0){
 
         if(typeof table.headers[0] === 'string') {
 
@@ -469,7 +468,7 @@ class PDFDocumentWithTables extends PDFDocument {
       // For safety, consider 3 rows margin instead of just one
       // if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
       // else this.addPage();
-      startY + 2 * rowHeight >= maxY && this.addPage();
+      if(startY + 2 * rowHeight >= maxY) this.addPage();
       startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
       const rectRow = {
@@ -583,7 +582,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
       // Switch to next page if we cannot go any further because the space is over.
       // For safety, consider 3 rows margin instead of just one
-      // if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+      // if (startY + 3 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
       // else this.addPage();
       if(startY + 2 * rowHeight >= maxY) this.addPage();
       startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
