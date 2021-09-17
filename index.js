@@ -311,7 +311,7 @@ class PDFDocumentWithTables extends PDFDocument {
       prepareHeader();
 
       let rowHeight = computeRowHeight(table.headers);
-      let lastPosition = startX; // x position head
+      let lastPositionX = startX; // x position head
 
       // Check to have enough room for header and first rows. default 3
       // if (startY + 2 * rowHeight > maxY) this.addPage();
@@ -337,7 +337,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
             // background header
             const rectCell = {
-              x: lastPosition, 
+              x: lastPositionX, 
               y: startY - columnSpacing - (rowDistance * 2), 
               width: columnSizes[i], 
               height: rowHeight + columnSpacing,
@@ -346,12 +346,12 @@ class PDFDocumentWithTables extends PDFDocument {
             // add background
             this.addBackground(rectCell);
 
-            this.text(header, lastPosition, startY, {
+            this.text(header, lastPositionX, startY, {
               width: columnSizes[i] >> 0,
               align: "left",
             });
             
-            lastPosition += columnSizes[i] >> 0;
+            lastPositionX += columnSizes[i] >> 0;
 
           });
           
@@ -371,23 +371,23 @@ class PDFDocumentWithTables extends PDFDocument {
             }
             
             // background header
-            const rectRow = {
-              x: lastPosition, 
+            const rectCell = {
+              x: lastPositionX, 
               y: startY - columnSpacing - (rowDistance * 2), 
               width: width, 
               height: rowHeight + columnSpacing,
             };
 
             // add background
-            this.addBackground(rectRow);
+            this.addBackground(rectCell);
 
             // write
-            this.text(label, lastPosition + 0, startY, {
+            this.text(label, lastPositionX, startY, {
               width: width,
               align: "left",
             })
 
-            lastPosition += width;
+            lastPositionX += width;
 
           });
 
@@ -408,6 +408,8 @@ class PDFDocumentWithTables extends PDFDocument {
 
     // End header
     addHeader();
+
+    let lastPositionX; 
 
     // Datas
     table.datas.forEach((row, i) => {
@@ -431,7 +433,7 @@ class PDFDocumentWithTables extends PDFDocument {
       // add background row
       prepareRowBackground(row, rectRow);
 
-      let posX = startX; 
+      lastPositionX = startX; 
 
       // Print all cells of the current row
       table.headers.forEach(( dataHeader, index) => {
@@ -441,7 +443,7 @@ class PDFDocumentWithTables extends PDFDocument {
         width = width || columnWidth;
 
         const rectCell = {
-          x: posX,
+          x: lastPositionX,
           y: startY - columnSpacing - (rowDistance * 2),
           width: width,
           height: rowHeight + columnSpacing,
@@ -494,11 +496,11 @@ class PDFDocumentWithTables extends PDFDocument {
           text = renderer(text, index, i, row, rectRow, rectCell); // value, index-column, index-row, row 
         }
 
-        this.text(text, posX, startY, {
+        this.text(text, lastPositionX, startY, {
           width: width,
           align: "left",
         });
-        posX += width; 
+        lastPositionX += width; 
 
         // set style
         prepareRowOptions(row);
@@ -546,13 +548,13 @@ class PDFDocumentWithTables extends PDFDocument {
       // add background
       // doc.addBackground(rectRow);
 
-      let posX = startX; 
+      lastPositionX = startX; 
 
       row.forEach((cell, index) => {
 
         const rectCell = {
           // x: columnPositions[index],
-          x: posX,
+          x: lastPositionX,
           y: startY - columnSpacing - (rowDistance * 2),
           width: columnSizes[index],
           height: rowHeight + columnSpacing,
@@ -568,12 +570,12 @@ class PDFDocumentWithTables extends PDFDocument {
           table.headers[index].renderer && (cell = table.headers[index].renderer(cell, index, i, row, rectRow, rectCell)); // text-cell, index-column, index-line, row
         }
 
-        this.text(cell, posX, startY, {
+        this.text(cell, lastPositionX, startY, {
           width: columnSizes[index],
           align: "left",
         });
 
-        posX += columnSizes[index];
+        lastPositionX += columnSizes[index];
 
       });
 
