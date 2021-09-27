@@ -252,26 +252,29 @@ class PDFDocumentWithTables extends PDFDocument {
 
     // Calc columns size
     
-    const calcColumnsSizes = () => {
+    const calcColumnSizes = () => {
 
       let h = []; // header width
       let p = []; // position
       let w = 0;  // table width
 
-      // 1o - Max size table
+      // (table width) 1o - Max size table
       w = this.page.width - this.page.margins.right - ( options.x || this.page.margins.left );
-      // 2o - Size defined
-      options.width && ( w = String(options.width).replace(/[^0-9]/g,'') );
+      // (table width) 2o - Size defined
+      options.width && ( w = String(options.width).replace(/[^0-9]/g,'') >> 0 );
 
-      // 1o
+      // (table width) if table is percent of page 
+      // ...
+
+      // (size columns) 1o
       table.headers.forEach( el => {
         el.width && h.push(el.width); // - columnSpacing
       });
-      // 2o
+      // (size columns) 2o
       if(h.length === 0) {
         h = options.columnsSize;
       } 
-      // 3o
+      // (size columns) 3o
       if(h.length === 0) {
         columnWidth = ( w / table.headers.length ); // - columnSpacing // define column width
         table.headers.forEach( () => h.push(columnWidth) );
@@ -283,14 +286,14 @@ class PDFDocumentWithTables extends PDFDocument {
         return prev + curr;
       },( options.x || this.page.margins.left ));
 
-      // Set columnSizes
+      // !Set columnSizes
       h.length && (columnSizes = h);
       p.length && (columnPositions = p);
 
-      // 3o - Sum last position + lest header width
+      // (table width) 3o - Sum last position + lest header width
       w = p[p.length-1] + h[h.length-1];
 
-      // Set tableWidth
+      // !Set tableWidth
       w && ( tableWidth = w );
       
       // Ajust spacing
@@ -301,7 +304,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
     }
 
-    calcColumnsSizes();
+    calcColumnSizes();
 
     // Header
 
