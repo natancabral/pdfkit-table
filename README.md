@@ -211,11 +211,31 @@ doc.table( json, json.options || {} ) ;
     - label <code>String</code>
     - property <code>String</code>
     - width <code>Number</code>
+    - align <code>String</code>
+    - background <code>Object</code> sample: {"color": "grey", "opacity": 0.5}
+      - color: <code>String</code>
+      - opacity: <code>Number</code>
+    - backgroundColor <code>String</code> 'green'
+    - backgroundOpacity: <code>Number</code>
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
   - title <code>String</code>
   - subtitle <code>String</code>
+
+### Headers
+
+| Properties           | Type                  | Default            | Description       |
+-----------------------|-----------------------|--------------------|-------------------|
+| **label**            | <code>String</code>   | undefined          | description       |
+| **property**         | <code>String</code>   | undefined          | id                |
+| **width**            | <code>Number</code>   | undefined          | width of column   |
+| **align**            | <code>String</code>   | left               | alignment         |
+| **background**       | <code>Object</code>   | undefined          | background of column, sample: {"color": "grey", "opacity": 0.5}  |
+| **backgroundColor**  | <code>String</code>   | undefined          | color of column   |
+| **backgroundOpacity**| <code>Number</code>   | undefined          | opacity of column   |
+| **renderer**         | <code>Function</code> | Function           | function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value } |
+
 
 Example code:
 ```js
