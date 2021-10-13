@@ -67,7 +67,7 @@ class PDFDocumentWithTables extends PDFDocument {
     const title            = table.title    ? table.title    : ( options.title    ? options.title    : '' ) ;
     const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle ? options.subtitle : '' ) ;
 
-    const columnIsDefined  = options.columnsSize.length ? true : false;
+    // const columnIsDefined  = options.columnsSize.length ? true : false;
     const columnSpacing    = options.columnSpacing || 3; // 15
       let columnSizes      = [];
       let columnPositions  = []; // 0, 10, 20, 30, 100
@@ -240,7 +240,7 @@ class PDFDocumentWithTables extends PDFDocument {
         // calc height size of string
         const cellHeight = this.heightOfString(text, {
           width: columnSizes[i],
-          align: "left",
+          align: 'left',
         });
         
         result = Math.max(result, cellHeight);
@@ -351,7 +351,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
             this.text(header, lastPositionX, startY, {
               width: columnSizes[i] >> 0,
-              align: "left",
+              align: 'left',
             });
             
             lastPositionX += columnSizes[i] >> 0;
@@ -363,9 +363,10 @@ class PDFDocumentWithTables extends PDFDocument {
           // Print all headers
           table.headers.forEach(( dataHeader, i) => {
 
-            let {label, width, renderer} = dataHeader;
+            let {label, width, renderer, align} = dataHeader;
             // check defination
             width = width || columnSizes[i];
+            align = align || 'left';
             // force number
             width = width >> 0;
     
@@ -387,7 +388,7 @@ class PDFDocumentWithTables extends PDFDocument {
             // write
             this.text(label, lastPositionX, startY, {
               width: width,
-              align: "left",
+              align: align,
             })
 
             lastPositionX += width;
@@ -441,9 +442,11 @@ class PDFDocumentWithTables extends PDFDocument {
       // Print all cells of the current row
       table.headers.forEach(( dataHeader, index) => {
 
-        let {property, width, renderer} = dataHeader;
+        let {property, width, renderer, align} = dataHeader;
+        
         // check defination
         width = width || columnWidth;
+        align = align || 'left';
 
         const rectCell = {
           x: lastPositionX,
@@ -501,7 +504,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
         this.text(text, lastPositionX, startY, {
           width: width,
-          align: "left",
+          align: align,
         });
         lastPositionX += width; 
 
@@ -555,6 +558,8 @@ class PDFDocumentWithTables extends PDFDocument {
 
       row.forEach((cell, index) => {
 
+        let align = 'left';
+
         const rectCell = {
           // x: columnPositions[index],
           x: lastPositionX,
@@ -571,11 +576,12 @@ class PDFDocumentWithTables extends PDFDocument {
         // renderer column
         if(typeof table.headers[index] === 'object') {
           table.headers[index].renderer && (cell = table.headers[index].renderer(cell, index, i, row, rectRow, rectCell)); // text-cell, index-column, index-line, row
+          table.headers[index].align && (align = table.headers[index].align);
         }
 
         this.text(cell, lastPositionX, startY, {
           width: columnSizes[index],
-          align: "left",
+          align: align,
         });
 
         lastPositionX += columnSizes[index];

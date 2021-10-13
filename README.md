@@ -357,9 +357,19 @@ datas: [
 
 ## Changelogs
 
+### 0.1.55
+
++ align on headers
+  ```json
+  "headers": [
+    {"label":"Name", "property":"name", "align":"center"}
+  ]
+  ```
+  - Thanks ***Andrea Fucci***
+
 ### 0.1.49
 
-+ Max size page
++ max size page
 
 ### 0.1.48
 
