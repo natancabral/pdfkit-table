@@ -377,6 +377,7 @@ datas: [
 - verticalLinesWidth {Number}
 - verticalLinesColor {String}
 - margin: marginBottom before, marginTop after
+- cell padding
 
 ## Changelogs
 

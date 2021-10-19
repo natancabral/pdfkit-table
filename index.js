@@ -370,6 +370,7 @@ class PDFDocumentWithTables extends PDFDocument {
             // force number
             width = width >> 0;
     
+            // register renderer function
             if(renderer && typeof renderer === 'string') {
               table.headers[i].renderer = fEval(renderer);
             }
