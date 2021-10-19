@@ -384,7 +384,7 @@ datas: [
 
 + header color and opacity
   ```js
-  "headers": [
+  headers: [
     {label:"Name", property:"name", headerColor:"#FF0000", headerOpacity:0.5 }
   ]
   ```
@@ -394,9 +394,9 @@ datas: [
 ### 0.1.55
 
 + align on headers
-  ```json
-  "headers": [
-    {"label":"Name", "property":"name", "align":"center"}
+  ```js
+  headers: [
+    {label:"Name", property:"name", align:"center"}
   ]
   ```
   - Thanks ***Andrea Fucci***
