@@ -383,9 +383,9 @@ datas: [
 ### 0.1.57
 
 + header color and opacity
-  ```json
+  ```js
   "headers": [
-    {"label":"Name", "property":"name", "headerColor":"#FF0000", "headerOpacity":0.5 }
+    {label:"Name", property:"name", headerColor:"#FF0000", headerOpacity:0.5 }
   ]
   ```
   - Thanks ***Albert Taveras*** @itsalb3rt
