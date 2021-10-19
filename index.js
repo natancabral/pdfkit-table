@@ -23,7 +23,7 @@ class PDFDocumentWithTables extends PDFDocument {
   addBackground ({x, y, width, height}, fillColor, fillOpacity) {
 
     // validate
-    fillColor || (fillColor = 'gray');
+    fillColor || (fillColor = 'grey');
     fillOpacity || (fillOpacity = 0.1);
 
     // draw bg
@@ -361,9 +361,9 @@ class PDFDocumentWithTables extends PDFDocument {
         }else{
 
           // Print all headers
-          table.headers.forEach(( dataHeader, i) => {
+          table.headers.forEach( (dataHeader, i) => {
 
-            let {label, width, renderer, align} = dataHeader;
+            let {label, width, renderer, align, headerColor, headerOpacity} = dataHeader;
             // check defination
             width = width || columnSizes[i];
             align = align || 'left';
@@ -383,7 +383,7 @@ class PDFDocumentWithTables extends PDFDocument {
             };
 
             // add background
-            this.addBackground(rectCell);
+            this.addBackground(rectCell, headerColor, headerOpacity);
 
             // write
             this.text(label, lastPositionX, startY, {

@@ -212,6 +212,8 @@ doc.table( json, json.options || {} ) ;
     - property <code>String</code>
     - width <code>Number</code>
     - align <code>String</code>
+    - headerColor <code>String</code>
+    - headerOpacity <code>Number</code>
     - background <code>Object</code> sample: {"color": "grey", "opacity": 0.5}
       - color: <code>String</code>
       - opacity: <code>Number</code>
@@ -231,6 +233,8 @@ doc.table( json, json.options || {} ) ;
 | **property**         | <code>String</code>   | undefined          | id                |
 | **width**            | <code>Number</code>   | undefined          | width of column   |
 | **align**            | <code>String</code>   | left               | alignment         |
+| **headerColor**      | <code>String</code>   | grey or #BEBEBE    | color of header   |
+| **headerOpacity**    | <code>Number</code>   | 0.5                | opacity of header |
 | **background**       | <code>Object</code>   | undefined          | background of column, sample: {"color": "grey", "opacity": 0.5}  |
 | **backgroundColor**  | <code>String</code>   | undefined          | color of column   |
 | **backgroundOpacity**| <code>Number</code>   | undefined          | opacity of column   |
@@ -369,13 +373,23 @@ datas: [
 - striped {Boolean} (corsimcornao)
 - colspan - the colspan attribute defines the number of columns a table cell should span.
 - sample with database
-- alignment
 - verticalLines {Boolean}
 - verticalLinesWidth {Number}
 - verticalLinesColor {String}
 - margin: marginBottom before, marginTop after
 
 ## Changelogs
+
+### 0.1.57
+
++ header color and opacity
+  ```json
+  "headers": [
+    {"label":"Name", "property":"name", "headerColor":"#FF0000", "headerOpacity":0.5 }
+  ]
+  ```
+  - Thanks ***Albert Taveras*** @itsalb3rt
+
 
 ### 0.1.55
 
