@@ -61,6 +61,7 @@ class PDFDocumentWithTables extends PDFDocument {
     table.rows || (table.rows = []);
     table.options && (options = table.options);
 
+    options.padding || (options.padding = 0);
     options.columnsSize || (options.columnsSize = []);
     options.addPage || (options.addPage = false);
 
@@ -276,7 +277,7 @@ class PDFDocumentWithTables extends PDFDocument {
         text = String(text).replace('bold:','').replace('size','');
         
         // cell padding
-        cellp = prepareCellPadding(table.headers[i].padding || 0);
+        cellp = prepareCellPadding(table.headers[i].padding || options.padding || 0);
 
         // calc height size of string
         const cellHeight = this.heightOfString(text, {
@@ -390,8 +391,13 @@ class PDFDocumentWithTables extends PDFDocument {
             // add background
             this.addBackground(rectCell);
 
-            this.text(header, lastPositionX, startY, {
-              width: columnSizes[i] >> 0,
+            // cell padding
+            cellPadding = prepareCellPadding(options.padding || 0);
+
+            this.text(header, 
+              lastPositionX + (cellPadding.left), 
+              startY, {
+              width: Number(columnSizes[i]) - (cellPadding.left + cellPadding.right),
               align: 'left',
             });
             
@@ -428,10 +434,12 @@ class PDFDocumentWithTables extends PDFDocument {
             this.addBackground(rectCell, headerColor, headerOpacity);
 
             // cell padding
-            cellPadding = prepareCellPadding(padding);
+            cellPadding = prepareCellPadding(padding || options.padding || 0);
 
             // write
-            this.text(label, lastPositionX + (cellPadding.left), startY, {
+            this.text(label, 
+              lastPositionX + (cellPadding.left), 
+              startY, {
               width: width - (cellPadding.left + cellPadding.right),
               align: align,
             })
@@ -494,12 +502,12 @@ class PDFDocumentWithTables extends PDFDocument {
         align = align || 'left';
 
         // cell padding
-        cellPadding = prepareCellPadding(padding);
+        cellPadding = prepareCellPadding(padding || options.padding || 0);
 
         const rectCell = {
-          x: lastPositionX + (cellPadding.left),
+          x: lastPositionX,
           y: startY - columnSpacing - (rowDistance * 2),
-          width: width - (cellPadding.left + cellPadding.right),
+          width: width,
           height: rowHeight + columnSpacing,
         }
 
@@ -550,10 +558,13 @@ class PDFDocumentWithTables extends PDFDocument {
           text = renderer(text, index, i, row, rectRow, rectCell); // value, index-column, index-row, row 
         }
 
-        this.text(text, lastPositionX + (cellPadding.left), startY, {
+        this.text(text, 
+          lastPositionX + (cellPadding.left), 
+          startY, {
           width: width - (cellPadding.left + cellPadding.right),
           align: align,
         });
+        
         lastPositionX += width; 
 
         // set style
@@ -629,9 +640,11 @@ class PDFDocumentWithTables extends PDFDocument {
         }
 
         // cell padding
-        cellPadding = prepareCellPadding(table.headers[index].padding || 0);
+        cellPadding = prepareCellPadding(table.headers[index].padding || options.padding || 0);
 
-        this.text(cell, lastPositionX + (cellPadding.left), startY, {
+        this.text(cell, 
+          lastPositionX + (cellPadding.left), 
+          startY, {
           width: columnSizes[index] - (cellPadding.left + cellPadding.right),
           align: align,
         });

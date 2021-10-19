@@ -377,13 +377,16 @@ datas: [
 - verticalLinesWidth {Number}
 - verticalLinesColor {String}
 - margin: marginBottom before, marginTop after
-- cell padding
 
 ## Changelogs
 
+### 0.1.59
+
++ Add padding
+
 ### 0.1.57
 
-+ header color and opacity
++ Header color and opacity
   ```js
   headers: [
     {label:"Name", property:"name", headerColor:"#FF0000", headerOpacity:0.5 }
@@ -394,7 +397,7 @@ datas: [
 
 ### 0.1.55
 
-+ align on headers
++ Align on headers
   ```js
   headers: [
     {label:"Name", property:"name", align:"center"}
@@ -404,12 +407,12 @@ datas: [
 
 ### 0.1.49
 
-+ max size page
++ Max size page
 
 ### 0.1.48
 
-+ header height size
-+ separate line width
++ Header height size
++ Separate line width
 
 ### 0.1.47
 
@@ -423,7 +426,7 @@ datas: [
 
 ### 0.1.45
 
-+ add **rectCell** on renderer
++ Add **rectCell** on renderer
   - renderer = ( value, indexColumn, indexRow, row, rectRow, rectCell ) => {}
   - Thanks ***Eduardo Miranda***
 
