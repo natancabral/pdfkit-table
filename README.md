@@ -1,7 +1,7 @@
 <p align="center">
+  <p></p>
   <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
-  <p align="center">Generate pdf tables with javascript (PDFKIT plugin)</p>
-  <p align="center">Helps to draw informations in simple tables using pdfkit. #server-side.</p>
+  <p></p>
 </p>
 
 # pdfkit-table
