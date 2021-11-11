@@ -389,7 +389,6 @@ datas: [
     {label:"Name", property:"name", headerAlign:"right", headerColor:"#FF0000", headerOpacity:0.5 }
   ]
   ```
-  - Thanks ***Albert Taveras*** @itsalb3rt
 
 ### 0.1.60
 
@@ -409,6 +408,8 @@ datas: [
     {label:"Name", property:"name", headerColor:"#FF0000", headerOpacity:0.5 }
   ]
   ```
+  - Thanks ***Albert Taveras*** @itsalb3rt
+
 
 ### 0.1.55
 
