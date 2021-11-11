@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/mnt/DEV/developer/npmjs/pdfkit-table/example/logo.png"
+   inkscape:export-xdpi="170.29085"
+   inkscape:export-ydpi="170.29085">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.34993715"
+     inkscape:cx="469.48212"
+     inkscape:cy="517.47805"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1326"
+     inkscape:window-height="706"
+     inkscape:window-x="40"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.2818px;line-height:0.95;font-family:serif;-inkscape-font-specification:serif;letter-spacing:-0.00714092px;word-spacing:-0.00714092px;fill:#00222b;fill-opacity:1;stroke:none;stroke-width:0.357045"
+       x="85.489822"
+       y="124.31322"
+       id="text12"><tspan
+         sodipodi:role="line"
+         id="tspan10"
+         x="85.489822"
+         y="124.31322"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;fill:#00222b;stroke-width:0.357045">PDFKIT</tspan><tspan
+         sodipodi:role="line"
+         x="85.489822"
+         y="152.57227"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:34.2764px;font-family:serif;-inkscape-font-specification:serif;fill:#00222b;stroke-width:0.357045"
+         id="tspan14">Table</tspan></text>
+    <g
+       style="fill:none"
+       id="g502"
+       transform="matrix(2.7637351,0,0,2.7637351,18.625439,104.78849)">
+      <path
+         d="m 8.855172,19.710344 h 5 v -5 h -5 z"
+         fill="#212121"
+         id="path467"
+         style="opacity:0.5;fill:#0066ff" />
+      <path
+         d="m 14.710344,19.710344 h 1.75 c 1.7949,0 3.25,-1.4551 3.25,-3.25 v -1.75 h -5 z"
+         fill="#212121"
+         id="path469"
+         style="opacity:0.5" />
+      <path
+         d="m 19.710344,13.855172 v -5 h -5 v 5 z"
+         fill="#212121"
+         id="path471"
+         style="fill:#006680" />
+      <path
+         d="M 19.710344,8 V 6.25 c 0,-1.79493 -1.4551,-3.25 -3.25,-3.25 h -1.75 v 5 z"
+         fill="#212121"
+         id="path473"
+         style="fill:#00222b" />
+      <path
+         d="m 13.855172,3 h -5 v 5 h 5 z"
+         fill="#212121"
+         id="path475"
+         style="fill:#00222b" />
+      <path
+         d="M 8,3 H 6.25 C 4.45507,3 3,4.45507 3,6.25 V 8 h 5 z"
+         fill="#212121"
+         id="path477"
+         style="fill:#00222b" />
+      <path
+         d="m 3,8.855172 v 5 h 5 v -5 z"
+         fill="#212121"
+         id="path479"
+         style="fill:#006680" />
+      <path
+         d="m 3,14.710344 v 1.75 c 0,1.7949 1.45507,3.25 3.25,3.25 H 8 v -5 z"
+         fill="#212121"
+         id="path481"
+         style="opacity:0.5" />
+      <path
+         d="m 13.855172,8.855172 v 5 h -5 v -5 z"
+         fill="#212121"
+         id="path483"
+         style="fill:#006680" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.14722px;line-height:1.25;font-family:serif;-inkscape-font-specification:serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.103681"
+       x="85.47393"
+       y="159.60019"
+       id="text536"><tspan
+         sodipodi:role="line"
+         id="tspan534"
+         x="85.47393"
+         y="159.60019"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;stroke-width:0.103681">Helps to draw informations in simple tables </tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.02804px;line-height:1.25;font-family:sans-serif;fill:#37abc8;fill-opacity:1;stroke:none;stroke-width:0.125701"
+       x="46.035656"
+       y="137.92432"
+       id="text540"><tspan
+         sodipodi:role="line"
+         id="tspan538"
+         x="46.035656"
+         y="137.92432"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;fill:#37abc8;stroke-width:0.125701">NC</tspan></text>
+  </g>
+</svg>
