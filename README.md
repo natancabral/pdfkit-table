@@ -212,8 +212,10 @@ doc.table( json, json.options || {} ) ;
     - property <code>String</code>
     - width <code>Number</code>
     - align <code>String</code>
+    - valign <code>String</code>
     - headerColor <code>String</code>
     - headerOpacity <code>Number</code>
+    - headerAlign <code>String</code>
     - background <code>Object</code> sample: {"color": "grey", "opacity": 0.5}
       - color: <code>String</code>
       - opacity: <code>Number</code>
@@ -233,8 +235,10 @@ doc.table( json, json.options || {} ) ;
 | **property**         | <code>String</code>   | undefined          | id                |
 | **width**            | <code>Number</code>   | undefined          | width of column   |
 | **align**            | <code>String</code>   | left               | alignment         |
+| **valign**           | <code>String</code>   | undefined          | vertical alignment. ex: valign: "center"|
 | **headerColor**      | <code>String</code>   | grey or #BEBEBE    | color of header   |
 | **headerOpacity**    | <code>Number</code>   | 0.5                | opacity of header |
+| **headerAlign**      | <code>String</code>   | left               | only header       |
 | **background**       | <code>Object</code>   | undefined          | background of column, sample: {"color": "grey", "opacity": 0.5}  |
 | **backgroundColor**  | <code>String</code>   | undefined          | color of column   |
 | **backgroundOpacity**| <code>Number</code>   | undefined          | opacity of column   |
@@ -381,14 +385,16 @@ datas: [
 
 ## Changelogs
 
-### 0.1.62
+### 0.1.63
 
-+ added headerAlign, alignment only to header
++ added ***valign*** on headers options. (ex: valign:"center")
++ added ***headerAlign***, alignment only to header.
   ```js
   headers: [
-    {label:"Name", property:"name", headerAlign:"right", headerColor:"#FF0000", headerOpacity:0.5 }
+    {label:"Name", property:"name", valign: "center", headerAlign:"right", headerColor:"#FF0000", headerOpacity:0.5 }
   ]
   ```
+  - Thanks ***@@DPCLive***
 
 ### 0.1.60
 
