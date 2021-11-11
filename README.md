@@ -1,11 +1,4 @@
-<table width="100%">
-<tr><td align="center" style="text-align:center">
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
-</td></tr>
-<table>
-<div style="text-align:center">
-<img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
-</div>
 
 # pdfkit-table
 
