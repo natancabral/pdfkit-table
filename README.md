@@ -1,11 +1,11 @@
+<img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
+
+
 # pdfkit-table
 
 #### Generate pdf tables with javascript (PDFKIT plugin)
 Helps to draw informations in simple tables using pdfkit. #server-side.
 
-<center>
-<img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
-</center>
 
 ## Examples
 
