@@ -1,7 +1,7 @@
 <p align="center">
-  <p></p>
-  <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
-  <p></p>
+  <br/>
+  <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png" alt="pdfkit-table (Natan Cabral)"/>
+  <br/>
 </p>
 
 # pdfkit-table
