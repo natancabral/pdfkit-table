@@ -503,7 +503,7 @@ class PDFDocumentWithTables extends PDFDocument {
       // Print all cells of the current row
       table.headers.forEach(( dataHeader, index) => {
 
-        let {property, width, renderer, align, padding} = dataHeader;
+        let {property, width, renderer, align, valign, padding} = dataHeader;
         
         // check defination
         width = width || columnWidth;
@@ -566,9 +566,23 @@ class PDFDocumentWithTables extends PDFDocument {
           text = renderer(text, index, i, row, rectRow, rectCell); // value, index-column, index-row, row 
         }
 
+        // TODO # Experimental
+        // ------------------------------------------------------------------------------
+        // align vertically
+        let topTextToAlignVertically = 0;
+        if(valign && valign !== 'top'){
+          const heightText = this.heightOfString(text, {
+            width: width - (cellPadding.left + cellPadding.right),
+            align: align,
+          }); 
+          // line height, spacing hehight, cell and text diference
+          topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;  
+        }
+        // ------------------------------------------------------------------------------
+
         this.text(text, 
           lastPositionX + (cellPadding.left), 
-          startY, {
+          startY + topTextToAlignVertically, {
           width: width - (cellPadding.left + cellPadding.right),
           align: align,
         });
@@ -626,6 +640,7 @@ class PDFDocumentWithTables extends PDFDocument {
       row.forEach((cell, index) => {
 
         let align = 'left';
+        let valign = undefined;
 
         const rectCell = {
           // x: columnPositions[index],
@@ -645,14 +660,29 @@ class PDFDocumentWithTables extends PDFDocument {
           table.headers[index].renderer && (cell = table.headers[index].renderer(cell, index, i, row, rectRow, rectCell)); // text-cell, index-column, index-line, row
           // align
           table.headers[index].align && (align = table.headers[index].align);
+          table.headers[index].valign && (valign = table.headers[index].valign);
         }
 
         // cell padding
         cellPadding = prepareCellPadding(table.headers[index].padding || options.padding || 0);
 
+        // TODO # Experimental
+        // ------------------------------------------------------------------------------
+        // align vertically
+        let topTextToAlignVertically = 0;
+        if(valign && valign !== 'top'){
+          const heightText = this.heightOfString(cell, {
+            width: columnSizes[index] - (cellPadding.left + cellPadding.right),
+            align: align,
+          }); 
+          // line height, spacing hehight, cell and text diference
+          topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;  
+        }
+        // ------------------------------------------------------------------------------
+
         this.text(cell, 
-          lastPositionX + (cellPadding.left), 
-          startY, {
+          lastPositionX + (cellPadding.left),
+          startY + topTextToAlignVertically, {
           width: columnSizes[index] - (cellPadding.left + cellPadding.right),
           align: align,
         });
