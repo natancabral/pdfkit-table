@@ -1,6 +1,8 @@
 <p align="center">
   <br/>
+  <br/>
   <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png" alt="pdfkit-table (Natan Cabral)"/>
+  <br/>
   <br/>
 </p>
 
