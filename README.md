@@ -1,5 +1,6 @@
+<div style="text-align:center">
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
-
+</div>
 
 # pdfkit-table
 
