@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.34993715"
-     inkscape:cx="469.48212"
-     inkscape:cy="517.47805"
+     inkscape:zoom="0.78346761"
+     inkscape:cx="456.65711"
+     inkscape:cy="540.62777"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -58,91 +58,65 @@
      id="layer1">
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.2818px;line-height:0.95;font-family:serif;-inkscape-font-specification:serif;letter-spacing:-0.00714092px;word-spacing:-0.00714092px;fill:#00222b;fill-opacity:1;stroke:none;stroke-width:0.357045"
-       x="85.489822"
-       y="124.31322"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.0259px;line-height:0.95;font-family:serif;-inkscape-font-specification:serif;letter-spacing:-0.00851297px;word-spacing:-0.00851297px;fill:#6f7c91;fill-opacity:1;stroke:none;stroke-width:0.425647"
+       x="74.975563"
+       y="124.62689"
        id="text12"><tspan
          sodipodi:role="line"
          id="tspan10"
-         x="85.489822"
-         y="124.31322"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;fill:#00222b;stroke-width:0.357045">PDFKIT</tspan><tspan
+         x="74.975563"
+         y="124.62689"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;fill:#373748;stroke-width:0.425647">PDFKIT</tspan><tspan
          sodipodi:role="line"
-         x="85.489822"
-         y="152.57227"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:34.2764px;font-family:serif;-inkscape-font-specification:serif;fill:#00222b;stroke-width:0.357045"
+         x="74.975563"
+         y="158.31566"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40.8623px;font-family:serif;-inkscape-font-specification:serif;fill:#000000;stroke-width:0.425647"
          id="tspan14">Table</tspan></text>
-    <g
-       style="fill:none"
-       id="g502"
-       transform="matrix(2.7637351,0,0,2.7637351,18.625439,104.78849)">
-      <path
-         d="m 8.855172,19.710344 h 5 v -5 h -5 z"
-         fill="#212121"
-         id="path467"
-         style="opacity:0.5;fill:#0066ff" />
-      <path
-         d="m 14.710344,19.710344 h 1.75 c 1.7949,0 3.25,-1.4551 3.25,-3.25 v -1.75 h -5 z"
-         fill="#212121"
-         id="path469"
-         style="opacity:0.5" />
-      <path
-         d="m 19.710344,13.855172 v -5 h -5 v 5 z"
-         fill="#212121"
-         id="path471"
-         style="fill:#006680" />
-      <path
-         d="M 19.710344,8 V 6.25 c 0,-1.79493 -1.4551,-3.25 -3.25,-3.25 h -1.75 v 5 z"
-         fill="#212121"
-         id="path473"
-         style="fill:#00222b" />
-      <path
-         d="m 13.855172,3 h -5 v 5 h 5 z"
-         fill="#212121"
-         id="path475"
-         style="fill:#00222b" />
-      <path
-         d="M 8,3 H 6.25 C 4.45507,3 3,4.45507 3,6.25 V 8 h 5 z"
-         fill="#212121"
-         id="path477"
-         style="fill:#00222b" />
-      <path
-         d="m 3,8.855172 v 5 h 5 v -5 z"
-         fill="#212121"
-         id="path479"
-         style="fill:#006680" />
-      <path
-         d="m 3,14.710344 v 1.75 c 0,1.7949 1.45507,3.25 3.25,3.25 H 8 v -5 z"
-         fill="#212121"
-         id="path481"
-         style="opacity:0.5" />
-      <path
-         d="m 13.855172,8.855172 v 5 h -5 v -5 z"
-         fill="#212121"
-         id="path483"
-         style="fill:#006680" />
-    </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.14722px;line-height:1.25;font-family:serif;-inkscape-font-specification:serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.103681"
-       x="85.47393"
-       y="159.60019"
-       id="text536"><tspan
-         sodipodi:role="line"
-         id="tspan534"
-         x="85.47393"
-         y="159.60019"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;stroke-width:0.103681">Helps to draw informations in simple tables </tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:5.02804px;line-height:1.25;font-family:sans-serif;fill:#37abc8;fill-opacity:1;stroke:none;stroke-width:0.125701"
-       x="46.035656"
-       y="137.92432"
+       style="font-style:normal;font-weight:normal;font-size:4.01783px;line-height:1.25;font-family:sans-serif;opacity:0.53;fill:#1c1f24;fill-opacity:1;stroke:none;stroke-width:0.100446"
+       x="172.05656"
+       y="153.31328"
        id="text540"><tspan
          sodipodi:role="line"
          id="tspan538"
-         x="46.035656"
-         y="137.92432"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;fill:#37abc8;stroke-width:0.125701">NC</tspan></text>
+         x="172.05656"
+         y="153.31328"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:serif;-inkscape-font-specification:serif;fill:#1c1f24;stroke:none;stroke-width:0.100446">NC</tspan></text>
+    <rect
+       style="opacity:0.53;fill:#373e48;stroke:none;stroke-width:1.48257;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1604"
+       width="32.915394"
+       height="10.971797"
+       x="17.799242"
+       y="118.62943" />
+    <rect
+       style="opacity:0.53;fill:#373e48;stroke:none;stroke-width:1.48257;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1604-6"
+       width="32.915394"
+       height="10.971797"
+       x="19.176441"
+       y="128.22401" />
+    <rect
+       style="opacity:0.53;fill:#373e48;stroke:none;stroke-width:1.48257;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1604-6-2"
+       width="32.915394"
+       height="10.971797"
+       x="20.553642"
+       y="137.81866" />
+    <rect
+       style="opacity:0.53;fill:#373e48;stroke:none;stroke-width:1.48257;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1604-6-2-9"
+       width="32.915394"
+       height="10.971797"
+       x="21.93084"
+       y="147.41328" />
+    <rect
+       style="opacity:0.53;fill:#1c1c24;stroke:none;stroke-width:1.04832;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect1604-9"
+       width="32.915394"
+       height="5.4858985"
+       x="16.774784"
+       y="112.11907" />
   </g>
 </svg>
