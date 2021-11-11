@@ -394,7 +394,7 @@ datas: [
     {label:"Name", property:"name", valign: "center", headerAlign:"right", headerColor:"#FF0000", headerOpacity:0.5 }
   ]
   ```
-  - Thanks ***@@DPCLive***
+  - Thanks ***@DPCLive***
 
 ### 0.1.60
 
@@ -482,7 +482,7 @@ datas: [
 ### 0.1.39
 
 + **addBackground**  <code>{Function}</code> - Add background peer line. 
-  - doc.addBackground( {x, y, width, height}, fillColor, opacity, fontColor );
+  - doc.addBackground( {x, y, width, height}, fillColor, opacity, callback );
 + **prepareRow**  <code>{Function}</code>
   - const options = { prepareRow: (row, indexColumn, indexRow, rectRow) => { indexColumn === 0 && doc.addBackground(rectRow, 'red', 0.5) } }
 
