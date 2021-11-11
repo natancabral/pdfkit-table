@@ -241,9 +241,8 @@ doc.table( json, json.options || {} ) ;
 | **headerColor**      | <code>String</code>   | grey or #BEBEBE    | color of header   |
 | **headerOpacity**    | <code>Number</code>   | 0.5                | opacity of header |
 | **headerAlign**      | <code>String</code>   | left               | only header       |
-| **background**       | <code>Object</code>   | undefined          | background of column, sample: {"color": "grey", "opacity": 0.5}  |
-| **backgroundColor**  | <code>String</code>   | undefined          | color of column   |
-| **backgroundOpacity**| <code>Number</code>   | undefined          | opacity of column   |
+| **columnColor / backgroundColor**  | <code>String</code>   | undefined          | color of column   |
+| **columnOpacity / backgroundOpacity**| <code>Number</code>   | undefined          | opacity of column   |
 | **renderer**         | <code>Function</code> | Function           | function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value } |
 
 

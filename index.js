@@ -73,8 +73,8 @@ class PDFDocumentWithTables extends PDFDocument {
     options.columnsSize || (options.columnsSize = []);
     options.addPage || (options.addPage = false);
 
-    const title            = table.title    ? table.title    : ( options.title    ? options.title    : '' ) ;
-    const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle ? options.subtitle : '' ) ;
+    const title            = table.title    ? table.title    : ( options.title    || '' ) ;
+    const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle || '' ) ;
 
     // const columnIsDefined  = options.columnsSize.length ? true : false;
     const columnSpacing    = options.columnSpacing || 3; // 15
@@ -239,19 +239,32 @@ class PDFDocumentWithTables extends PDFDocument {
       // options
       row.options && (row = row.options);
 
+      let { fill, opac } = {};
+
       // add backgroundColor
-      if(row.hasOwnProperty('backgroundColor')){
+      if(row.hasOwnProperty('columnColor')){ // ^0.1.70
+
+        const { columnColor, columnOpacity } = row;
+        fill = columnColor; 
+        opac = columnOpacity;
+      
+      } else if(row.hasOwnProperty('backgroundColor')){ // ~0.1.65 old
+
         const { backgroundColor, backgroundOpacity } = row;
-        // add background
-        this.addBackground(rect, backgroundColor, backgroundOpacity);
+        fill = backgroundColor; 
+        opac = backgroundOpacity;
+      
+      } else if(row.hasOwnProperty('background')){ // dont remove
+
+        if(typeof row.background === 'object'){
+          let { color, opacity } = row.background;
+          fill = color; 
+          opac = opacity;
+        }
+
       }
 
-      // add background
-      if(row.hasOwnProperty('background')){
-        const { color, opacity } = row.background;
-        // add background
-        this.addBackground(rect, color, opacity);
-      }
+      fill && this.addBackground(rect, fill, opac);
       
     };
     
