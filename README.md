@@ -1,4 +1,8 @@
-<img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
+<p align="center">
+  <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png"/>
+  <p align="center">Generate pdf tables with javascript (PDFKIT plugin)</p>
+  <p align="center">Helps to draw informations in simple tables using pdfkit. #server-side.</p>
+</p>
 
 # pdfkit-table
 
@@ -553,6 +557,4 @@ The MIT License.
 ## Thank you
 
 - pdfkit - [pdfkit](https://www.npmjs.com/package/pdfkit)
-- code base - [andronio](https://www.andronio.me/2017/09/02/pdfkit-tables/)
 - ideas - [giuseppe-santoro](https://github.com/foliojs/pdfkit/issues/29#issuecomment-56504943)
-- influence [voilab](https://github.com/voilab/voilab-pdf-table)
