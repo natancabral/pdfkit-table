@@ -371,6 +371,7 @@ datas: [
 
 - [Suggestions / Issues / Fixes](https://github.com/natancabral/pdfkit-table/issues)
 - striped {Boolean} (corsimcornao)
+- align cell ventically
 - colspan - the colspan attribute defines the number of columns a table cell should span.
 - sample with database
 - verticalLines {Boolean}
@@ -380,11 +381,21 @@ datas: [
 
 ## Changelogs
 
+### 0.1.62
+
++ added headerAlign, alignment only to header
+  ```js
+  headers: [
+    {label:"Name", property:"name", headerAlign:"right", headerColor:"#FF0000", headerOpacity:0.5 }
+  ]
+  ```
+  - Thanks ***Albert Taveras*** @itsalb3rt
+
 ### 0.1.60
 
 + add callbak on addBackground function, add .save() and .restore() style.
 + header font color
-  - Thanks @dev-fema
+  - Thanks ***@dev-fema***
 
 ### 0.1.59
 

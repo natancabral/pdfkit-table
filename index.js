@@ -418,10 +418,10 @@ class PDFDocumentWithTables extends PDFDocument {
           // Print all headers
           table.headers.forEach( (dataHeader, i) => {
 
-            let {label, width, renderer, align, headerColor, headerOpacity, padding} = dataHeader;
+            let {label, width, renderer, align, headerColor, headerOpacity, headerAlign, padding} = dataHeader;
             // check defination
             width = width || columnSizes[i];
-            align = align || 'left';
+            align = headerAlign || align || 'left';
             // force number
             width = width >> 0;
     
