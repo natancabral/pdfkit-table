@@ -218,7 +218,7 @@ doc.table( json, json.options || {} ) ;
     - headerColor <code>String</code>
     - headerOpacity <code>Number</code>
     - headerAlign <code>String</code>
-    - columnColor or backgroundColor <code>String</code> 'green'
+    - columnColor or backgroundColor <code>String</code>
     - columnOpacity or backgroundOpacity: <code>Number</code>
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - datas <code>Array.&lt;object&gt;</code>
