@@ -380,6 +380,12 @@ datas: [
 
 ## Changelogs
 
+### 0.1.60
+
++ add callbak on addBackground function, add .save() and .restore() style.
++ header font color
+  - Thanks @dev-fema
+
 ### 0.1.59
 
 + Add padding

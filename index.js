@@ -20,11 +20,14 @@ class PDFDocumentWithTables extends PDFDocument {
    * @param {String} fillColor 
    * @param {Number} fillOpacity 
    */
-  addBackground ({x, y, width, height}, fillColor, fillOpacity) {
+  addBackground ({x, y, width, height}, fillColor, fillOpacity, callback) {
 
     // validate
     fillColor || (fillColor = 'grey');
     fillOpacity || (fillOpacity = 0.1);
+
+    // save current style
+    this.save();
 
     // draw bg
     this
@@ -35,11 +38,16 @@ class PDFDocumentWithTables extends PDFDocument {
     //.stroke()
     .fill();
 
+    // back to saved style
+    this.restore();
+
     // restore
-    this
-    .fillColor('black')
-    .fillOpacity(1)
-    .fill();
+    // this
+    // .fillColor('black')
+    // .fillOpacity(1)
+    // .fill();
+
+    typeof callback === 'function' && callback(this);
     
   }
 
@@ -77,8 +85,8 @@ class PDFDocumentWithTables extends PDFDocument {
     const rowDistance      = 0.5;
       let cellPadding      = {top: 0, right: 0, bottom: 0, left: 0}; // universal
 
-    const prepareHeader    = options.prepareHeader || (() => this.font("Helvetica-Bold").fontSize(8));
-    const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.font("Helvetica").fontSize(8));
+    const prepareHeader    = options.prepareHeader || (() => this.fillColor('black').font("Helvetica-Bold").fontSize(8).fill());
+    const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.fillColor('black').font("Helvetica").fontSize(8).fill());
     
     const maxY             = this.page.height - (this.page.margins.top + this.page.margins.bottom);
 
