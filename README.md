@@ -400,7 +400,7 @@ datas: [
   // create document
   const doc = new PDFDocument({ margin: 30, });
   // to save on server
-  doc.pipe(fs.createWriteStream("./document-2.pdf"));
+  doc.pipe(fs.createWriteStream("./my-table.pdf"));
   // tables
   await doc.table(table, options);
   await doc.table(table, options);
