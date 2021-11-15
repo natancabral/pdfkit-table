@@ -51,7 +51,7 @@ npm install pdfkit-table
   // callback
   const callback = () => {};
   // the magic
-  doc.table( table, options, callback );
+  doc.table( table, options, callback ); // is a Promise to async/await function 
 
   // done!
   doc.end();
@@ -409,7 +409,6 @@ datas: [
   doc.end();
 })();
 ```
-
 
 + added ***callback***. 
 ```js
