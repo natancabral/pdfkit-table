@@ -47,9 +47,11 @@ npm install pdfkit-table
     rows: [/* or simple data */],
   }
   // options
-  const options = {}
+  const options = {};
+  // callback
+  const callback = () => {};
   // the magic
-  doc.table( table, options );
+  doc.table( table, options, callback );
 
   // done!
   doc.end();
@@ -388,6 +390,31 @@ datas: [
 - margin: marginBottom before, marginTop after
 
 ## Changelogs
+
+### 0.1.68
+
++ added ***Promise***. table is a Promise();
+  - Async/Await function 
+```js
+;(async function(){
+  // create document
+  const doc = new PDFDocument({ margin: 30, });
+  // to save on server
+  doc.pipe(fs.createWriteStream("./document-2.pdf"));
+  // tables
+  await doc.table(table, options);
+  await doc.table(table, options);
+  await doc.table(table, options);
+  // done
+  doc.end();
+})();
+```
+
+
++ added ***callback***. 
+```js
+  doc.table(table, options, callback);
+```
 
 ### 0.1.63
 
