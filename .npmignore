@@ -1,6 +1,7 @@
 node_modules
-example
 local-example
+example
+promise
 
 package-lock.json
 pdfkit-guide.pdf

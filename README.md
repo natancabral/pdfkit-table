@@ -381,7 +381,6 @@ datas: [
 
 - [Suggestions / Issues / Fixes](https://github.com/natancabral/pdfkit-table/issues)
 - striped {Boolean} (corsimcornao)
-- align cell ventically
 - colspan - the colspan attribute defines the number of columns a table cell should span.
 - sample with database
 - verticalLines {Boolean}

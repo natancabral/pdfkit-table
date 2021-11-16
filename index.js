@@ -19,6 +19,7 @@ class PDFDocumentWithTables extends PDFDocument {
    * @param {Object} rect
    * @param {String} fillColor 
    * @param {Number} fillOpacity 
+   * @param {Function} callback 
    */
   addBackground ({x, y, width, height}, fillColor, fillOpacity, callback) {
 
@@ -55,7 +56,7 @@ class PDFDocumentWithTables extends PDFDocument {
    * table
    * @param {Object} table 
    * @param {Object} options 
-   * @returns 
+   * @param {Function} callback 
    */
   table(table, options, callback) {
     return new Promise((resolve, reject) => {
@@ -744,15 +745,24 @@ class PDFDocumentWithTables extends PDFDocument {
    * @param {Object} tables 
    * @returns 
    */
-  tables(tables, callback) {
-    // if tables is Array
-    Array.isArray(tables) ?
-    // for each on Array
-    tables.forEach( table => this.table( table, table.options || {} ) ) :
-    // else is tables is a unique table object
-    ( typeof tables === 'object' ? this.table( tables, tables.options || {} ) : null ) ;
-    // callback
-    typeof callback === 'function' && callback(this);
+  async tables(tables, callback) {
+    return new Promise((resolve, reject) => {
+      try {
+
+        // if tables is Array
+        Array.isArray(tables) ?
+        // for each on Array
+        tables.forEach( async table => await this.table( table, table.options || {} ) ) :
+        // else is tables is a unique table object
+        ( typeof tables === 'object' ? this.table( tables, tables.options || {} ) : null ) ;
+        // callback
+        typeof callback === 'function' && callback(this);
+
+      } catch (error) {
+        reject(error);
+      }
+
+    });
   }
 
 }
