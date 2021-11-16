@@ -70,11 +70,12 @@ class PDFDocumentWithTables extends PDFDocument {
         table.headers || (table.headers = []);
         table.datas || (table.datas = []);
         table.rows || (table.rows = []);
-        table.options && (options = table.options);
+        table.options && (options = {...options, ...table.options});
     
         options.padding || (options.padding = 0);
         options.columnsSize || (options.columnsSize = []);
         options.addPage || (options.addPage = false);
+        options.absolutePosition || (options.absolutePosition = false);
     
         const title            = table.title    ? table.title    : ( options.title    || '' ) ;
         const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle || '' ) ;
@@ -91,13 +92,15 @@ class PDFDocumentWithTables extends PDFDocument {
         const prepareHeader    = options.prepareHeader || (() => this.fillColor('black').font("Helvetica-Bold").fontSize(8).fill());
         const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.fillColor('black').font("Helvetica").fontSize(8).fill());
         
+          let tableWidth       = 0;
         const maxY             = this.page.height - (this.page.margins.top + this.page.margins.bottom);
     
           let startX           = options.x || this.x || this.page.margins.left;
-          let startY           = options.y || this.y;
+          let startY           = options.y || this.y || this.page.margins.top;
+
+          let lastPositionX    = 0; 
           let rowBottomY       = 0;
-          let tableWidth       = 0;
-    
+
         // reset position to margins.left
         if( options.x === null || options.x === -1 ){
           startX = this.page.margins.left;
@@ -380,8 +383,16 @@ class PDFDocumentWithTables extends PDFDocument {
           prepareHeader();
     
           let rowHeight = computeRowHeight(table.headers);
-          let lastPositionX = startX; // x position head
-    
+          // lastPositionX = startX; // x position head
+
+          // this options is trial
+          if(options.absolutePosition === true){
+            lastPositionX = options.x || startX || this.x; // x position head
+            startY = options.y || startY || this.y; // x position head  
+          } else {
+            lastPositionX = startX; // x position head  
+          }
+          
           // Check to have enough room for header and first rows. default 3
           // if (startY + 2 * rowHeight > maxY) this.addPage();
     
@@ -489,9 +500,7 @@ class PDFDocumentWithTables extends PDFDocument {
     
         // End header
         addHeader();
-    
-        let lastPositionX; 
-    
+        
         // Datas
         table.datas.forEach((row, i) => {
     

@@ -390,9 +390,14 @@ datas: [
 
 ## Changelogs
 
+### 0.1.70
+
++ fix ***y*** position.
+  - Thanks Nabil Tahmidul Karim ***@nabiltkarim***
+
 ### 0.1.68
 
-+ added ***Promise***. table is a Promise();
++ Added ***Promise***. table is a Promise();
   - Async/Await function 
 ```js
 ;(async function(){
@@ -409,15 +414,15 @@ datas: [
 })();
 ```
 
-+ added ***callback***. 
++ Added ***callback***. 
 ```js
   doc.table(table, options, callback);
 ```
 
 ### 0.1.63
 
-+ added ***valign*** on headers options. (ex: valign:"center")
-+ added ***headerAlign***, alignment only to header.
++ Added ***valign*** on headers options. (ex: valign:"center")
++ Added ***headerAlign***, alignment only to header.
   ```js
   headers: [
     {label:"Name", property:"name", valign: "center", headerAlign:"right", headerColor:"#FF0000", headerOpacity:0.5 }
@@ -427,8 +432,8 @@ datas: [
 
 ### 0.1.60
 
-+ add callbak on addBackground function, add .save() and .restore() style.
-+ header font color
++ Add callbak on addBackground function, add .save() and .restore() style.
++ Header font color
   - Thanks ***@dev-fema***
 
 ### 0.1.59
