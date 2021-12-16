@@ -293,6 +293,7 @@ const table = {
 | **width**            | <code>Number</code>   | undefined          | width of table    |
 | **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
 | **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
+| **divider**          | <code>Object</code>   | undefined          | define divider lines      |
 | **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
@@ -309,6 +310,10 @@ const options = {
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
   x: 0, // {Number} default: undefined | doc.x
   y: 0, // {Number} default: undefined | doc.y
+  divider: {
+    header: {disabled: false, width: 2, opacity: 1},
+    horizontal: {disabled: false, width: 0.5, opacity: 0.5},
+  },
   columnSpacing: 5, // {Number} default: 5
   // functions
   prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
@@ -383,16 +388,27 @@ datas: [
 - striped {Boolean} (corsimcornao)
 - colspan - the colspan attribute defines the number of columns a table cell should span.
 - sample with database
-- verticalLines {Boolean}
-- verticalLinesWidth {Number}
-- verticalLinesColor {String}
 - margin: marginBottom before, marginTop after
 
 ## Changelogs
 
+### 0.1.72
+
+- Add ***Divider Lines*** on options
+```js
+  options: {
+    // divider lines
+    divider: {
+      header: {disabled: false, width: 0.5, opacity: 0.5},
+      horizontal: {disabled: true, width: 0.5, opacity: 0.5},
+    },
+  }
+```
+  - Thanks Luc Swart ***@lucswart***
+
 ### 0.1.70
 
-+ fix ***y*** position.
++ Fix ***y*** position.
   - Thanks Nabil Tahmidul Karim ***@nabiltkarim***
 
 ### 0.1.68
