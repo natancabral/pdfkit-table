@@ -432,7 +432,7 @@ datas: [
 
 ### 0.1.60
 
-+ Add callbak on addBackground function, add .save() and .restore() style.
++ Add callback on addBackground function, add .save() and .restore() style.
 + Header font color
   - Thanks ***@dev-fema***
 

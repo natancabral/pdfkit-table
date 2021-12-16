@@ -22,7 +22,7 @@ app.listen(3030, function () {
 app.get("/", function (req, res) {
 
   const fs = require("fs");
-  const PDFDocument = require("pdfkit-table");
+  const PDFDocument = require("../index");
   const doc = new PDFDocument({
     margin: 30, 
   });

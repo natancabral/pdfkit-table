@@ -76,6 +76,12 @@ class PDFDocumentWithTables extends PDFDocument {
         options.columnsSize || (options.columnsSize = []);
         options.addPage || (options.addPage = false);
         options.absolutePosition || (options.absolutePosition = false);
+        
+        // divider lines
+        options.divider || (options.divider = {});
+        options.divider.header      || (options.divider.header      = {disabled: false, width: undefined, opacity: undefined});
+        options.divider.horizontal  || (options.divider.horizontal  = {disabled: false, width: undefined, opacity: undefined});
+        options.divider.vertical    || (options.divider.vertical    = {disabled: false, width: undefined, opacity: undefined});
     
         const title            = table.title    ? table.title    : ( options.title    || '' ) ;
         const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle || '' ) ;
@@ -160,12 +166,16 @@ class PDFDocumentWithTables extends PDFDocument {
           let f = null; eval('f = ' + str); return f;
         };
     
-        const separationsRow = (x, y, strokeWidth, strokeOpacity) => {
-          
+        const separationsRow = (type, x, y, width, opacity) => {
+
+          type || (type = 'horizontal'); // header | horizontal | vertical 
+
+          // disabled
+          if(options.divider[type].disabled === true) return;
           // validate
-          strokeOpacity || (strokeOpacity = 0.5);
-          strokeWidth || (strokeWidth = 0.5);
-    
+          opacity = opacity || options.divider[type].opacity || 0.5;
+          width   = width || options.divider[type].width || 0.5;
+
           // distance
           const d = rowDistance * 1.5;
           // margin
@@ -175,8 +185,8 @@ class PDFDocumentWithTables extends PDFDocument {
           this
           .moveTo(x, y - d)
           .lineTo(x + tableWidth - m, y - d)
-          .lineWidth(strokeWidth)
-          .opacity(strokeOpacity)
+          .lineWidth(width)
+          .opacity(opacity)
           .stroke()
           // Reset opacity after drawing the line
           .opacity(1); 
@@ -494,7 +504,7 @@ class PDFDocumentWithTables extends PDFDocument {
           rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
     
           // Separation line between headers and rows
-          separationsRow(startX, rowBottomY);
+          separationsRow('header', startX, rowBottomY);
     
         };
     
@@ -624,13 +634,13 @@ class PDFDocumentWithTables extends PDFDocument {
           rowBottomY = Math.max(startY + rowHeight, rowBottomY);
     
           // Separation line between rows
-          separationsRow(startX, rowBottomY);
+          separationsRow('horizontal', startX, rowBottomY);
     
           // review this code
           if( row.hasOwnProperty('options') ){
             if( row.options.hasOwnProperty('separation') ){
               // Separation line between rows
-              separationsRow(startX, rowBottomY, 1, 1);
+              separationsRow('horizontal',startX, rowBottomY, 1, 1);
             }
           }
     
@@ -720,7 +730,7 @@ class PDFDocumentWithTables extends PDFDocument {
           rowBottomY = Math.max(startY + rowHeight, rowBottomY);
     
           // Separation line between rows
-          separationsRow(startX, rowBottomY);      
+          separationsRow('horizontal', startX, rowBottomY);      
     
         });
         // End rows
