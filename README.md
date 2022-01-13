@@ -148,7 +148,7 @@ npm install pdfkit-table
 
   doc.table(table, {
     prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-    prepareRow: (row, indexColumn, indexRow, rectRow) => {
+    prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
       doc.font("Helvetica").fontSize(8);
       indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
     },
@@ -298,7 +298,7 @@ const table = {
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
 | **prepareHeader**    | <code>Function</code> | Function           | ()                  |
-| **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow) => {} |
+| **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow, rectCell) => {} |
 
 
 Example code:
@@ -317,7 +317,7 @@ const options = {
   columnSpacing: 5, // {Number} default: 5
   // functions
   prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
-  prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8), // {Function} 
+  prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => doc.font("Helvetica").fontSize(8), // {Function} 
 }
 ```
 
@@ -534,7 +534,7 @@ datas: [
 + **addBackground**  <code>{Function}</code> - Add background peer line. 
   - doc.addBackground( {x, y, width, height}, fillColor, opacity, callback );
 + **prepareRow**  <code>{Function}</code>
-  - const options = { prepareRow: (row, indexColumn, indexRow, rectRow) => { indexColumn === 0 && doc.addBackground(rectRow, 'red', 0.5) } }
+  - const options = { prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => { indexColumn === 0 && doc.addBackground(rectRow, 'red', 0.5) } }
 
 ### 0.1.38
 
