@@ -82,6 +82,8 @@ class PDFDocumentWithTables extends PDFDocument {
         options.divider.header      || (options.divider.header      = {disabled: false, width: undefined, opacity: undefined});
         options.divider.horizontal  || (options.divider.horizontal  = {disabled: false, width: undefined, opacity: undefined});
         options.divider.vertical    || (options.divider.vertical    = {disabled: false, width: undefined, opacity: undefined});
+
+        if(!table.headers.length) throw new Error('Headers not defined');
     
         const title            = table.title    ? table.title    : ( options.title    || '' ) ;
         const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle || '' ) ;
@@ -96,7 +98,8 @@ class PDFDocumentWithTables extends PDFDocument {
           let cellPadding      = {top: 0, right: 0, bottom: 0, left: 0}; // universal
     
         const prepareHeader    = options.prepareHeader || (() => this.fillColor('black').font("Helvetica-Bold").fontSize(8).fill());
-        const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow) => this.fillColor('black').font("Helvetica").fontSize(8).fill());
+        const prepareRow       = options.prepareRow || ((row, indexColumn, indexRow, rectRow, rectCell) => this.fillColor('black').font("Helvetica").fontSize(8).fill());
+        //const prepareCell      = options.prepareCell || ((cell, indexColumn, indexRow, indexCell, rectCell) => this.fillColor('black').font("Helvetica").fontSize(8).fill());
         
           let tableWidth       = 0;
         const maxY             = this.page.height - (this.page.margins.top + this.page.margins.bottom);
@@ -170,16 +173,16 @@ class PDFDocumentWithTables extends PDFDocument {
 
           type || (type = 'horizontal'); // header | horizontal | vertical 
 
-          // disabled
-          if(options.divider[type].disabled === true) return;
-          // validate
-          opacity = opacity || options.divider[type].opacity || 0.5;
-          width   = width || options.divider[type].width || 0.5;
-
           // distance
           const d = rowDistance * 1.5;
           // margin
-          const m = options.x || this.page.margins.left;
+          const m = options.x || this.page.margins.left || 30;
+          // disabled
+          const s = options.divider[type].disabled || false;
+          
+          if(s === true) return;
+          opacity = opacity || options.divider[type].opacity || 0.5;
+          width   = width || options.divider[type].width || 0.5;
     
           // draw
           this
@@ -556,7 +559,7 @@ class PDFDocumentWithTables extends PDFDocument {
     
             // allow the user to override style for rows
             prepareRowOptions(row);
-            prepareRow(row, index, i, rectRow);
+            prepareRow(row, index, i, rectRow, rectCell);
     
             let text = row[property];
     
@@ -625,8 +628,9 @@ class PDFDocumentWithTables extends PDFDocument {
             lastPositionX += width; 
     
             // set style
+            // Maybe REMOVE ???
             prepareRowOptions(row);
-            prepareRow(row, index, i, rectRow);
+            prepareRow(row, index, i, rectRow, rectCell);
     
           });
     
@@ -688,7 +692,7 @@ class PDFDocumentWithTables extends PDFDocument {
             prepareRowBackground(table.headers[index], rectCell);
     
             // Allow the user to override style for rows
-            prepareRow(row, index, i, rectRow);
+            prepareRow(row, index, i, rectRow, rectCell);
     
             if(typeof table.headers[index] === 'object') {
               // renderer column
