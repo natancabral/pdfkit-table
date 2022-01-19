@@ -81,7 +81,7 @@ class PDFDocumentWithTables extends PDFDocument {
         options.divider || (options.divider = {});
         options.divider.header      || (options.divider.header      = {disabled: false, width: undefined, opacity: undefined});
         options.divider.horizontal  || (options.divider.horizontal  = {disabled: false, width: undefined, opacity: undefined});
-        options.divider.vertical    || (options.divider.vertical    = {disabled: false, width: undefined, opacity: undefined});
+        options.divider.vertical    || (options.divider.vertical    = {disabled: true, width: undefined, opacity: undefined});
 
         if(!table.headers.length) throw new Error('Headers not defined');
     
@@ -168,7 +168,11 @@ class PDFDocumentWithTables extends PDFDocument {
         const fEval = (str) => {
           let f = null; eval('f = ' + str); return f;
         };
-    
+   
+        const separationsColumn = () => {
+          
+        }
+        
         const separationsRow = (type, x, y, width, opacity) => {
 
           type || (type = 'horizontal'); // header | horizontal | vertical 
@@ -407,7 +411,7 @@ class PDFDocumentWithTables extends PDFDocument {
           }
           
           // Check to have enough room for header and first rows. default 3
-          // if (startY + 2 * rowHeight > maxY) this.addPage();
+          // if (startY + 2 * rowHeight >= maxY) this.addPage();
     
           if(table.headers.length > 0) {
     
