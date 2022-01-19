@@ -32,26 +32,25 @@ npm install pdfkit-table
 ## Use
 
 ```js
+  // requires
   const fs = require("fs");
   const PDFDocument = require("pdfkit-table");  
 
-  // start pdf document
+  // create document
   let doc = new PDFDocument({ margin: 30, size: 'A4' });
   // file name
   doc.pipe(fs.createWriteStream("./document.pdf"));
+  
   // table
   const table = { 
     title: '',
     headers: [],
-    datas: [/* complex data */],
-    rows: [/* or simple data */],
+    datas: [ /* complex data */ ],
+    rows: [ /* or simple data */ ],
   }
-  // options
-  const options = {};
-  // callback
-  const callback = () => {};
   // the magic
-  doc.table( table, options, callback ); // is a Promise to async/await function 
+  doc.table( table, { /* options */ }, () => { /* callback */ } );
+  // doc.table() is a Promise to async/await function 
 
   // if your run express.js server
   // to show PDF on navigator
