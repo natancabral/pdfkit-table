@@ -62,15 +62,17 @@ npm install pdfkit-table
 
 ```
 
-## Use on server
+## Server response
 
 ```js
-  // ...table code
-  // if your run express.js server
-  // to show PDF on navigator
-  doc.pipe(res);
-  // done!
-  doc.end();
+  app('/create-pdf', (req, res) => {
+    // ...table code
+    // if your run express.js server
+    // to show PDF on navigator
+    doc.pipe(res);
+    // done!
+    doc.end();
+  });
 ```
 
 ### Example 1 - Simple Array
