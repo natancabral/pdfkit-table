@@ -23,7 +23,7 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
 
-## Install
+## Install [<img src="https://github.com/natancabral/pdfkit-table/blob/main/example/npm-tile.png">](https://www.npmjs.com/package/pdfkit-table)
 
 ```bash
 npm install pdfkit-table
