@@ -11,7 +11,7 @@
  */
 
 const fs = require("fs");
-const PDFDocument = require("../index");
+const PDFDocument = require("pdfkit-table");
 
 // start pdf document
 let doc = new PDFDocument({ margin: 30, size: 'A4' });
