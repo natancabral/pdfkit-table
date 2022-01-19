@@ -53,8 +53,8 @@ npm install pdfkit-table
   // the magic
   doc.table( table, options, callback ); // is a Promise to async/await function 
 
-  // if your run express.js server:
-  // HTTP response only to show pdf
+  // if your run express.js server
+  // to show PDF on navigator
   // doc.pipe(res);
 
   // done!
@@ -65,15 +65,12 @@ npm install pdfkit-table
 ## Use on server
 
 ```js
-  // [table code here]
-
-  // if your run express.js server:
-  // HTTP response only to show pdf
+  // ...table code
+  // if your run express.js server
+  // to show PDF on navigator
   doc.pipe(res);
- 
- // done!
+  // done!
   doc.end();
-
 ```
 
 ### Example 1 - Simple Array
