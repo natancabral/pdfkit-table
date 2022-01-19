@@ -271,12 +271,7 @@ const table = {
 | **width**            | <code>Number</code>   | undefined          | width of table    |
 | **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
 | **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
-| **divider**          | <code>Object</code>   | undefined          | define divider lines. 
-```divider: {
-      header: {disabled: false, width: 0.5, opacity: 0.5},
-      horizontal: {disabled: true, width: 0.5, opacity: 0.5},
-},```
-|
+| **divider**          | <code>Object</code>   | undefined          | define divider lines. `divider: { header: {disabled: false, width: 0.5, opacity: 0.5}, horizontal: {disabled: true, width: 0.5, opacity: 0.5},},` |
 | **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
