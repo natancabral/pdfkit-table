@@ -12,14 +12,14 @@
 
 const fs = require("fs");
 const PDFDocument = require("../index");
-const doc = new PDFDocument({
-  margin: 30, 
-});
 
-const json = require("./table.json");
-
+// start pdf document
+let doc = new PDFDocument({ margin: 30, size: 'A4' });
 // to save on server
 doc.pipe(fs.createWriteStream("./document-color.pdf"));
+
+// json file
+const json = require("./table.json");
 
 // -----------------------------------------------------------------------------------------------------
 // Simple Table with Array
