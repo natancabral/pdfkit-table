@@ -384,6 +384,11 @@ datas: [
 
 ## Changelogs
 
+### 0.1.79
+
+- Avoid a table title appearing alone
+  - Thanks Alexis Arriola ***@AlexisArriola***
+
 ### 0.1.72
 
 - Add ***Divider Lines*** on options
