@@ -171,7 +171,7 @@ class PDFDocumentWithTables extends PDFDocument {
         const onFirePageAdded = () => {
           ++this.pageNumberPerTable;
           ++this.pageNumber;
-          // console.log('onFirePageAdded', ++this.pageNumberPerTable, ++this.pageNumber);
+          console.log('onFirePageAdded', ++this.pageNumberPerTable, ++this.pageNumber);
           // startX = this.page.margins.left;
           startY = this.page.margins.top;
           rowBottomY = 0;
@@ -446,7 +446,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // calc if header + first line fit on last page
           const calc = startY + this.titleHeight + 1.2 * (this.headerHeight + this.firstLineHeight);
           // console.log(calc, maxY, this.titleHeight);
-          if(calc > maxY) {
+          if(calc > maxY && !this.lockAddPage) {
             // console.log('Header+Rows[0] no fit' );
             this.lockAddPage = true;
             this.addPage();
