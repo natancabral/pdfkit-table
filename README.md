@@ -384,10 +384,12 @@ datas: [
 
 ## Changelogs
 
-### 0.1.79
+### 0.1.83
 
 - Avoid a table title appearing alone
   - Thanks Alexis Arriola ***@AlexisArriola***
+- Problem with long text in cell spreading on several pages
+  - Thanks Ed ***@MeMineToMe***
 
 ### 0.1.72
 
