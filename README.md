@@ -57,7 +57,7 @@ npm install pdfkit-table
   // or async/await  
   // await doc.table(table);
   // or Promise
-  // doc.table(table).then(() => {/* done */}).catch((err) => {/* err */})
+  // doc.table(table).then(() => { /* done */ }).catch((err) => { /* err */ })
 
   // server/response
   // if your run express.js server
@@ -243,7 +243,6 @@ npm install pdfkit-table
   await doc.table(table) ;
   // done!
   doc.end();
-
 })();
 ```
 
