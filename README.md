@@ -36,11 +36,12 @@ npm install pdfkit-table
 ```js
   // requires
   const fs = require("fs");
-  const PDFDocument = require("pdfkit-table");  
+  const PDFDocument = require("pdfkit-table");
 
-  // create document
+  // init document
   let doc = new PDFDocument({ margin: 30, size: 'A4' });
-  // file name
+
+  // save document
   doc.pipe(fs.createWriteStream("./document.pdf"));
   
   // table
@@ -50,10 +51,15 @@ npm install pdfkit-table
     datas: [ /* complex data */ ],
     rows: [ /* or simple data */ ],
   }
-  // the magic
-  doc.table(table, { /* options */ }, () => { /* callback */ } );
-  // doc.table() is a Promise to async/await function 
 
+  // magic
+  doc.table(table, { /* options */ }, () => { /* callback */ } );
+  // or async/await  
+  // await doc.table(table);
+  // or Promise
+  // doc.table(table).then(() => {/* done */}).catch((err) => {/* err */})
+
+  // server/response
   // if your run express.js server
   // to show PDF on navigator
   // doc.pipe(res);
@@ -81,7 +87,7 @@ npm install pdfkit-table
 
 ### Example 1 - Simple Array
 ```js
-  // requires 
+  // table 
   const table = {
     title: "Title",
     subtitle: "Subtitle",
@@ -108,8 +114,7 @@ npm install pdfkit-table
 
 ### Example 2 - Table
 ```js
-  // require
-  // A4 595.28 x 841.89 (portrait) (about width sizes)
+  // table
   const table = {
     title: "Title",
     subtitle: "Subtitle",
@@ -206,6 +211,7 @@ npm install pdfkit-table
 
 
 ```js
+  // json file
   const json = require('./table.json');
   // if json file is array
   Array.isArray(json) ? 
