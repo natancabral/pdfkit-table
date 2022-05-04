@@ -287,6 +287,7 @@ const table = {
 | **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
+| **hideHeader**       | <code>Boolean</code>  | false              | hide header |
 | **prepareHeader**    | <code>Function</code> | Function           | ()                  |
 | **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow, rectCell) => {} |
 
@@ -383,6 +384,16 @@ datas: [
 - margin: marginBottom before, marginTop after
 
 ## Changelogs
+
+### 0.1.87
+
+- Add options hideHeader
+  - Thanks Ville ***@VilleKoo***
+```js
+  options: {
+    hideHeader: true,
+  }
+```
 
 ### 0.1.83
 

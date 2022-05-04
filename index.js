@@ -3,13 +3,14 @@
 // https://jshint.com/
 
 const PDFDocument = require("pdfkit");
-const EventEmitter = require('events').EventEmitter;
+// const EventEmitter = require('events').EventEmitter;
 
 class PDFDocumentWithTables extends PDFDocument {
   
   constructor(option) {
     super(option);
-    this.emitter = new EventEmitter();
+    this.opt = option;
+    // this.emitter = new EventEmitter();
   }
 
   logg(...args) {
@@ -74,6 +75,8 @@ class PDFDocumentWithTables extends PDFDocument {
         table.rows || (table.rows = []);
         table.options && (options = {...options, ...table.options});
     
+
+        options.hideHeader || (options.hideHeader = false);
         options.padding || (options.padding = 0);
         options.columnsSize || (options.columnsSize = []);
         options.addPage || (options.addPage = false);
@@ -81,14 +84,21 @@ class PDFDocumentWithTables extends PDFDocument {
         
         // divider lines
         options.divider || (options.divider = {});
-        options.divider.header      || (options.divider.header      = {disabled: false, width: undefined, opacity: undefined});
-        options.divider.horizontal  || (options.divider.horizontal  = {disabled: false, width: undefined, opacity: undefined});
-        options.divider.vertical    || (options.divider.vertical    = {disabled: true, width: undefined, opacity: undefined});
+        options.divider.header      || (options.divider.header      = { disabled: false, width: undefined, opacity: undefined });
+        options.divider.horizontal  || (options.divider.horizontal  = { disabled: false, width: undefined, opacity: undefined });
+        options.divider.vertical    || (options.divider.vertical    = { disabled: true, width: undefined, opacity: undefined });
 
-        if(!table.headers.length) throw new Error('Headers not defined');
+        if(!table.headers.length) throw new Error('Headers not defined. Use options: hideHeader to hide.');
+
+        if(options.useSafelyMarginBottom === undefined) options.useSafelyMarginBottom = true;
     
         const title            = table.title    ? table.title    : ( options.title    || '' ) ;
         const subtitle         = table.subtitle ? table.subtitle : ( options.subtitle || '' ) ;
+
+        this.logg('layout', this.page.layout);
+        this.logg('size', this.page.size);
+        this.logg('margins', this.page.margins);
+        // this.logg('options', this.options);
     
         // const columnIsDefined  = options.columnsSize.length ? true : false;
         const columnSpacing    = options.columnSpacing || 3; // 15
@@ -113,13 +123,13 @@ class PDFDocumentWithTables extends PDFDocument {
           let rowBottomY       = 0;
 
           //------------ experimental fast variables
-          this.titleHeight     = 0;
-          this.headerHeight    = 0;
-          this.firstLineHeight = 0;
-          this.lockAddTitles   = false; // to addd title one time
-          this.lockAddPage     = false;
-          this.lockAddHeader   = false;
-          this.safelyMarginBottom = 15; 
+          let titleHeight     = 0;
+          let headerHeight    = 0;
+          let firstLineHeight = 0;
+          let lockAddTitles   = false; // to addd title one time
+          let lockAddPage     = false;
+          let lockAddHeader   = false;
+          let safelyMarginBottom = this.page.margins.top/2; 
           
         // reset position to margins.left
         if( options.x === null || options.x === -1 ){
@@ -142,7 +152,7 @@ class PDFDocumentWithTables extends PDFDocument {
             //   width: tableWidth,
             //   align: 'left',
             // });
-            // console.log(data, titleHeight); // 24
+            this.logg(data, titleHeight); // 24
 
             // write 
             this.text( data, startX, startY ).opacity( 1 ); // moveDown( 0.5 )
@@ -156,7 +166,7 @@ class PDFDocumentWithTables extends PDFDocument {
         };
     
         // add a new page before crate table
-        options.addPage === true && this.emitter.emit('addPage'); //this.addPage();
+        options.addPage === true && onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage();
     
         // // create title and subtitle
         // createTitle( title, 12, 1 );
@@ -172,16 +182,21 @@ class PDFDocumentWithTables extends PDFDocument {
           // startX = this.page.margins.left;
           startY = this.page.margins.top;
           rowBottomY = 0;
-          // this.lockAddHeader || addHeader();
-          this.addPage();
-          addHeader();
+          // lockAddPage || this.addPage(this.options);
+          lockAddPage || this.addPage({
+            layout: this.page.layout,
+            size: this.page.size,
+            margins: this.page.margins,
+          });
+          lockAddHeader || addHeader();
+          //addHeader();
         };
-
+        
         // add fire
-        this.emitter.removeAllListeners();
+        // this.emitter.removeAllListeners();
         // this.emitter.on('addTitle', addTitle);
         // this.emitter.on('addSubtitle', addSubTitle);
-        this.emitter.on('addPage', onFirePageAdded);
+        // this.emitter.on('addPage', onFirePageAdded);
         // this.emitter.emit('addPage');
         // this.on('pageAdded', onFirePageAdded);
 
@@ -420,44 +435,47 @@ class PDFDocumentWithTables extends PDFDocument {
         // Header
     
         const addHeader = () => { 
-    
+   
           // Allow the user to override style for headers
           prepareHeader();
     
           // calc header height
-          if(this.headerHeight === 0){
-            this.headerHeight = computeRowHeight(table.headers);
+          if(headerHeight === 0){
+            headerHeight = computeRowHeight(table.headers);
+            this.logg(headerHeight, 'headers');
           }
 
           // calc first table line when init table
-          if(this.firstLineHeight === 0){
+          if(firstLineHeight === 0){
             if(table.datas.length > 0){
-              this.firstLineHeight = computeRowHeight(table.datas[0]);
+              firstLineHeight = computeRowHeight(table.datas[0]);
+              this.logg(firstLineHeight, 'datas');
             }
             else if(table.rows.length > 0){
-              this.firstLineHeight = computeRowHeight(table.rows[0]);
+              firstLineHeight = computeRowHeight(table.rows[0]);
+              this.logg(firstLineHeight, 'rows');
             }
           }
 
           // 24.1 is height calc title + subtitle
-          this.titleHeight = !this.lockAddTitles ? 24.1 : 0; 
+          titleHeight = !lockAddTitles ? 24.1 : 0; 
           // calc if header + first line fit on last page
-          const calc = startY + this.titleHeight + this.firstLineHeight + this.headerHeight + this.safelyMarginBottom// * 1.3;
+          const calc = startY + titleHeight + firstLineHeight + headerHeight + safelyMarginBottom// * 1.3;
 
           // content is big text (crazy!)
-          if(this.firstLineHeight > maxY) {
-            // this.lockAddHeader = true;
-            this.lockAddPage = true;
-            // console.log('CRAZY! This a big text on cell');
-          } else if(calc > maxY) { // && !this.lockAddPage
-            // this.lockAddHeader = false;
-            this.lockAddPage = true;
-            this.emitter.emit('addPage'); //this.addPage();
+          if(firstLineHeight > maxY) {
+            // lockAddHeader = true;
+            lockAddPage = true;
+            this.logg('CRAZY! This a big text on cell');
+          } else if(calc > maxY) { // && !lockAddPage
+            // lockAddHeader = false;
+            lockAddPage = true;
+            onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage();
             return;
           } 
 
           // if has title
-          if(this.lockAddTitles === false) {
+          if(lockAddTitles === false) {
 
             // create title and subtitle
             createTitle( title, 12, 1 );
@@ -473,7 +491,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // Allow the user to override style for headers
           prepareHeader();
 
-          this.lockAddTitles = true;
+          lockAddTitles = true;
 
           // this options is trial
           if(options.absolutePosition === true){
@@ -484,9 +502,9 @@ class PDFDocumentWithTables extends PDFDocument {
           }
           
           // Check to have enough room for header and first rows. default 3
-          // if (startY + 2 * this.headerHeight >= maxY) this.emitter.emit('addPage'); //this.addPage();
+          // if (startY + 2 * headerHeight >= maxY) this.emitter.emit('addPage'); //this.addPage();
     
-          if(table.headers.length > 0) {
+          if(!options.hideHeader && table.headers.length > 0) {
     
             // simple header
             if(typeof table.headers[0] === 'string') {
@@ -496,7 +514,7 @@ class PDFDocumentWithTables extends PDFDocument {
               //   x: startX, 
               //   y: startY - columnSpacing - (rowDistance * 2), 
               //   width: columnWidth, 
-              //   height: this.headerHeight + columnSpacing,
+              //   height: headerHeight + columnSpacing,
               // };
     
               // // add background
@@ -510,7 +528,7 @@ class PDFDocumentWithTables extends PDFDocument {
                   x: lastPositionX, 
                   y: startY - columnSpacing - (rowDistance * 2), 
                   width: columnSizes[i], 
-                  height: this.headerHeight + columnSpacing,
+                  height: headerHeight + columnSpacing,
                 };
     
                 // add background
@@ -519,6 +537,7 @@ class PDFDocumentWithTables extends PDFDocument {
                 // cell padding
                 cellPadding = prepareCellPadding(options.padding || 0);
     
+                // write
                 this.text(header, 
                   lastPositionX + (cellPadding.left), 
                   startY, {
@@ -546,15 +565,33 @@ class PDFDocumentWithTables extends PDFDocument {
                 if(renderer && typeof renderer === 'string') {
                   table.headers[i].renderer = fEval(renderer);
                 }
-                
+
+                // # Rotation
+                // var doTransform = function (x, y, angle) {
+                //   var rads = angle / 180 * Math.PI;
+                //   var newX = x * Math.cos(rads) + y * Math.sin(rads);
+                //   var newY = y * Math.cos(rads) - x * Math.sin(rads);
+                  
+                //   return {
+                //       x: newX,
+                //       y: newY,
+                //       rads: rads,
+                //       angle: angle
+                //       };
+                //   };
+                // }
+                // this.save(); // rotation
+                // this.rotate(90, {origin: [lastPositionX, startY]});
+                // width = 50;
+
                 // background header
                 const rectCell = {
                   x: lastPositionX, 
                   y: startY - columnSpacing - (rowDistance * 2), 
                   width: width, 
-                  height: this.headerHeight + columnSpacing,
+                  height: headerHeight + columnSpacing,
                 };
-    
+
                 // add background
                 this.addBackground(rectCell, headerColor, headerOpacity);
     
@@ -568,8 +605,9 @@ class PDFDocumentWithTables extends PDFDocument {
                   width: width - (cellPadding.left + cellPadding.right),
                   align: align,
                 })
-    
+
                 lastPositionX += width;
+                // this.restore(); // rotation
     
               });
     
@@ -580,11 +618,14 @@ class PDFDocumentWithTables extends PDFDocument {
     
           }
     
-          // Refresh the y coordinate of the bottom of the headers row
-          rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
-    
-          // Separation line between headers and rows
-          separationsRow('header', startX, rowBottomY);
+          if(!options.hideHeader) {
+            // Refresh the y coordinate of the bottom of the headers row
+            rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
+            // Separation line between headers and rows
+            separationsRow('header', startX, rowBottomY);
+          } else {
+            rowBottomY = startY;
+          }
   
         };
     
@@ -595,18 +636,19 @@ class PDFDocumentWithTables extends PDFDocument {
         table.datas.forEach((row, i) => {
     
           const rowHeight = computeRowHeight(row);
+          this.logg(rowHeight);
     
           // Switch to next page if we cannot go any further because the space is over.
           // For safety, consider 3 rows margin instead of just one
           // if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
           // else this.emitter.emit('addPage'); //this.addPage();
-          if(this.y + this.safelyMarginBottom + rowHeight >= maxY && !this.lockAddPage) this.emitter.emit('addPage'); //this.addPage();    
+          if(options.useSafelyMarginBottom && this.y + safelyMarginBottom + rowHeight >= maxY && !lockAddPage) onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage();    
 
           // calc position
           startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
           // unlock add page function
-          this.lockAddPage = false;
+          lockAddPage = false;
           
           const rectRow = {
             x: startX, 
@@ -743,18 +785,19 @@ class PDFDocumentWithTables extends PDFDocument {
         table.rows.forEach((row, i) => {
     
           const rowHeight = computeRowHeight(row);
+          this.logg(rowHeight);
 
           // Switch to next page if we cannot go any further because the space is over.
           // For safety, consider 3 rows margin instead of just one
           // if (startY + 3 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
           // else this.emitter.emit('addPage'); //this.addPage(); 
-          if(this.y + this.safelyMarginBottom + rowHeight >= maxY && !this.lockAddPage) this.emitter.emit('addPage'); //this.addPage(); 
+          if(options.useSafelyMarginBottom && this.y + safelyMarginBottom + rowHeight >= maxY && !lockAddPage) onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage(); 
           
           // calc position
           startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
           // unlock add page function
-          this.lockAddPage = false;
+          lockAddPage = false;
           
           const rectRow = {
             x: columnPositions[0], 
