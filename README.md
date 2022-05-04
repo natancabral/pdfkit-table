@@ -51,7 +51,7 @@ npm install pdfkit-table
     rows: [ /* or simple data */ ],
   }
   // the magic
-  doc.table( table, { /* options */ }, () => { /* callback */ } );
+  doc.table(table, { /* options */ }, () => { /* callback */ } );
   // doc.table() is a Promise to async/await function 
 
   // if your run express.js server
@@ -63,9 +63,12 @@ npm install pdfkit-table
 
 ```
 
-## Server response
+## Examples
+
+### Server response
 [server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js)
 ```js
+  // router - Node + Express.js
   app.get('/create-pdf', (req, res) => {
     // ...table code
     // if your run express.js server
@@ -82,19 +85,24 @@ npm install pdfkit-table
   const table = {
     title: "Title",
     subtitle: "Subtitle",
-    headers: ["Country", "Conversion rate", "Trend"],
+    headers: [ "Country", "Conversion rate", "Trend" ],
     rows: [
-      ["Switzerland", "12%", "+1.12%"],
-      ["France", "67%", "-0.98%"],
-      ["England", "33%", "+4.44%"],
+      [ "Switzerland", "12%", "+1.12%" ],
+      [ "France", "67%", "-0.98%" ],
+      [ "England", "33%", "+4.44%" ],
     ],
   };
-  doc.table( table, { 
-    // A4 595.28 x 841.89 (portrait) (about width sizes)
+  // A4 595.28 x 841.89 (portrait) (about width sizes)
+  // width
+  doc.table(table, { 
     width: 300,
-    //columnsSize: [ 200, 100, 100 ],
   }); 
-  // end code
+  // or columnsSize
+  doc.table(table, { 
+    columnsSize: [ 200, 100, 100 ],
+  }); 
+  // done!
+  doc.end();
 ```
 
 
@@ -106,12 +114,12 @@ npm install pdfkit-table
     title: "Title",
     subtitle: "Subtitle",
     headers: [
-      { label:"Name", property: 'name', width: 60, renderer: null },
-      { label:"Description", property: 'description', width: 150, renderer: null }, 
-      { label:"Price 1", property: 'price1', width: 100, renderer: null }, 
-      { label:"Price 2", property: 'price2', width: 100, renderer: null }, 
-      { label:"Price 3", property: 'price3', width: 80, renderer: null }, 
-      { label:"Price 4", property: 'price4', width: 43, 
+      { label: "Name", property: 'name', width: 60, renderer: null },
+      { label: "Description", property: 'description', width: 150, renderer: null }, 
+      { label: "Price 1", property: 'price1', width: 100, renderer: null }, 
+      { label: "Price 2", property: 'price2', width: 100, renderer: null }, 
+      { label: "Price 3", property: 'price3', width: 80, renderer: null }, 
+      { label: "Price 4", property: 'price4', width: 43, 
         renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` } 
       },
     ],
@@ -151,7 +159,7 @@ npm install pdfkit-table
       // [...],
     ],
   };
-
+  // the magic
   doc.table(table, {
     prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
     prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
@@ -159,46 +167,78 @@ npm install pdfkit-table
       indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
     },
   });
+  // done!
+  doc.end();
+
 ```
 
 ### Example 3 - Json
 
 ```js
-// renderer function inside json file
-const tableJson = '{ 
-  "headers": [
-    { "label":"Name", "property":"name", "width":100 },
-    { "label":"Age", "property":"age", "width":100 },
-    { "label":"Year", "property":"year", "width":100 }
-  ],
-  "datas": [
-    { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
-    { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
-    { "name":"Name 3", "age":"Age 3", "year":"Year 3",
-        "renderer": "function(value, i, irow){ return value + `(${(1+irow)})`; }"
+  // renderer function inside json file
+  const tableJson = '{ 
+    "headers": [
+      { "label":"Name", "property":"name", "width":100 },
+      { "label":"Age", "property":"age", "width":100 },
+      { "label":"Year", "property":"year", "width":100 }
+    ],
+    "datas": [
+      { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
+      { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
+      { "name":"Name 3", "age":"Age 3", "year":"Year 3",
+          "renderer": "function(value, i, irow){ return value + `(${(1+irow)})`; }"
+      }
+    ],
+    "rows": [
+      [ "Name 4", "Age 4", "Year 4" ]
+    ],
+    "options": {
+      "width": 300
     }
-  ],
-  "rows": [
-    ["Name 4", "Age 4", "Year 4"]
-  ],
-  "options": {
-    "width": 300
-  }
-}';
-doc.table( tableJson );
+  }';
+  // the magic
+  doc.table(tableJson);
+  // done!
+  doc.end();
 ```
 
 ### Example 4 - Json file (many tables)
 
 
 ```js
-const json = require('./table.json');
-// if json file is array
-Array.isArray(json) ? 
-// any tables
-json.forEach( table => doc.table( table, table.options || {} ) ) : 
-// one table
-doc.table( json, json.options || {} ) ;
+  const json = require('./table.json');
+  // if json file is array
+  Array.isArray(json) ? 
+  // any tables
+  json.forEach(table => doc.table(table, table.options || {})) : 
+  // one table
+  doc.table(json, json.options || {}) ;
+  // done!
+  doc.end();
+```
+
+### Example 5 - Promise async/await
+
+
+```js
+// async
+;(async function(){
+  // table 
+  const table = {
+    title: "Title",
+    subtitle: "Subtitle",
+    headers: ["Name", "Age"],
+    rows: [
+      ["Jack", "20"],
+      ["Johnson", "30"],
+    ],
+  };
+  // await
+  await doc.table(table) ;
+  // done!
+  doc.end();
+
+})();
 ```
 
 ## Table
@@ -218,8 +258,8 @@ doc.table( json, json.options || {} ) ;
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
-  - title <code>String</code> || <code>Object</code>
-  - subtitle <code>String</code> || <code>Object</code>
+  - title <code>String</code> | <code>Object</code>
+  - subtitle <code>String</code> | <code>Object</code>
 
 ### Headers
 
@@ -304,8 +344,8 @@ const options = {
   x: 0, // {Number} default: undefined | doc.x
   y: 0, // {Number} default: undefined | doc.y
   divider: {
-    header: {disabled: false, width: 2, opacity: 1},
-    horizontal: {disabled: false, width: 0.5, opacity: 0.5},
+    header: { disabled: false, width: 2, opacity: 1 },
+    horizontal: { disabled: false, width: 0.5, opacity: 0.5 },
   },
   padding: 5, // {Number} default: 0
   columnSpacing: 5, // {Number} default: 5
@@ -407,6 +447,11 @@ const table = {
     hideHeader: true,
   }
 ```
+
+### 0.1.86
+
+- TypeScript (ts) interface (index.ts)
+  - Thanks Côte Arthur ***@CoteArthur***
 
 ### 0.1.83
 
