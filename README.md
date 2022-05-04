@@ -218,8 +218,8 @@ doc.table( json, json.options || {} ) ;
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
-  - title <code>String</code>
-  - subtitle <code>String</code>
+  - title <code>String</code> || <code>Object</code>
+  - subtitle <code>String</code> || <code>Object</code>
 
 ### Headers
 
@@ -293,7 +293,6 @@ const table = {
 | **prepareHeader**    | <code>Function</code> | Function           | ()                  |
 | **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow, rectCell) => {} |
 
-
 #### Options example
 
 ```js
@@ -310,6 +309,7 @@ const options = {
   },
   padding: 5, // {Number} default: 0
   columnSpacing: 5, // {Number} default: 5
+  hideHeader: false, 
   // functions
   prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
   prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => doc.font("Helvetica").fontSize(8), // {Function} 
