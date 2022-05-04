@@ -146,7 +146,8 @@ class PDFDocumentWithTables extends PDFDocument {
           // if string
           if(typeof data === 'string' ){
             // font size
-            this.fillColor('black').font("Helvetica").fontSize(8).fontSize(size).opacity(opacity).fill();
+            this.fillColor('black').fontSize(8).fontSize(size).opacity(opacity).fill();
+            // this.fillColor('black').font("Helvetica").fontSize(8).fontSize(size).opacity(opacity).fill();
 
             // const titleHeight = this.heightOfString(data, {
             //   width: tableWidth,
@@ -161,7 +162,11 @@ class PDFDocumentWithTables extends PDFDocument {
             // else object
           } else if(typeof data === 'object' ){
             // title object
-            data.label && this.fontSize( data.fontSize || size ).text( data.label, startX, startY );
+            data.fontFamily && this.font( data.fontFamily );
+            data.label && this.fillColor( data.color || 'black').fontSize( data.fontSize || size ).text( data.label, startX, startY ).fill();
+
+            startY = this.y + columnSpacing + 2;
+
           }  
         };
     

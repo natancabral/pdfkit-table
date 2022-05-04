@@ -278,8 +278,8 @@ const table = {
 
 | Properties           | Type                  | Default            | Description       |
 -----------------------|-----------------------|--------------------|-------------------|
-| **title**            | <code>String</code>   | undefined          | title             |
-| **subtitle**         | <code>String</code>   | undefined          | subtitle          |
+| **title**            | <code>String | Object</code>   | undefined          | title             |
+| **subtitle**         | <code>String | Object</code>   | undefined          | subtitle          |
 | **width**            | <code>Number</code>   | undefined          | width of table    |
 | **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
 | **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
@@ -297,8 +297,8 @@ const table = {
 ```js
 const options = {
   // properties
-  title: "Title",
-  subtitle: "Subtitle",
+  title: "Title", // { label: 'Title', fontSize: 30, color: 'blue', fontFamily: "./fonts/type.ttf" },
+  subtitle: "Subtitle", // { label: 'Subtitle', fontSize: 20, color: 'green', fontFamily: "./fonts/type.ttf" },
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
   x: 0, // {Number} default: undefined | doc.x
   y: 0, // {Number} default: undefined | doc.y
@@ -384,6 +384,17 @@ datas: [
 - margin: marginBottom before, marginTop after
 
 ## Changelogs
+
+### 0.1.88
+
+- Fix header font family or title object
+  - Thanks ***@RastaGrzywa***
+```js
+let localType = "./font/Montserrat-Regular.ttf";
+const table = {
+  title: { label: 'Title Object 2', fontSize: 30, color: 'blue', fontFamily: localType },
+}
+```
 
 ### 0.1.87
 
