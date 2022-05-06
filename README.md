@@ -335,7 +335,7 @@ const table = {
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
 | **hideHeader**       | <code>Boolean</code>  | false              | hide header |
-| **minRowHeight**     | <code>Number</code>  | undefined              | min height |
+| **minRowHeight**     | <code>Number</code>  | 0              | min row height |
 | **prepareHeader**    | <code>Function</code> | Function           | ()                  |
 | **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow, rectCell) => {} |
 
@@ -356,6 +356,7 @@ const options = {
   padding: 5, // {Number} default: 0
   columnSpacing: 5, // {Number} default: 5
   hideHeader: false, 
+  minRowHeight: 0,
   // functions
   prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
   prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => doc.font("Helvetica").fontSize(8), // {Function} 
