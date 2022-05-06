@@ -443,6 +443,14 @@ datas: [
     minRowHeight: 30, // pixel
   }
 ```
+Another alternative to alter height, inside renderer:
+```js
+// ...headers
+renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { 
+    doc.positionY += 50; // rectRow.height
+    // your code or image 
+}
+```
 
 ### 0.1.89
 
@@ -459,14 +467,7 @@ const table = {
   title: { label: 'Title Object 2', fontSize: 30, color: 'blue', fontFamily: localType },
 }
 ```
-Another alternative to alter height, inside renderer:
-```js
-// ...headers
-renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { 
-    doc.positionY += 50; // rectRow.height
-    // your code or image 
-}
-```
+
 ### 0.1.87
 
 - Add options hideHeader
