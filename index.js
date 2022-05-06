@@ -120,7 +120,7 @@ class PDFDocumentWithTables extends PDFDocument {
           let startY           = options.y || this.y || this.page.margins.top;
 
           let lastPositionX    = 0; 
-          let rowBottomY       = 0;
+          this.positionY       = 0;
 
           //------------ experimental fast variables
           let titleHeight     = 0;
@@ -186,7 +186,7 @@ class PDFDocumentWithTables extends PDFDocument {
         const onFirePageAdded = () => {
           // startX = this.page.margins.left;
           startY = this.page.margins.top;
-          rowBottomY = 0;
+          this.positionY = 0;
           // lockAddPage || this.addPage(this.options);
           lockAddPage || this.addPage({
             layout: this.page.layout,
@@ -627,11 +627,11 @@ class PDFDocumentWithTables extends PDFDocument {
     
           if(!options.hideHeader) {
             // Refresh the y coordinate of the bottom of the headers row
-            rowBottomY = Math.max(startY + computeRowHeight(table.headers, true), rowBottomY);
+            this.positionY = Math.max(startY + computeRowHeight(table.headers, true), this.positionY);
             // Separation line between headers and rows
-            separationsRow('header', startX, rowBottomY);
+            separationsRow('header', startX, this.positionY);
           } else {
-            rowBottomY = startY;
+            this.positionY = startY;
           }
   
         };
@@ -647,12 +647,12 @@ class PDFDocumentWithTables extends PDFDocument {
     
           // Switch to next page if we cannot go any further because the space is over.
           // For safety, consider 3 rows margin instead of just one
-          // if (startY + 2 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+          // if (startY + 2 * rowHeight < maxY) startY = this.positionY + columnSpacing + rowDistance; // 0.5 is spacing rows
           // else this.emitter.emit('addPage'); //this.addPage();
           if(options.useSafelyMarginBottom && this.y + safelyMarginBottom + rowHeight >= maxY && !lockAddPage) onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage();    
 
           // calc position
-          startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+          startY = this.positionY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
           // unlock add page function
           lockAddPage = false;
@@ -766,22 +766,22 @@ class PDFDocumentWithTables extends PDFDocument {
           });
     
           // Refresh the y coordinate of the bottom of this row
-          rowBottomY = Math.max(startY + rowHeight, rowBottomY);
+          this.positionY = Math.max(startY + rowHeight, this.positionY);
 
-          // console.log(this.page.height, rowBottomY, this.y);
+          // console.log(this.page.height, this.positionY, this.y);
           // text is so big as page (crazy!)
-          if(rowBottomY > this.page.height) {
-            rowBottomY = this.y + columnSpacing + (rowDistance * 2);
+          if(this.positionY > this.page.height) {
+            this.positionY = this.y + columnSpacing + (rowDistance * 2);
           }
 
           // Separation line between rows
-          separationsRow('horizontal', startX, rowBottomY);
+          separationsRow('horizontal', startX, this.positionY);
     
           // review this code
           if( row.hasOwnProperty('options') ){
             if( row.options.hasOwnProperty('separation') ){
               // Separation line between rows
-              separationsRow('horizontal',startX, rowBottomY, 1, 1);
+              separationsRow('horizontal',startX, this.positionY, 1, 1);
             }
           }
     
@@ -796,12 +796,12 @@ class PDFDocumentWithTables extends PDFDocument {
 
           // Switch to next page if we cannot go any further because the space is over.
           // For safety, consider 3 rows margin instead of just one
-          // if (startY + 3 * rowHeight < maxY) startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+          // if (startY + 3 * rowHeight < maxY) startY = this.positionY + columnSpacing + rowDistance; // 0.5 is spacing rows
           // else this.emitter.emit('addPage'); //this.addPage(); 
           if(options.useSafelyMarginBottom && this.y + safelyMarginBottom + rowHeight >= maxY && !lockAddPage) onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage(); 
           
           // calc position
-          startY = rowBottomY + columnSpacing + rowDistance; // 0.5 is spacing rows
+          startY = this.positionY + columnSpacing + rowDistance; // 0.5 is spacing rows
 
           // unlock add page function
           lockAddPage = false;
@@ -874,23 +874,23 @@ class PDFDocumentWithTables extends PDFDocument {
           });
     
           // Refresh the y coordinate of the bottom of this row
-          rowBottomY = Math.max(startY + rowHeight, rowBottomY);
+          this.positionY = Math.max(startY + rowHeight, this.positionY);
 
-          // console.log(this.page.height, rowBottomY, this.y);
+          // console.log(this.page.height, this.positionY, this.y);
           // text is so big as page (crazy!)
-          if(rowBottomY > this.page.height) {
-            rowBottomY = this.y + columnSpacing + (rowDistance * 2);
+          if(this.positionY > this.page.height) {
+            this.positionY = this.y + columnSpacing + (rowDistance * 2);
           }
     
           // Separation line between rows
-          separationsRow('horizontal', startX, rowBottomY);      
+          separationsRow('horizontal', startX, this.positionY);      
     
         });
         // End rows
         
         // update position
         this.x = startX;
-        this.y = rowBottomY; // position y final;
+        this.y = this.positionY; // position y final;
         this.moveDown(); // break
     
         // add fire

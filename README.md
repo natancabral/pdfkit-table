@@ -125,7 +125,7 @@ npm install pdfkit-table
       { label: "Price 2", property: 'price2', width: 100, renderer: null }, 
       { label: "Price 3", property: 'price3', width: 80, renderer: null }, 
       { label: "Price 4", property: 'price4', width: 43, 
-        renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` } 
+        renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return `U$ ${Number(value).toFixed(2)}` } 
       },
     ],
     // complex data
@@ -446,7 +446,7 @@ datas: [
 
 ### 0.1.89
 
-- Fix height first line
+- Fix first line height
   - Thanks José Luis Francisco ***@JoseLuis21*** 
 
 ### 0.1.88
@@ -459,7 +459,14 @@ const table = {
   title: { label: 'Title Object 2', fontSize: 30, color: 'blue', fontFamily: localType },
 }
 ```
-
+Another alternative to alter height, inside renderer:
+```js
+// ...headers
+renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { 
+    doc.positionY += 50; // rectRow.height
+    // your code or image 
+}
+```
 ### 0.1.87
 
 - Add options hideHeader
