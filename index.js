@@ -74,13 +74,13 @@ class PDFDocumentWithTables extends PDFDocument {
         table.datas || (table.datas = []);
         table.rows || (table.rows = []);
         table.options && (options = {...options, ...table.options});
-    
 
         options.hideHeader || (options.hideHeader = false);
         options.padding || (options.padding = 0);
         options.columnsSize || (options.columnsSize = []);
         options.addPage || (options.addPage = false);
         options.absolutePosition || (options.absolutePosition = false);
+        options.minRowHeight || (options.minRowHeight = 0);
         
         // divider lines
         options.divider || (options.divider = {});
@@ -332,9 +332,9 @@ class PDFDocumentWithTables extends PDFDocument {
           
         };
         
-        const computeRowHeight = (row) => {
+        const computeRowHeight = (row, isHeader) => {
           
-          let result = 0;
+          let result = isHeader ? 0 : options.minRowHeight;
           let cellp;
     
           // if row is object, content with property and options
@@ -343,10 +343,10 @@ class PDFDocumentWithTables extends PDFDocument {
             // get all properties names on header
             table.headers.forEach(({property}) => cells.push(row[property]) );
             // define row with properties header
-            row = cells;  
+            row = cells;
           }
     
-          row.forEach((cell,i) => {
+          row.forEach((cell, i) => {
     
             let text = cell;
     
@@ -362,7 +362,8 @@ class PDFDocumentWithTables extends PDFDocument {
             text = String(text).replace('bold:','').replace('size','');
             
             // cell padding
-            cellp = prepareCellPadding(table.headers[i].padding || options.padding || 0);
+            // cellp = prepareCellPadding(table.headers[i].padding || options.padding || 0);
+            cellp = prepareCellPadding(options.padding || 0);
     
             // calc height size of string
             const cellHeight = this.heightOfString(text, {
@@ -371,8 +372,9 @@ class PDFDocumentWithTables extends PDFDocument {
             });
             
             result = Math.max(result, cellHeight);
-    
           });
+
+          // isHeader && (result = Math.max(result, options.minRowHeight));
 
           // if(result + columnSpacing === 0) {
           //   computeRowHeight(row);
@@ -446,18 +448,18 @@ class PDFDocumentWithTables extends PDFDocument {
     
           // calc header height
           if(headerHeight === 0){
-            headerHeight = computeRowHeight(table.headers);
+            headerHeight = computeRowHeight(table.headers, true);
             this.logg(headerHeight, 'headers');
           }
 
           // calc first table line when init table
           if(firstLineHeight === 0){
             if(table.datas.length > 0){
-              firstLineHeight = computeRowHeight(table.datas[0]);
+              firstLineHeight = computeRowHeight(table.datas[0], true);
               this.logg(firstLineHeight, 'datas');
             }
             else if(table.rows.length > 0){
-              firstLineHeight = computeRowHeight(table.rows[0]);
+              firstLineHeight = computeRowHeight(table.rows[0], true);
               this.logg(firstLineHeight, 'rows');
             }
           }
@@ -625,7 +627,7 @@ class PDFDocumentWithTables extends PDFDocument {
     
           if(!options.hideHeader) {
             // Refresh the y coordinate of the bottom of the headers row
-            rowBottomY = Math.max(startY + computeRowHeight(table.headers), rowBottomY);
+            rowBottomY = Math.max(startY + computeRowHeight(table.headers, true), rowBottomY);
             // Separation line between headers and rows
             separationsRow('header', startX, rowBottomY);
           } else {
@@ -640,8 +642,8 @@ class PDFDocumentWithTables extends PDFDocument {
         // Datas
         table.datas.forEach((row, i) => {
     
-          const rowHeight = computeRowHeight(row);
-          this.logg(rowHeight);
+          const rowHeight = computeRowHeight(row, false);
+          this.logg(rowHeight, '<<<<');
     
           // Switch to next page if we cannot go any further because the space is over.
           // For safety, consider 3 rows margin instead of just one
@@ -789,7 +791,7 @@ class PDFDocumentWithTables extends PDFDocument {
         // Rows
         table.rows.forEach((row, i) => {
     
-          const rowHeight = computeRowHeight(row);
+          const rowHeight = computeRowHeight(row, false);
           this.logg(rowHeight);
 
           // Switch to next page if we cannot go any further because the space is over.

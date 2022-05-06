@@ -335,6 +335,7 @@ const table = {
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
 | **hideHeader**       | <code>Boolean</code>  | false              | hide header |
+| **minRowHeight**     | <code>Number</code>  | undefined              | min height |
 | **prepareHeader**    | <code>Function</code> | Function           | ()                  |
 | **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow, rectCell) => {} |
 
@@ -442,6 +443,21 @@ const table = {
   title: { label: 'Title Object 2', fontSize: 30, color: 'blue', fontFamily: localType },
 }
 ```
+
+### 0.1.90
+
+- Add options minRowHeight
+  - Thanks LouiseEH ***@LouiseEH***
+```js
+  options: {
+    minRowHeight: 30, // pixel
+  }
+```
+
+### 0.1.88
+
+- Fix height first line
+  - Thanks José Luis Francisco ***@JoseLuis21*** 
 
 ### 0.1.87
 
