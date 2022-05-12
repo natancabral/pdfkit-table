@@ -3,5 +3,9 @@ example-test
 example-promise
 example
 
+.backs
+.ideas
+
 package-lock.json
 pdfkit-guide.pdf
+pdfkit-table.zip
