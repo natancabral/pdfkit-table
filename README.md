@@ -40,32 +40,30 @@ npm install pdfkit-table
 
   // init document
   let doc = new PDFDocument({ margin: 30, size: 'A4' });
-
   // save document
   doc.pipe(fs.createWriteStream("./document.pdf"));
   
-  // table
-  const table = { 
-    title: '',
-    headers: [],
-    datas: [ /* complex data */ ],
-    rows: [ /* or simple data */ ],
-  }
+  ;(async function(){
+    // table
+    const table = { 
+      title: '',
+      headers: [],
+      datas: [ /* complex data */ ],
+      rows: [ /* or simple data */ ],
+    };
 
-  // magic
-  doc.table(table, { /* options */ }, () => { /* callback */ } );
-  // or async/await  
-  // await doc.table(table);
-  // or Promise
-  // doc.table(table).then(() => { /* done */ }).catch((err) => { /* err */ })
+    // the magic (async/await)
+    await doc.table(table, { /* options */ }, () => { /* callback */ } );
+    // -- or --
+    // doc.table(table).then(() => { doc.end() }).catch((err) => { })
 
-  // server/response
-  // if your run express.js server
-  // to show PDF on navigator
-  // doc.pipe(res);
+    // if your run express.js server
+    // to show PDF on navigator
+    // doc.pipe(res);
 
-  // done!
-  doc.end();
+    // done!
+    doc.end();
+  })();
 
 ```
 
@@ -87,140 +85,147 @@ npm install pdfkit-table
 
 ### Example 1 - Simple Array
 ```js
-  // table 
-  const table = {
-    title: "Title",
-    subtitle: "Subtitle",
-    headers: [ "Country", "Conversion rate", "Trend" ],
-    rows: [
-      [ "Switzerland", "12%", "+1.12%" ],
-      [ "France", "67%", "-0.98%" ],
-      [ "England", "33%", "+4.44%" ],
-    ],
-  };
-  // A4 595.28 x 841.89 (portrait) (about width sizes)
-  // width
-  doc.table(table, { 
-    width: 300,
-  }); 
-  // or columnsSize
-  doc.table(table, { 
-    columnsSize: [ 200, 100, 100 ],
-  }); 
-  // done!
-  doc.end();
+  ;(async function(){
+    // table 
+    const table = {
+      title: "Title",
+      subtitle: "Subtitle",
+      headers: [ "Country", "Conversion rate", "Trend" ],
+      rows: [
+        [ "Switzerland", "12%", "+1.12%" ],
+        [ "France", "67%", "-0.98%" ],
+        [ "England", "33%", "+4.44%" ],
+      ],
+    };
+    // A4 595.28 x 841.89 (portrait) (about width sizes)
+    // width
+    await doc.table(table, { 
+      width: 300,
+    });
+    // or columnsSize
+    await doc.table(table, { 
+      columnsSize: [ 200, 100, 100 ],
+    });
+    // done!
+    doc.end();
+  })();
 ```
 
 
 ### Example 2 - Table
 ```js
-  // table
-  const table = {
-    title: "Title",
-    subtitle: "Subtitle",
-    headers: [
-      { label: "Name", property: 'name', width: 60, renderer: null },
-      { label: "Description", property: 'description', width: 150, renderer: null }, 
-      { label: "Price 1", property: 'price1', width: 100, renderer: null }, 
-      { label: "Price 2", property: 'price2', width: 100, renderer: null }, 
-      { label: "Price 3", property: 'price3', width: 80, renderer: null }, 
-      { label: "Price 4", property: 'price4', width: 43, 
-        renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return `U$ ${Number(value).toFixed(2)}` } 
-      },
-    ],
-    // complex data
-    datas: [
-      { 
-        name: 'Name 1', 
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', 
-        price1: '$1', 
-        price3: '$ 3', 
-        price2: '$2', 
-        price4: '4', 
-      },
-      { 
-        options: { fontSize: 10, separation: true},
-        name: 'bold:Name 2', 
-        description: 'bold:Lorem ipsum dolor.', 
-        price1: 'bold:$1', 
-        price3: { 
-          label: 'PRICE $3', options: { fontSize: 12 } 
-        }, 
-        price2: '$2', 
-        price4: '4', 
-      },
-      // {...},
-    ],
-    // simeple data
-    rows: [
-      [
-        "Apple",
-        "Nullam ut facilisis mi. Nunc dignissim ex ac vulputate facilisis.",
-        "$ 105,99",
-        "$ 105,99",
-        "$ 105,99",
-        "105.99",
+  ;(async function(){
+    // table
+    const table = {
+      title: "Title",
+      subtitle: "Subtitle",
+      headers: [
+        { label: "Name", property: 'name', width: 60, renderer: null },
+        { label: "Description", property: 'description', width: 150, renderer: null }, 
+        { label: "Price 1", property: 'price1', width: 100, renderer: null }, 
+        { label: "Price 2", property: 'price2', width: 100, renderer: null }, 
+        { label: "Price 3", property: 'price3', width: 80, renderer: null }, 
+        { label: "Price 4", property: 'price4', width: 43, 
+          renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return `U$ ${Number(value).toFixed(2)}` } 
+        },
       ],
-      // [...],
-    ],
-  };
-  // the magic
-  doc.table(table, {
-    prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-    prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-      doc.font("Helvetica").fontSize(8);
-      indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
-    },
-  });
-  // done!
-  doc.end();
+      // complex data
+      datas: [
+        { 
+          name: 'Name 1', 
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', 
+          price1: '$1', 
+          price3: '$ 3', 
+          price2: '$2', 
+          price4: '4', 
+        },
+        { 
+          options: { fontSize: 10, separation: true},
+          name: 'bold:Name 2', 
+          description: 'bold:Lorem ipsum dolor.', 
+          price1: 'bold:$1', 
+          price3: { 
+            label: 'PRICE $3', options: { fontSize: 12 } 
+          }, 
+          price2: '$2', 
+          price4: '4', 
+        },
+        // {...},
+      ],
+      // simeple data
+      rows: [
+        [
+          "Apple",
+          "Nullam ut facilisis mi. Nunc dignissim ex ac vulputate facilisis.",
+          "$ 105,99",
+          "$ 105,99",
+          "$ 105,99",
+          "105.99",
+        ],
+        // [...],
+      ],
+    };
+    // the magic
+    doc.table(table, {
+      prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
+      prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+        doc.font("Helvetica").fontSize(8);
+        indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+      },
+    });
+    // done!
+    doc.end();
+  })();
 
 ```
 
 ### Example 3 - Json
 
 ```js
-  // renderer function inside json file
-  const tableJson = '{ 
-    "headers": [
-      { "label":"Name", "property":"name", "width":100 },
-      { "label":"Age", "property":"age", "width":100 },
-      { "label":"Year", "property":"year", "width":100 }
-    ],
-    "datas": [
-      { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
-      { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
-      { "name":"Name 3", "age":"Age 3", "year":"Year 3",
+  ;(async function(){
+    // renderer function inside json file
+    const tableJson = '{ 
+      "headers": [
+        { "label":"Name", "property":"name", "width":100 },
+        { "label":"Age", "property":"age", "width":100 },
+        { "label":"Year", "property":"year", "width":100 }
+      ],
+      "datas": [
+        { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
+        { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
+        { "name":"Name 3", "age":"Age 3", "year":"Year 3",
           "renderer": "function(value, i, irow){ return value + `(${(1+irow)})`; }"
+        }
+      ],
+      "rows": [
+        [ "Name 4", "Age 4", "Year 4" ]
+      ],
+      "options": {
+        "width": 300
       }
-    ],
-    "rows": [
-      [ "Name 4", "Age 4", "Year 4" ]
-    ],
-    "options": {
-      "width": 300
-    }
-  }';
-  // the magic
-  doc.table(tableJson);
-  // done!
-  doc.end();
+    }';
+    // the magic
+    doc.table(tableJson);
+    // done!
+    doc.end();
+  })();
 ```
 
 ### Example 4 - Json file (many tables)
 
-
 ```js
-  // json file
-  const json = require('./table.json');
-  // if json file is array
-  Array.isArray(json) ? 
-  // any tables
-  json.forEach(table => doc.table(table, table.options || {})) : 
-  // one table
-  doc.table(json, json.options || {}) ;
-  // done!
-  doc.end();
+  ;(async function(){
+    // json file
+    const json = require('./table.json');
+    // if json file is array
+    Array.isArray(json) ? 
+    // any tables
+    await doc.tables(table, table.options || {})) : 
+    // one table
+    await doc.table(json, json.options || {}) ;
+    // done!
+    doc.end();
+  })();
 ```
 
 ### Example 5 - Promise async/await
@@ -325,8 +330,8 @@ const table = {
 
 | Properties           | Type                  | Default            | Description       |
 -----------------------|-----------------------|--------------------|-------------------|
-| **title**            | <code>String | Object</code>   | undefined          | title             |
-| **subtitle**         | <code>String | Object</code>   | undefined          | subtitle          |
+| **title**            | <code>String</code> <code>Object</code>  | undefined          | title             |
+| **subtitle**         | <code>String</code> <code>Object</code>  | undefined          | subtitle          |
 | **width**            | <code>Number</code>   | undefined          | width of table    |
 | **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
 | **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
@@ -442,14 +447,6 @@ datas: [
   options: {
     minRowHeight: 30, // pixel
   }
-```
-Another alternative to alter height, inside renderer:
-```js
-// ...headers
-renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { 
-    doc.positionY += 50; // rectRow.height
-    // your code or image 
-}
 ```
 
 ### 0.1.89

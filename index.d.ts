@@ -1,4 +1,5 @@
-declare module 'pdfkit-table' {
+declare module 'pdfkit-table' 
+{
 	import PDFDocument from 'pdfkit';
 
 	interface Rect {
@@ -67,7 +68,10 @@ declare module 'pdfkit-table' {
 		divider?: Divider;
 		columnsSize?: number[];
 		columnSpacing?: number; //default 5
+		padding?: number[]; 
 		addPage?: boolean; //default false
+		hideHeader?: boolean;
+		minRowHeight?: number;
 		prepareHeader?: () => PDFDocumentWithTables;
 		prepareRow?: (
 			row: number,
@@ -81,4 +85,5 @@ declare module 'pdfkit-table' {
 	export default class PDFDocumentWithTables extends PDFDocument {
 		public table(table: Table, options?: Options): Promise<void>;
 	}
+	
 }

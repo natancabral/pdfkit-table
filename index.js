@@ -217,7 +217,7 @@ class PDFDocumentWithTables extends PDFDocument {
          // soon 
         }
         
-        const separationsRow = (type, x, y, width, opacity) => {
+        const separationsRow = (type, x, y, width, opacity, color) => {
 
           type || (type = 'horizontal'); // header | horizontal | vertical 
 
@@ -231,12 +231,14 @@ class PDFDocumentWithTables extends PDFDocument {
           if(s === true) return;
           opacity = opacity || options.divider[type].opacity || 0.5;
           width   = width || options.divider[type].width || 0.5;
+          color   = color || options.divider[type].color || 'black';
     
           // draw
           this
           .moveTo(x, y - d)
           .lineTo(x + tableWidth - m, y - d)
           .lineWidth(width)
+          .strokeColor(color)
           .opacity(opacity)
           .stroke()
           // Reset opacity after drawing the line
@@ -738,7 +740,7 @@ class PDFDocumentWithTables extends PDFDocument {
             // renderer column
             // renderer && (text = renderer(text, index, i, row, rectRow, rectCell)) // value, index-column, index-row, row  nbhmn
             if(typeof renderer === 'function'){
-              text = renderer(text, index, i, row, rectRow, rectCell, this); // value, index-column, index-row, row, doc[this]
+              text = renderer(text, index, i, row, rectRow, rectCell); // value, index-column, index-row, row, doc[this]
             }
     
             // TODO # Experimental
