@@ -82,8 +82,10 @@ declare module 'pdfkit-table'
 		) => PDFDocumentWithTables;
 	}
 
-	export default class PDFDocumentWithTables extends PDFDocument {
+	class PDFDocumentWithTables extends PDFDocument {
 		public table(table: Table, options?: Options): Promise<void>;
 	}
-	
+
+	// export = PDFDocumentWithTables;
+	export default PDFDocumentWithTables;
 }

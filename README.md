@@ -338,6 +338,7 @@ const table = {
 | **divider**          | <code>Object</code>   | undefined          | define divider lines |
 | **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
+| **padding**    | <code>Number</code> <code>Array</code>   | 1 or [1, 5]                   |                   |
 | **addPage**          | <code>Boolean</code>  | false              | add table on new page |
 | **hideHeader**       | <code>Boolean</code>  | false              | hide header |
 | **minRowHeight**     | <code>Number</code>  | 0              | min row height |

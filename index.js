@@ -950,3 +950,4 @@ class PDFDocumentWithTables extends PDFDocument {
 }
 
 module.exports = PDFDocumentWithTables;
+module.exports.default = PDFDocumentWithTables;
