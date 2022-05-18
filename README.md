@@ -219,36 +219,13 @@ npm install pdfkit-table
     const json = require('./table.json');
     // if json file is array
     Array.isArray(json) ? 
-    // any tables
-    await doc.tables(table, table.options || {})) : 
-    // one table
-    await doc.table(json, json.options || {}) ;
+    // any tables - array
+    await doc.tables(json) : 
+    // one table - string
+    await doc.table(json) ;
     // done!
     doc.end();
   })();
-```
-
-### Example 5 - Promise async/await
-
-
-```js
-// async
-;(async function(){
-  // table 
-  const table = {
-    title: "Title",
-    subtitle: "Subtitle",
-    headers: ["Name", "Age"],
-    rows: [
-      ["Jack", "20"],
-      ["Johnson", "30"],
-    ],
-  };
-  // await
-  await doc.table(table) ;
-  // done!
-  doc.end();
-})();
 ```
 
 ## Table
