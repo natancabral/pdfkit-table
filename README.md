@@ -260,8 +260,8 @@ npm install pdfkit-table
 | **headerColor**      | <code>String</code>   | grey or #BEBEBE    | color of header   |
 | **headerOpacity**    | <code>Number</code>   | 0.5                | opacity of header |
 | **headerAlign**      | <code>String</code>   | left               | only header       |
-| **columnColor** or backgroundColor  | <code>String</code>   | undefined          | color of column   |
-| **columnOpacity** or backgroundOpacity| <code>Number</code>   | undefined          | opacity of column   |
+| **columnColor** or ~~backgroundColor~~  | <code>String</code>   | undefined          | color of column   |
+| **columnOpacity** or ~~backgroundOpacity~~| <code>Number</code>   | undefined          | opacity of column   |
 | **renderer**         | <code>Function</code> | Function           | function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value } |
 
 
