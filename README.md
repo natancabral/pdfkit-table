@@ -43,7 +43,7 @@ npm install pdfkit-table
   // save document
   doc.pipe(fs.createWriteStream("./document.pdf"));
   
-  ;(async function(){
+  ;(async function createTable(){
     // table
     const table = { 
       title: '',
@@ -73,8 +73,8 @@ npm install pdfkit-table
 [server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js)
 ```js
   // router - Node + Express.js
-  app.get('/create-pdf', (req, res) => {
-    // ...table code
+  app.get('/create-pdf', async (req, res) => {
+    // ...await table code
     // if your run express.js server
     // to show PDF on navigator
     doc.pipe(res);
@@ -310,8 +310,8 @@ const table = {
 | **title**            | <code>String</code> <code>Object</code>  | undefined          | title             |
 | **subtitle**         | <code>String</code> <code>Object</code>  | undefined          | subtitle          |
 | **width**            | <code>Number</code>   | undefined          | width of table    |
-| **x**                | <code>Number</code>   | undefined / doc.x  | position x (left) |
-| **y**                | <code>Number</code>   | undefined / doc.y  | position y (top)  |
+| **x**                | <code>Number</code>   | undefined  | position x (left). To reset x position set "x: null" |
+| **y**                | <code>Number</code>   | undefined  | position y (top)  |
 | **divider**          | <code>Object</code>   | undefined          | define divider lines |
 | **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
 | **columnSpacing**    | <code>Number</code>   | 5                  |                   |
@@ -330,8 +330,8 @@ const options = {
   title: "Title", // { label: 'Title', fontSize: 30, color: 'blue', fontFamily: "./fonts/type.ttf" },
   subtitle: "Subtitle", // { label: 'Subtitle', fontSize: 20, color: 'green', fontFamily: "./fonts/type.ttf" },
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
-  x: 0, // {Number} default: undefined | doc.x
-  y: 0, // {Number} default: undefined | doc.y
+  x: 0, // {Number} default: undefined | To reset x position set "x: null"
+  y: 0, // {Number} default: undefined | 
   divider: {
     header: { disabled: false, width: 2, opacity: 1 },
     horizontal: { disabled: false, width: 0.5, opacity: 0.5 },

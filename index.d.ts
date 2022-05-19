@@ -37,7 +37,7 @@ declare module 'pdfkit-table'
 	}
 
 	interface Data {
-		[key: string]: string | { label: string; options: DataOptions };
+		[key: string]: string | { label: string; options?: DataOptions };
 	}
 
 	interface Table {
@@ -74,7 +74,7 @@ declare module 'pdfkit-table'
 		minRowHeight?: number;
 		prepareHeader?: () => PDFDocumentWithTables;
 		prepareRow?: (
-			row: number,
+			row?: any,
 			indexColumn?: number,
 			indexRow?: number,
 			rectRow?: Rect,
