@@ -53,7 +53,7 @@ npm install pdfkit-table
     };
 
     // the magic (async/await)
-    await doc.table(table, { /* options */ }, () => { /* callback */ } );
+    await doc.table(table, { /* options */ });
     // -- or --
     // doc.table(table).then(() => { doc.end() }).catch((err) => { })
 
@@ -240,8 +240,8 @@ npm install pdfkit-table
     - headerColor <code>String</code>
     - headerOpacity <code>Number</code>
     - headerAlign <code>String</code>
-    - columnColor or backgroundColor <code>String</code>
-    - columnOpacity or backgroundOpacity: <code>Number</code>
+    - columnColor or ~~backgroundColor~~: <code>String</code>
+    - columnOpacity or ~~backgroundOpacity~~: <code>Number</code>
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
@@ -505,7 +505,7 @@ const table = {
 
 + Added ***callback***. 
 ```js
-  doc.table(table, options, callback);
+  ~~doc.table(table, options, callback)~~;
 ```
 
 ### 0.1.63

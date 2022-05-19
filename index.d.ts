@@ -49,19 +49,27 @@ declare module 'pdfkit-table'
 	}
 
 	interface DividerOptions {
-		disabled: boolean;
-		width: number;
-		opacity: number;
+		disabled?: boolean;
+		width?: number;
+		opacity?: number;
 	}
 
 	interface Divider {
-		header: DividerOptions;
-		horizontal: DividerOptions;
+		header?: DividerOptions;
+		horizontal?: DividerOptions;
+	}
+
+	interface Title 
+	{
+		label: string;
+		fontSize?: number;
+		fontFamily?: string;
+		color?: string; 
 	}
 
 	interface Options {
-		title?: string;
-		subtitle?: string;
+		title?: string | Title ;
+		subtitle?: string | Title;
 		width?: number;
 		x?: number; //default doc.x
 		y?: number; //default doc.y
