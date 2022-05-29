@@ -401,7 +401,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // (table width) 1o - Max size table
           w = this.page.width - this.page.margins.right - ( options.x || this.page.margins.left );
           // (table width) 2o - Size defined
-          options.width && ( w = String(options.width).replace(/[^0-9]/g,'') >> 0 );
+          options.width && ( w = parseInt(options.width) || String(options.width).replace(/[^0-9]/g,'') >> 0 );
     
           // (table width) if table is percent of page 
           // ...
