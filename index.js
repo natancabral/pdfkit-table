@@ -927,20 +927,34 @@ class PDFDocumentWithTables extends PDFDocument {
    * @returns 
    */
   async tables(tables, callback) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
 
+        if(Array.isArray(tables) === false)
+        {
+          resolve();
+          return;
+        }
+
+        const len = tables.length;
+        for(let i; i < len; i++)
+        {
+          await this.table(tables[i], tables[i].options || {});
+        }
+
         // if tables is Array
-        Array.isArray(tables) ?
-        // for each on Array
-        tables.forEach( async table => await this.table( table, table.options || {} ) ) :
-        // else is tables is a unique table object
-        ( typeof tables === 'object' ? this.table( tables, tables.options || {} ) : null ) ;
-        // callback
+        // Array.isArray(tables) ?
+        // // for each on Array
+        // tables.forEach( async table => await this.table( table, table.options || {} ) ) :
+        // // else is tables is a unique table object
+        // ( typeof tables === 'object' ? this.table( tables, tables.options || {} ) : null ) ;
+        // // callback
         typeof callback === 'function' && callback(this);
-        // donw!
+        // // donw!
         resolve();
-      } catch (error) {
+      } 
+      catch(error)
+      {
         reject(error);
       }
 
