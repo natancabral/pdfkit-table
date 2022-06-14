@@ -354,6 +354,7 @@ class PDFDocumentWithTables extends PDFDocument {
           row.forEach((cell,i) => {
     
             let text = cell;
+            let customHeight = 0;
     
             // object
             // read cell and get label of object
@@ -362,6 +363,8 @@ class PDFDocumentWithTables extends PDFDocument {
               text = String(cell.label);
               // apply font size on calc about height row 
               cell.hasOwnProperty('options') && prepareRowOptions(cell);
+              // set customheight if has
+              customHeight = (cell.options.customHeight) ? cell.options.customHeight : 0;
             }
     
             text = String(text).replace('bold:','').replace('size','');
@@ -378,7 +381,7 @@ class PDFDocumentWithTables extends PDFDocument {
               align: 'left',
             });
             
-            result = Math.max(result, cellHeight);    
+            result = Math.max(result, cellHeight, customHeight);
           });
 
           // isHeader && (result = Math.max(result, options.minRowHeight));

@@ -34,6 +34,7 @@ declare module 'pdfkit-table'
 		fontSize: number;
 		fontFamily: string;
 		separation: boolean;
+		customHeight: number;
 	}
 
 	interface Data {
