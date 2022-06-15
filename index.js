@@ -364,7 +364,9 @@ class PDFDocumentWithTables extends PDFDocument {
               // apply font size on calc about height row 
               cell.hasOwnProperty('options') && prepareRowOptions(cell);
               // set customheight if has
-              customHeight = (cell.options.customHeight) ? cell.options.customHeight : 0;
+              if (cell.hasOwnProperty('options') && cell.options.hasOwnProperty("customHeight")) {
+                customHeight = (cell.options.customHeight || 0);
+              }
             }
     
             text = String(text).replace('bold:','').replace('size','');
