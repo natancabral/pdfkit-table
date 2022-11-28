@@ -1,5 +1,5 @@
 {
-  "name": "@feamzy/pdfkit-table",
+  "name": "pdfkit-table",
   "version": "0.1.101",
   "description": "PdfKit Table. Helps to draw informations in simple tables using pdfkit. #server-side. Generate pdf tables with javascript (PDFKIT plugin) ",
   "main": "index.js",
