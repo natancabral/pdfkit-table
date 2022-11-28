@@ -1,4 +1,4 @@
-declare module 'pdfkit-table' 
+declare module '@feamzy/pdfkit-table'
 {
 	import PDFDocument from 'pdfkit';
 
