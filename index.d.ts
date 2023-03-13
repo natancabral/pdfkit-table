@@ -20,6 +20,7 @@ declare module 'pdfkit-table'
 		headerAlign?: string; //default 'left'
 		columnColor?: string;
 		columnOpacity?: number;
+		marginBottom?: number;
 		renderer?: (
 			value: any,
 			indexColumn?: number,

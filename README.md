@@ -14,8 +14,8 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 
 ## Examples
 
-[view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document.pdf) | 
-[color pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-color.pdf) | 
+[view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document.pdf) |
+[color pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-color.pdf) |
 [full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-example.js) |
 [server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js) |
 [json example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-json-example.js) |
@@ -42,10 +42,10 @@ npm install pdfkit-table
   let doc = new PDFDocument({ margin: 30, size: 'A4' });
   // save document
   doc.pipe(fs.createWriteStream("./document.pdf"));
-  
+
   ;(async function createTable(){
     // table
-    const table = { 
+    const table = {
       title: '',
       headers: [],
       datas: [ /* complex data */ ],
@@ -86,7 +86,7 @@ npm install pdfkit-table
 ### Example 1 - Simple Array
 ```js
   ;(async function(){
-    // table 
+    // table
     const table = {
       title: "Title",
       subtitle: "Subtitle",
@@ -99,11 +99,11 @@ npm install pdfkit-table
     };
     // A4 595.28 x 841.89 (portrait) (about width sizes)
     // width
-    await doc.table(table, { 
+    await doc.table(table, {
       width: 300,
     });
     // or columnsSize
-    await doc.table(table, { 
+    await doc.table(table, {
       columnsSize: [ 200, 100, 100 ],
     });
     // done!
@@ -121,34 +121,34 @@ npm install pdfkit-table
       subtitle: "Subtitle",
       headers: [
         { label: "Name", property: 'name', width: 60, renderer: null },
-        { label: "Description", property: 'description', width: 150, renderer: null }, 
-        { label: "Price 1", property: 'price1', width: 100, renderer: null }, 
-        { label: "Price 2", property: 'price2', width: 100, renderer: null }, 
-        { label: "Price 3", property: 'price3', width: 80, renderer: null }, 
-        { label: "Price 4", property: 'price4', width: 43, 
-          renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return `U$ ${Number(value).toFixed(2)}` } 
+        { label: "Description", property: 'description', width: 150, renderer: null },
+        { label: "Price 1", property: 'price1', width: 100, renderer: null },
+        { label: "Price 2", property: 'price2', width: 100, renderer: null },
+        { label: "Price 3", property: 'price3', width: 80, renderer: null },
+        { label: "Price 4", property: 'price4', width: 43,
+          renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return `U$ ${Number(value).toFixed(2)}` }
         },
       ],
       // complex data
       datas: [
-        { 
-          name: 'Name 1', 
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', 
-          price1: '$1', 
-          price3: '$ 3', 
-          price2: '$2', 
-          price4: '4', 
+        {
+          name: 'Name 1',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ',
+          price1: '$1',
+          price3: '$ 3',
+          price2: '$2',
+          price4: '4',
         },
-        { 
+        {
           options: { fontSize: 10, separation: true},
-          name: 'bold:Name 2', 
-          description: 'bold:Lorem ipsum dolor.', 
-          price1: 'bold:$1', 
-          price3: { 
-            label: 'PRICE $3', options: { fontSize: 12 } 
-          }, 
-          price2: '$2', 
-          price4: '4', 
+          name: 'bold:Name 2',
+          description: 'bold:Lorem ipsum dolor.',
+          price1: 'bold:$1',
+          price3: {
+            label: 'PRICE $3', options: { fontSize: 12 }
+          },
+          price2: '$2',
+          price4: '4',
         },
         // {...},
       ],
@@ -184,7 +184,7 @@ npm install pdfkit-table
 ```js
   ;(async function(){
     // renderer function inside json file
-    const tableJson = '{ 
+    const tableJson = '{
       "headers": [
         { "label":"Name", "property":"name", "width":100 },
         { "label":"Age", "property":"age", "width":100 },
@@ -218,9 +218,9 @@ npm install pdfkit-table
     // json file
     const json = require('./table.json');
     // if json file is array
-    Array.isArray(json) ? 
+    Array.isArray(json) ?
     // any tables - array
-    await doc.tables(json) : 
+    await doc.tables(json) :
     // one table - string
     await doc.table(json) ;
     // done!
@@ -243,6 +243,7 @@ npm install pdfkit-table
     - columnColor or ~~backgroundColor~~: <code>String</code>
     - columnOpacity or ~~backgroundOpacity~~: <code>Number</code>
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
+    - marginBottom <code>Number</code>
   - datas <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
   - title <code>String</code> | <code>Object</code>
@@ -269,7 +270,7 @@ npm install pdfkit-table
 
 ```js
 const table = {
-  // simple headers only with ROWS (not DATAS)  
+  // simple headers only with ROWS (not DATAS)
   headers: ['Name', 'Age'],
   // simple content
   rows: [
@@ -283,7 +284,7 @@ const table = {
 
 ```js
 const table = {
-  // complex headers work with ROWS and DATAS  
+  // complex headers work with ROWS and DATAS
   headers: [
     { label:"Name", property: 'name', width: 100, renderer: null },
     { label:"Age", property: 'age', width: 100, renderer: (value) => `U$ ${Number(value).toFixed(1)}` },
@@ -331,18 +332,18 @@ const options = {
   subtitle: "Subtitle", // { label: 'Subtitle', fontSize: 20, color: 'green', fontFamily: "./fonts/type.ttf" },
   width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
   x: 0, // {Number} default: undefined | To reset x position set "x: null"
-  y: 0, // {Number} default: undefined | 
+  y: 0, // {Number} default: undefined |
   divider: {
     header: { disabled: false, width: 2, opacity: 1 },
     horizontal: { disabled: false, width: 0.5, opacity: 0.5 },
   },
   padding: 5, // {Number} default: 0
   columnSpacing: 5, // {Number} default: 5
-  hideHeader: false, 
+  hideHeader: false,
   minRowHeight: 0,
   // functions
-  prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
-  prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => doc.font("Helvetica").fontSize(8), // {Function} 
+  prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function}
+  prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => doc.font("Helvetica").fontSize(8), // {Function}
 }
 ```
 
@@ -357,12 +358,12 @@ datas: [
   // options row
   { name: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold', separation: true } },
 ]
-``` 
+```
 
 - String
-  - **bold:** 
+  - **bold:**
     - 'bold:Jack'
-  - **size{n}:** 
+  - **size{n}:**
     - 'size11:Jack'
     - 'size20:Jack'
 
@@ -376,7 +377,7 @@ datas: [
   // normal
   { name: 'San' },
 ]
-``` 
+```
 
 #### Options Cell
 
@@ -388,7 +389,7 @@ datas: [
   // options cell | value is object | label is string
   { name: { label: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold' } },
 ]
-``` 
+```
 
 #### Fonts Family
 
@@ -430,7 +431,7 @@ datas: [
 ### 0.1.89
 
 - Fix first line height
-  - Thanks José Luis Francisco ***@JoseLuis21*** 
+  - Thanks José Luis Francisco ***@JoseLuis21***
 
 ### 0.1.88
 
@@ -487,7 +488,7 @@ const table = {
 ### 0.1.68
 
 + Added ***Promise***. table is a Promise();
-  - Async/Await function 
+  - Async/Await function
 ```js
 ;(async function(){
   // create document
@@ -503,7 +504,7 @@ const table = {
 })();
 ```
 
-+ Added ***callback***. 
++ Added ***callback***.
 ```js
   ~~doc.table(table, options, callback)~~;
 ```
@@ -604,20 +605,20 @@ const table = {
 
 ### 0.1.39
 
-+ **addBackground**  <code>{Function}</code> - Add background peer line. 
++ **addBackground**  <code>{Function}</code> - Add background peer line.
   - doc.addBackground( {x, y, width, height}, fillColor, opacity, callback );
 + **prepareRow**  <code>{Function}</code>
   - const options = { prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => { indexColumn === 0 && doc.addBackground(rectRow, 'red', 0.5) } }
 
 ### 0.1.38
 
-+ **tables**  <code>{Function}</code> - Add many tables. 
++ **tables**  <code>{Function}</code> - Add many tables.
   - doc.tables([ table0, table1, table2, ... ]);
 
 ### 0.1.37
 
 + **addPage**  <code>{Boolean}</code> - Add table on new page.
-  - const options = { addPage: true, }; 
+  - const options = { addPage: true, };
 
 ### 0.1.36
 
@@ -654,7 +655,7 @@ const table = {
 ### 0.1.31
 
 + renderer function on json file. { "renderer": "function(value, icol, irow, row){ return (value+1) + `(${(irow+2)})`; }" }
-+ fix width table and separation lines size 
++ fix width table and separation lines size
 
 ## License
 
