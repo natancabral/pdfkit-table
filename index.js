@@ -474,7 +474,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // 24.1 is height calc title + subtitle
           titleHeight = !lockAddTitles ? 24.1 : 0; 
           // calc if header + first line fit on last page
-          const calc = startY + titleHeight + firstLineHeight + this.headerHeight + safelyMarginBottom// * 1.3;
+          const calc = startY + titleHeight + firstLineHeight + this.headerHeight + options.marginBottom// * 1.3;
 
           // content is big text (crazy!)
           if(firstLineHeight > maxY) {
