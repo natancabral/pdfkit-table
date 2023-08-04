@@ -40,7 +40,7 @@ declare module 'pdfkit-table'
 		[key: string]: string | { label: string; options?: DataOptions };
 	}
 
-	interface Table {
+	export interface Table {
 		title?: string;
 		subtitle?: string;
 		headers?: (string | Header)[];
