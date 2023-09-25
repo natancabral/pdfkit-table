@@ -607,7 +607,10 @@ class PDFDocumentWithTables extends PDFDocument {
                 };
 
                 // add background
-                this.addBackground(rectCell, headerColor, headerOpacity);
+                if (headerColor !== null) {
+                  // add background
+                  this.addBackground(rectCell, headerColor, headerOpacity);
+                }
     
                 // cell padding
                 cellPadding = prepareCellPadding(padding || options.padding || 0);
