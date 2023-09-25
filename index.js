@@ -782,15 +782,11 @@ class PDFDocumentWithTables extends PDFDocument {
             rowBottomY = this.y + columnSpacing + (rowDistance * 2);
           }
 
-          // Separation line between rows
-          separationsRow('horizontal', startX, rowBottomY);
-    
-          // review this code
-          if( row.hasOwnProperty('options') ){
-            if( row.options.hasOwnProperty('separation') ){
-              // Separation line between rows
-              separationsRow('horizontal',startX, rowBottomY, 1, 1);
-            }
+          if( !row.hasOwnProperty('options') ||
+              !row.options.hasOwnProperty('separation') ||
+              row.options.separation !== false ){
+            // Separation line between rows
+            separationsRow('horizontal', startX, rowBottomY);
           }
     
         });
