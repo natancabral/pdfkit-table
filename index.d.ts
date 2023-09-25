@@ -9,6 +9,30 @@ declare module 'pdfkit-table'
 		height: number;
 	}
 
+	interface RowOptions {
+		columnColor?: string;
+		columnOpacity?: number;
+		backgroundColor?: string;
+		backgroundOpacity?: number;
+		background?: {
+			color: string;
+			opacity: number;
+		}
+	}
+
+	interface DataOptions {
+		fontSize: number;
+		fontFamily: string;
+		separation: boolean;
+	}
+
+	type Data = {
+		[key: string]: string | { label: string; options?: DataOptions; };
+	} | {
+		[key: string]: any;
+		options?: RowOptions;
+	};
+
 	interface Header {
 		label?: string;
 		property?: string;
@@ -24,20 +48,10 @@ declare module 'pdfkit-table'
 			value: any,
 			indexColumn?: number,
 			indexRow?: number,
-			row?: any,
+			row?: Data,
 			rectRow?: Rect,
 			rectCell?: Rect
 		) => string;
-	}
-
-	interface DataOptions {
-		fontSize: number;
-		fontFamily: string;
-		separation: boolean;
-	}
-
-	interface Data {
-		[key: string]: string | { label: string; options?: DataOptions };
 	}
 
 	interface Table {
@@ -91,7 +105,8 @@ declare module 'pdfkit-table'
 	}
 
 	class PDFDocumentWithTables extends PDFDocument {
-		public table(table: Table, options?: Options): Promise<void>;
+		public addBackground(rect: Rect, fillColor: string, fillOpacity: number, callback?: (doc: PDFDocumentWithTables) => void): void;
+		public table(table: Table, options?: Options, callback?: (doc: PDFDocumentWithTables) => void): Promise<void>;
 	}
 
 	// export = PDFDocumentWithTables;
