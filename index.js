@@ -364,8 +364,17 @@ class PDFDocumentWithTables extends PDFDocument {
               cell.hasOwnProperty('options') && prepareRowOptions(cell);
             }
     
-            text = String(text).replace('bold:','').replace('size','');
-            
+            // bold
+            if( String(text).indexOf('bold:') === 0 ){
+              text = text.replace('bold:','');
+            }
+
+            // size
+            if( String(text).indexOf('size') === 0 ){
+              let size = String(text).substr(4,2).replace(':','').replace('+','') >> 0;
+              text = text.replace(`size${size}:`,'');
+            }
+
             // cell padding
             cellp = prepareCellPadding(table.headers[i].padding || options.padding || 0);
             // cellp = prepareCellPadding(options.padding || 0);
