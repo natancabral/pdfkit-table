@@ -1,15 +1,40 @@
 declare module 'pdfkit-table' 
 {
-	import PDFDocument from 'pdfkit';
+	import * as PDFDocument from 'pdfkit';
 
-	interface Rect {
+	export interface Rect {
 		x: number;
 		y: number;
 		width: number;
 		height: number;
 	}
 
-	interface Header {
+	export interface RowOptions {
+		columnColor?: string;
+		columnOpacity?: number;
+		backgroundColor?: string;
+		backgroundOpacity?: number;
+		background?: {
+			color: string;
+			opacity: number;
+		}
+		separation?: boolean;
+	}
+
+	export interface DataOptions {
+		fontSize?: number;
+		fontFamily?: string;
+		color?: string;
+	}
+
+	export type Data = {
+		[key: string]: string | { label: string; options?: DataOptions; };
+	} | {
+		[key: string]: any;
+		options?: RowOptions;
+	};
+
+	export interface Header {
 		label?: string;
 		property?: string;
 		width?: number;
@@ -24,23 +49,13 @@ declare module 'pdfkit-table'
 			value: any,
 			indexColumn?: number,
 			indexRow?: number,
-			row?: number,
+			row?: Data,
 			rectRow?: Rect,
 			rectCell?: Rect
 		) => string;
 	}
 
-	interface DataOptions {
-		fontSize: number;
-		fontFamily: string;
-		separation: boolean;
-	}
-
-	interface Data {
-		[key: string]: string | { label: string; options?: DataOptions };
-	}
-
-	interface Table {
+	export interface Table {
 		title?: string;
 		subtitle?: string;
 		headers?: (string | Header)[];
@@ -48,18 +63,18 @@ declare module 'pdfkit-table'
 		rows?: string[][];
 	}
 
-	interface DividerOptions {
+	export interface DividerOptions {
 		disabled?: boolean;
 		width?: number;
 		opacity?: number;
 	}
 
-	interface Divider {
+	export interface Divider {
 		header?: DividerOptions;
 		horizontal?: DividerOptions;
 	}
 
-	interface Title 
+	export interface Title 
 	{
 		label: string;
 		fontSize?: number;
@@ -67,7 +82,7 @@ declare module 'pdfkit-table'
 		color?: string; 
 	}
 
-	interface Options {
+	export interface Options {
 		title?: string | Title ;
 		subtitle?: string | Title;
 		width?: number;
@@ -76,7 +91,7 @@ declare module 'pdfkit-table'
 		divider?: Divider;
 		columnsSize?: number[];
 		columnSpacing?: number; //default 5
-		padding?: number[]; 
+		padding?: number | number[]; 
 		addPage?: boolean; //default false
 		hideHeader?: boolean;
 		minRowHeight?: number;
@@ -90,8 +105,9 @@ declare module 'pdfkit-table'
 		) => PDFDocumentWithTables;
 	}
 
-	class PDFDocumentWithTables extends PDFDocument {
-		public table(table: Table, options?: Options): Promise<void>;
+	export class PDFDocumentWithTables extends PDFDocument {
+		public addBackground(rect: Rect, fillColor: string, fillOpacity: number, callback?: (doc: PDFDocumentWithTables) => void): void;
+		public table(table: Table, options?: Options, callback?: (doc: PDFDocumentWithTables) => void): Promise<void>;
 	}
 
 	// export = PDFDocumentWithTables;
