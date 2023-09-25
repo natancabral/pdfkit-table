@@ -752,8 +752,14 @@ class PDFDocumentWithTables extends PDFDocument {
                 width: width - (cellPadding.left + cellPadding.right),
                 align: align,
               }); 
-              // line height, spacing hehight, cell and text diference
-              topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;  
+              if(valign === 'bottom'){
+                // line height, spacing hehight, cell and text diference
+                topTextToAlignVertically = rowDistance - (columnSpacing * 2) + (rectCell.height - heightText);
+              }
+              else {
+                // line height, spacing hehight, cell and text diference
+                topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;
+              }
             }
             // ------------------------------------------------------------------------------
     
@@ -866,8 +872,14 @@ class PDFDocumentWithTables extends PDFDocument {
                 width: columnSizes[index] - (cellPadding.left + cellPadding.right),
                 align: align,
               }); 
-              // line height, spacing hehight, cell and text diference
-              topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;  
+              if(valign === 'bottom'){
+                // line height, spacing hehight, cell and text diference
+                topTextToAlignVertically = rowDistance - (columnSpacing * 2) + (rectCell.height - heightText);
+              }
+              else {
+                // line height, spacing hehight, cell and text diference
+                topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;
+              }
             }
             // ------------------------------------------------------------------------------
     
