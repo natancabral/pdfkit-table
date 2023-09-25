@@ -1,15 +1,15 @@
 declare module 'pdfkit-table' 
 {
-	import PDFDocument from 'pdfkit';
+	import * as PDFDocument from 'pdfkit';
 
-	interface Rect {
+	export interface Rect {
 		x: number;
 		y: number;
 		width: number;
 		height: number;
 	}
 
-	interface RowOptions {
+	export interface RowOptions {
 		columnColor?: string;
 		columnOpacity?: number;
 		backgroundColor?: string;
@@ -20,20 +20,20 @@ declare module 'pdfkit-table'
 		}
 	}
 
-	interface DataOptions {
+	export interface DataOptions {
 		fontSize: number;
 		fontFamily: string;
 		separation: boolean;
 	}
 
-	type Data = {
+	export type Data = {
 		[key: string]: string | { label: string; options?: DataOptions; };
 	} | {
 		[key: string]: any;
 		options?: RowOptions;
 	};
 
-	interface Header {
+	export interface Header {
 		label?: string;
 		property?: string;
 		width?: number;
@@ -54,7 +54,7 @@ declare module 'pdfkit-table'
 		) => string;
 	}
 
-	interface Table {
+	export interface Table {
 		title?: string;
 		subtitle?: string;
 		headers?: (string | Header)[];
@@ -62,18 +62,18 @@ declare module 'pdfkit-table'
 		rows?: string[][];
 	}
 
-	interface DividerOptions {
+	export interface DividerOptions {
 		disabled?: boolean;
 		width?: number;
 		opacity?: number;
 	}
 
-	interface Divider {
+	export interface Divider {
 		header?: DividerOptions;
 		horizontal?: DividerOptions;
 	}
 
-	interface Title 
+	export interface Title 
 	{
 		label: string;
 		fontSize?: number;
@@ -81,7 +81,7 @@ declare module 'pdfkit-table'
 		color?: string; 
 	}
 
-	interface Options {
+	export interface Options {
 		title?: string | Title ;
 		subtitle?: string | Title;
 		width?: number;
@@ -104,7 +104,7 @@ declare module 'pdfkit-table'
 		) => PDFDocumentWithTables;
 	}
 
-	class PDFDocumentWithTables extends PDFDocument {
+	export class PDFDocumentWithTables extends PDFDocument {
 		public addBackground(rect: Rect, fillColor: string, fillOpacity: number, callback?: (doc: PDFDocumentWithTables) => void): void;
 		public table(table: Table, options?: Options, callback?: (doc: PDFDocumentWithTables) => void): Promise<void>;
 	}
