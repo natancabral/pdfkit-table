@@ -24,7 +24,7 @@ declare module 'pdfkit-table'
 			value: any,
 			indexColumn?: number,
 			indexRow?: number,
-			row?: number,
+			row?: any,
 			rectRow?: Rect,
 			rectCell?: Rect
 		) => string;
@@ -76,7 +76,7 @@ declare module 'pdfkit-table'
 		divider?: Divider;
 		columnsSize?: number[];
 		columnSpacing?: number; //default 5
-		padding?: number[]; 
+		padding?: number | number[]; 
 		addPage?: boolean; //default false
 		hideHeader?: boolean;
 		minRowHeight?: number;
