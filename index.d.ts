@@ -18,12 +18,13 @@ declare module 'pdfkit-table'
 			color: string;
 			opacity: number;
 		}
+		separation?: boolean;
 	}
 
 	export interface DataOptions {
-		fontSize: number;
-		fontFamily: string;
-		separation: boolean;
+		fontSize?: number;
+		fontFamily?: string;
+		color?: string;
 	}
 
 	export type Data = {
