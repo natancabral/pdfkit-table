@@ -118,14 +118,19 @@ class PDFDocumentWithTables extends PDFDocument {
         const maxY             = this.page.height - (this.page.margins.bottom); // this.page.margins.top + 
     
           let startX           = options.x || this.x || this.page.margins.left;
-          let startY           = options.y || this.y || this.page.margins.top;
+          let startY           = (options.y || this.y || this.page.margins.top) + (
+            !options.hideHeader ?
+            // compensate for the headers columnspacing and border
+            columnSpacing + (rowDistance * 2) :
+            0
+          );
 
           let lastPositionX    = 0; 
           let rowBottomY       = 0;
 
           //------------ experimental fast variables
           let titleHeight     = 0;
-          this.headerHeight    = 0;
+          let headerHeight    = 0;
           let firstLineHeight = 0;
           this.datasIndex     = 0;
           this.rowsIndex     = 0 ;
@@ -188,7 +193,12 @@ class PDFDocumentWithTables extends PDFDocument {
         // event emitter
         const onFirePageAdded = () => {
           // startX = this.page.margins.left;
-          startY = this.page.margins.top;
+          startY = this.page.margins.top + (
+            !options.hideHeader ?
+            // compensate for the headers columnspacing and border
+            columnSpacing + (rowDistance * 2) :
+            0
+          );
           rowBottomY = 0;
           // lockAddPage || this.addPage(this.options);
           lockAddPage || this.addPage({
@@ -454,9 +464,9 @@ class PDFDocumentWithTables extends PDFDocument {
           prepareHeader();
     
           // calc header height
-          if(this.headerHeight === 0){
-            this.headerHeight = computeRowHeight(table.headers, true);
-            this.logg(this.headerHeight, 'headers');
+          if(!options.hideHeader && headerHeight === 0){
+            headerHeight = computeRowHeight(table.headers, true);
+            this.logg(headerHeight, 'headers');
           }
 
           // calc first table line when init table
@@ -474,7 +484,7 @@ class PDFDocumentWithTables extends PDFDocument {
           // 24.1 is height calc title + subtitle
           titleHeight = !lockAddTitles ? 24.1 : 0; 
           // calc if header + first line fit on last page
-          const calc = startY + titleHeight + firstLineHeight + this.headerHeight + safelyMarginBottom// * 1.3;
+          const calc = startY + titleHeight + firstLineHeight + headerHeight + safelyMarginBottom// * 1.3;
 
           // content is big text (crazy!)
           if(firstLineHeight > maxY) {
@@ -516,7 +526,7 @@ class PDFDocumentWithTables extends PDFDocument {
           }
           
           // Check to have enough room for header and first rows. default 3
-          // if (startY + 2 * this.headerHeight >= maxY) this.emitter.emit('addPage'); //this.addPage();
+          // if (startY + 2 * headerHeight >= maxY) this.emitter.emit('addPage'); //this.addPage();
     
           if(!options.hideHeader && table.headers.length > 0) {
     
@@ -528,7 +538,7 @@ class PDFDocumentWithTables extends PDFDocument {
               //   x: startX, 
               //   y: startY - columnSpacing - (rowDistance * 2), 
               //   width: columnWidth, 
-              //   height: this.headerHeight + columnSpacing,
+              //   height: headerHeight + columnSpacing,
               // };
     
               // // add background
@@ -542,7 +552,7 @@ class PDFDocumentWithTables extends PDFDocument {
                   x: lastPositionX, 
                   y: startY - columnSpacing - (rowDistance * 2), 
                   width: columnSizes[i], 
-                  height: this.headerHeight + columnSpacing,
+                  height: headerHeight + columnSpacing,
                 };
     
                 // add background
@@ -603,7 +613,7 @@ class PDFDocumentWithTables extends PDFDocument {
                   x: lastPositionX, 
                   y: startY - columnSpacing - (rowDistance * 2), 
                   width: width, 
-                  height: this.headerHeight + columnSpacing,
+                  height: headerHeight + columnSpacing,
                 };
 
                 // add background
