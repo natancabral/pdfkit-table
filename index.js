@@ -367,7 +367,7 @@ class PDFDocumentWithTables extends PDFDocument {
             text = String(text).replace('bold:','').replace('size','');
             
             // cell padding
-            cellp = prepareCellPadding(table.headers[i].padding || options.padding || 0);
+            cellp = prepareCellPadding((typeof table.headers[i] === 'object' ? table.headers[i].padding : undefined) || options.padding || 0);
             // cellp = prepareCellPadding(options.padding || 0);
             //  - (cellp.left + cellp.right + (columnSpacing * 2))
             // console.log(cellp);
@@ -855,7 +855,7 @@ class PDFDocumentWithTables extends PDFDocument {
             }
     
             // cell padding
-            cellPadding = prepareCellPadding(table.headers[index].padding || options.padding || 0);
+            cellPadding = prepareCellPadding((typeof table.headers[index] === 'object' ? table.headers[index].padding : undefined) || options.padding || 0);
     
             // TODO # Experimental
             // ------------------------------------------------------------------------------
