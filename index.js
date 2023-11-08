@@ -77,6 +77,7 @@ class PDFDocumentWithTables extends PDFDocument {
 
         options.hideHeader || (options.hideHeader = false);
         options.padding || (options.padding = 0);
+        options.onPageUpperMargin || (options.onPageUpperMargin = 0);
         options.columnsSize || (options.columnsSize = []);
         options.addPage || (options.addPage = false);
         options.absolutePosition || (options.absolutePosition = false);
@@ -187,8 +188,8 @@ class PDFDocumentWithTables extends PDFDocument {
 
         // event emitter
         const onFirePageAdded = () => {
-          // startX = this.page.margins.left;
-          startY = this.page.margins.top;
+         // startX = this.page.margins.left;
+          startY = options.onPageUpperMargin ? options.onPageUpperMargin : this.page.margins.top;
           rowBottomY = 0;
           // lockAddPage || this.addPage(this.options);
           lockAddPage || this.addPage({
