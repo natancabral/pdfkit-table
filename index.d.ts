@@ -80,6 +80,7 @@ declare module 'pdfkit-table'
 		addPage?: boolean; //default false
 		hideHeader?: boolean;
 		minRowHeight?: number;
+		textFeatures: string[];
 		prepareHeader?: () => PDFDocumentWithTables;
 		prepareRow?: (
 			row?: any,
