@@ -159,14 +159,18 @@ class PDFDocumentWithTables extends PDFDocument {
             this.logg(data, titleHeight); // 24
 
             // write 
-            this.text( data, startX, startY, options.textOptions ).opacity( 1 ); // moveDown( 0.5 )
+            this.text( data, startX, startY, {
+              features: options.textFeatures
+            } ).opacity( 1 ); // moveDown( 0.5 )
             // startY += cellHeight;
             startY = this.y + columnSpacing + 2;
             // else object
           } else if(typeof data === 'object' ){
             // title object
             data.fontFamily && this.font( data.fontFamily );
-            data.label && this.fillColor( data.color || 'black').fontSize( data.fontSize || size ).text( data.label, startX, startY, options.textOptions ).fill();
+            data.label && this.fillColor( data.color || 'black').fontSize( data.fontSize || size ).text( data.label, startX, startY, {
+              features: options.textFeatures
+            } ).fill();
 
             startY = this.y + columnSpacing + 2;
 
@@ -557,7 +561,7 @@ class PDFDocumentWithTables extends PDFDocument {
                   startY, {
                   width: Number(columnSizes[i]) - (cellPadding.left + cellPadding.right),
                   align: 'left',
-                  options: options.textOptions,
+                  features: options.textFeatures,
                 });
                 
                 lastPositionX += columnSizes[i] >> 0;
@@ -619,7 +623,7 @@ class PDFDocumentWithTables extends PDFDocument {
                   startY, {
                   width: width - (cellPadding.left + cellPadding.right),
                   align: align,
-                  options: options.textOptions
+                  features: options.textFeatures
                 })
 
                 lastPositionX += width;
@@ -764,7 +768,7 @@ class PDFDocumentWithTables extends PDFDocument {
               startY + topTextToAlignVertically, {
               width: width - (cellPadding.left + cellPadding.right),
               align: align,
-              options: options.textOptions
+              features: options.textFeatures
             });  
             
             lastPositionX += width; 
@@ -873,13 +877,13 @@ class PDFDocumentWithTables extends PDFDocument {
               topTextToAlignVertically = rowDistance - columnSpacing + (rectCell.height - heightText) / 2;  
             }
             // ------------------------------------------------------------------------------
-    
+
             this.text(cell, 
               lastPositionX + (cellPadding.left),
               startY + topTextToAlignVertically, {
               width: columnSizes[index] - (cellPadding.left + cellPadding.right),
               align: align,
-              options: options.textOptions
+              features: options.textFeatures
             });
     
             lastPositionX += columnSizes[index];
