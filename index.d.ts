@@ -7,6 +7,7 @@ declare module 'pdfkit-table'
 		y: number;
 		width: number;
 		height: number;
+		round: number;
 	}
 
 	interface Header {
@@ -17,6 +18,7 @@ declare module 'pdfkit-table'
 		valign?: string;
 		headerColor?: string; //default '#BEBEBE'
 		headerOpacity?: number; //default '0.5'
+		headerRound?: number; // default '0'
 		headerAlign?: string; //default 'left'
 		columnColor?: string;
 		columnOpacity?: number;

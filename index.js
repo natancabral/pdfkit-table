@@ -24,7 +24,7 @@ class PDFDocumentWithTables extends PDFDocument {
    * @param {Number} fillOpacity 
    * @param {Function} callback 
    */
-  addBackground ({x, y, width, height}, fillColor, fillOpacity, callback) {
+  addBackground ({x, y, width, height, round}, fillColor, fillOpacity, callback) {
 
     // validate
     fillColor || (fillColor = 'grey');
@@ -34,13 +34,29 @@ class PDFDocumentWithTables extends PDFDocument {
     this.save();
 
     // draw bg
-    this
-    .fill(fillColor)
-    //.stroke(fillColor)
-    .fillOpacity(fillOpacity)
-    .rect( x, y, width, height )
-    //.stroke()
-    .fill();
+    if (round) {
+      this
+      .fill(fillColor)
+      //.stroke(fillColor)
+      .fillOpacity(fillOpacity)
+      .roundedRect( x, y, width, height, Math.abs(round) )
+      .rect( x, y + height / 2, width, height / 2 );
+      if (round > 0) {
+        this.rect( x + width / 2, y, width / 2, height);
+      } else {
+        this.rect( x, y, width / 2, height);
+      }
+      //.stroke()
+      this.fill();
+    } else {
+      this
+      .fill(fillColor)
+      //.stroke(fillColor)
+      .fillOpacity(fillOpacity)
+      .rect( x, y, width, height )
+      //.stroke()
+      .fill();
+    }
 
     // back to saved style
     this.restore();
@@ -132,7 +148,7 @@ class PDFDocumentWithTables extends PDFDocument {
           let lockAddTitles   = false; // to addd title one time
           let lockAddPage     = false;
           let lockAddHeader   = false;
-          let safelyMarginBottom = this.page.margins.top/2; 
+          let safelyMarginBottom = this.page.margins.bottom; 
           
         // reset position to margins.left
         if( options.x === null || options.x === -1 ){
@@ -350,7 +366,7 @@ class PDFDocumentWithTables extends PDFDocument {
             // define row with properties header
             row = cells;  
           }
-    
+          
           row.forEach((cell,i) => {
     
             let text = cell;
@@ -477,13 +493,14 @@ class PDFDocumentWithTables extends PDFDocument {
           const calc = startY + titleHeight + firstLineHeight + this.headerHeight + safelyMarginBottom// * 1.3;
 
           // content is big text (crazy!)
+          // console.log("pdfkit-table", calc, maxY, this.y, this.page.height, this.page.margins.bottom)
           if(firstLineHeight > maxY) {
             // lockAddHeader = true;
             lockAddPage = true;
             this.logg('CRAZY! This a big text on cell');
           } else if(calc > maxY) { // && !lockAddPage
             // lockAddHeader = false;
-            lockAddPage = true;
+            lockAddPage = false;
             onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage();
             return;
           } 
@@ -568,10 +585,11 @@ class PDFDocumentWithTables extends PDFDocument {
               // Print all headers
               table.headers.forEach( (dataHeader, i) => {
     
-                let {label, width, renderer, align, headerColor, headerOpacity, headerAlign, padding} = dataHeader;
+                let {label, width, renderer, align, valign, headerColor, headerOpacity, headerAlign, headerValign, headerRound, padding} = dataHeader;
                 // check defination
                 width = width || columnSizes[i];
                 align = headerAlign || align || 'left';
+                valign = headerValign || valign || 'top';
                 // force number
                 width = width >> 0;
         
@@ -607,15 +625,19 @@ class PDFDocumentWithTables extends PDFDocument {
                 };
 
                 // add background
-                this.addBackground(rectCell, headerColor, headerOpacity);
+                this.addBackground({...rectCell, round: headerRound}, headerColor, headerOpacity);
     
                 // cell padding
                 cellPadding = prepareCellPadding(padding || options.padding || 0);
     
                 // write
+                const calcY = startY + (this.headerHeight - this.heightOfString(label, {
+                  width: width - (cellPadding.left + cellPadding.right),
+                  align: align,
+                })) / 2;
                 this.text(label, 
                   lastPositionX + (cellPadding.left), 
-                  startY, {
+                  valign ? calcY : startY, {
                   width: width - (cellPadding.left + cellPadding.right),
                   align: align,
                 })
