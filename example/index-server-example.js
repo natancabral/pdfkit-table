@@ -11,9 +11,19 @@
  */
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet"); // Added helmet for security
+const rateLimit = require("express-rate-limit"); // Added rate limiting
 const app = express();
 
 app.use(cors());
+app.use(helmet()); // Disable X-Powered-By header
+
+// Rate limiter middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 app.listen(3030, function () {
   console.log("Hello Server: port 3030");
