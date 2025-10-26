@@ -483,7 +483,7 @@ class PDFDocumentWithTables extends PDFDocument {
             this.logg('CRAZY! This a big text on cell');
           } else if(calc > maxY) { // && !lockAddPage
             // lockAddHeader = false;
-            lockAddPage = true;
+            lockAddPage = false;
             onFirePageAdded(); // this.emitter.emit('addPage'); //this.addPage();
             return;
           } 
