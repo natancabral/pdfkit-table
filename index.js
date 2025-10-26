@@ -203,12 +203,12 @@ class PDFDocumentWithTables extends PDFDocument {
           startY = this.page.margins.top;
           rowBottomY = 0;
           // lockAddPage || this.addPage(this.options);
+          this.rendersOnAddPage.forEach(section => section(this))
           lockAddPage || this.addPage({
             layout: this.page.layout,
             size: this.page.size,
             margins: this.page.margins,
           });
-          this.rendersOnAddPage.forEach(section => section(this))
           lockAddHeader || addHeader();
           //addHeader();
         };
