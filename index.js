@@ -9,12 +9,12 @@ class PDFDocumentWithTables extends PDFDocument {
     this.renderCallbacksOnNewPage = [];
   }
 
-  queueRenderOnNewPage(renderFn, callback) {
+  queueRenderOnAddPage(renderFn, callback) {
     this.renderCallbacksOnNewPage.push(renderFn);
     if (typeof callback === "function") callback(this);
   }
 
-  addRectBackground({ x, y, width, height }, fillColor = "grey", fillOpacity = 0.1, callback) {
+  addBackground({ x, y, width, height }, fillColor = "grey", fillOpacity = 0.1, callback) {
     this.save()
       .fill(fillColor)
       .fillOpacity(fillOpacity)
@@ -25,7 +25,7 @@ class PDFDocumentWithTables extends PDFDocument {
     if (typeof callback === "function") callback(this);
   }
 
-  async renderTable(tableData, userOptions, callback) {
+  async table(tableData, userOptions, callback) {
     return new Promise((resolve, reject) => {
       try {
         if (typeof tableData === "string") tableData = JSON.parse(tableData);
