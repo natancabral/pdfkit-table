@@ -92,6 +92,7 @@ declare module 'pdfkit-table'
 
 	class PDFDocumentWithTables extends PDFDocument {
 		public table(table: Table, options?: Options): Promise<void>;
+		public addBackground(rect: Rect, fillColor: string, fillOpacity: number);
 	}
 
 	// export = PDFDocumentWithTables;
