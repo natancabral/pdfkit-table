@@ -19,9 +19,11 @@ class PDFDocumentWithTables extends PDFDocument {
    * queueRenderOnAddPage
    * @param {(doc: PDFDocumentWithTables) => void} section 
    */
-  queueRenderOnAddPage(section) {
+  queueRenderOnAddPage(section, callback) {
     this.rendersOnAddPage.push(section)
+
     console.log(this.rendersOnAddPage)
+    typeof callback === 'function' && callback(this);
   }
 
   addPage(options){
