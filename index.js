@@ -193,7 +193,7 @@ class PDFDocumentWithTables extends PDFDocument {
           
           if(!Array.isArray(row) && typeof row === 'object' && !row.hasOwnProperty('property')){
             const cells = []; 
-            table.headers.forEach(({property}) => cells.push(row[property]) );
+            tableData.headers.forEach(({property}) => cells.push(row[property]) );
             rowData = cells;  
           }
 
