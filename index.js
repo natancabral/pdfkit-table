@@ -29,7 +29,6 @@ class PDFDocumentWithTables extends PDFDocument {
   addPage(options){
     console.log(this)
     console.log(this.rendersOnAddPage)
-    this.rendersOnAddPage.forEach(section => section(this))
     super.addPage(options)
   }
 
@@ -217,6 +216,7 @@ class PDFDocumentWithTables extends PDFDocument {
             size: this.page.size,
             margins: this.page.margins,
           });
+          this.rendersOnAddPage.forEach(section => section(this))
           lockAddHeader || addHeader();
           //addHeader();
         };
