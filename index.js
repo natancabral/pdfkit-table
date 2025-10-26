@@ -922,7 +922,7 @@ class PDFDocumentWithTables extends PDFDocument {
         this.moveDown(); // break
     
         // add fire
-        this.off("pageAdded", onFirePageAdded);
+        // this.off("pageAdded", onFirePageAdded);
     
         // callback
         typeof callback === 'function' && callback(this);
