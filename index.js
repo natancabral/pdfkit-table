@@ -21,15 +21,7 @@ class PDFDocumentWithTables extends PDFDocument {
    */
   queueRenderOnAddPage(section, callback) {
     this.rendersOnAddPage.push(section)
-
-    console.log(this.rendersOnAddPage)
     typeof callback === 'function' && callback(this);
-  }
-
-  addPage(options){
-    console.log(this)
-    console.log(this.rendersOnAddPage)
-    super.addPage(options)
   }
 
 
@@ -924,7 +916,7 @@ class PDFDocumentWithTables extends PDFDocument {
         this.moveDown(); // break
     
         // add fire
-        // this.off("pageAdded", onFirePageAdded);
+        this.off("pageAdded", onFirePageAdded);
     
         // callback
         typeof callback === 'function' && callback(this);
