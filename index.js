@@ -189,7 +189,15 @@ class PDFDocumentWithTables extends PDFDocument {
 
         const computeRowHeight = (row, isHeader) => {
           let maxHeight = isHeader ? 0 : options.minRowHeight || 0;
-          row.forEach((cell, i) => {
+          let rowData = row;
+          
+          if(!Array.isArray(row) && typeof row === 'object' && !row.hasOwnProperty('property')){
+            const cells = []; 
+            table.headers.forEach(({property}) => cells.push(row[property]) );
+            rowData = cells;  
+          }
+
+          rowData.forEach((cell, i) => {
             let text = typeof cell === "object" ? String(cell.label ?? "") : String(cell);
             const pad = parsePadding(tableData.headers[i]?.padding ?? options.padding);
             const height = this.heightOfString(text, {
