@@ -11,7 +11,6 @@ class PDFDocumentWithTables extends PDFDocument {
   constructor(option) {
     super(option);
     this.opt = option;
-    this.rendersOnAddPage = []
     // this.emitter = new EventEmitter();
   }
 
@@ -21,9 +20,11 @@ class PDFDocumentWithTables extends PDFDocument {
    */
   queueRenderOnAddPage(section) {
     this.rendersOnAddPage.push(section)
+    console.log(this.rendersOnAddPage)
   }
 
   addPage(options){
+    console.log(this.rendersOnAddPage)
     this.rendersOnAddPage.forEach(section => section(this))
     super.addPage(options)
   }
