@@ -11,6 +11,7 @@ class PDFDocumentWithTables extends PDFDocument {
   constructor(option) {
     super(option);
     this.opt = option;
+    this.rendersOnAddPage = []
     // this.emitter = new EventEmitter();
   }
 
