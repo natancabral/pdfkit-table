@@ -6,12 +6,27 @@ const PDFDocument = require("pdfkit");
 // const EventEmitter = require('events').EventEmitter;
 
 class PDFDocumentWithTables extends PDFDocument {
+  rendersOnAddPage = []
   
   constructor(option) {
     super(option);
     this.opt = option;
     // this.emitter = new EventEmitter();
   }
+
+  /**
+   * queueRenderOnAddPage
+   * @param {(doc: PDFDocumentWithTables) => void} section 
+   */
+  queueRenderOnAddPage(section) {
+    this.rendersOnAddPage.push(section)
+  }
+
+  addPage(){
+    this.rendersOnAddPage.forEach(section => section(this))
+    super.addPage()
+  }
+
 
   logg(...args) {
     // console.log(args);
