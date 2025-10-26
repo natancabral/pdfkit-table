@@ -23,9 +23,9 @@ class PDFDocumentWithTables extends PDFDocument {
     this.rendersOnAddPage.push(section)
   }
 
-  addPage(){
+  addPage(options){
     this.rendersOnAddPage.forEach(section => section(this))
-    super.addPage()
+    super.addPage(options)
   }
 
 
