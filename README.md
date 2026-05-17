@@ -625,7 +625,17 @@ data: [
 - **`String.substr`** — replaced deprecated `substr(4, 2)` with `slice(4, 6)`.
 - **Weak types** — `any` removed from `prepareRowOptions`, `prepareRowBackground`, `computeRowHeight`; replaced with `unknown` + runtime guards and a `RowHeightInput` union.
 
-### 0.2.00
+### 0.2.8
+
+- RTL
+    - Thanks  [moshfeu](https://github.com/moshfeu)
+```js
+options: {
+  rtl: true, // boolean
+}
+```
+
+### 0.2.0
 
 - Fix
    - Thanks [***@mar10-emil***](https://github.com/mar10-emil)

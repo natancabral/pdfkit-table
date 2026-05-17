@@ -145,23 +145,92 @@ export interface Table {
 // ---------------------------------------------------------------------------
 
 export interface TableOptions {
+  /**
+   * When `true`, the table will be rendered from right to left.
+   * @default false
+   */
+  rtl?: boolean;
+  /**
+   * The title of the table.
+   * @default ""
+   */
   title?: string | TitleObject;
+  /**
+   * The subtitle of the table.
+   * @default ""
+   */
   subtitle?: string | TitleObject;
+  /**
+   * The width of the table.
+   * @default "auto"
+   */
   width?: number | string;
+  /**
+   * The x position of the table.
+   * @default 0
+   */
   x?: number | null;
+  /**
+   * The y position of the table.
+   * @default 0
+   */
   y?: number;
   divider?: {
+    /**
+     * The header divider.
+     * @default { disabled: false, width: undefined, opacity: undefined }
+     */
     header?: DividerPart;
+    /**
+     * The horizontal divider.
+     * @default { disabled: false, width: undefined, opacity: undefined }
+     */
     horizontal?: DividerPart;
+    /**
+     * The vertical divider.
+     * @default { disabled: true, width: undefined, opacity: undefined }
+     */
     vertical?: DividerPart;
   };
+  /**
+   * The column widths.
+   * @default []
+   */
   columnsSize?: number[];
+  /**
+   * The column spacing.
+   * @default 3
+   */
   columnSpacing?: number;
+  /**
+   * The padding of the table.
+   * @default 0
+   */
   padding?: PaddingInput;
+  /**
+   * When `true`, the table will be added to a new page.
+   * @default false
+   */
   addPage?: boolean;
+  /**
+   * When `true`, the header will be hidden.
+   * @default false
+   */
   hideHeader?: boolean;
+  /**
+   * The minimum row height.
+   * @default 0
+   */
   minRowHeight?: number;
+  /**
+   * When `true`, the table will be positioned absolutely.
+   * @default false
+   */
   absolutePosition?: boolean;
+  /**
+   * When `true`, the table will use the safely margin bottom.
+   * @default true
+   */
   useSafelyMarginBottom?: boolean;
   /**
    * Fraction of the page content height (0–1). Rows shorter than
@@ -182,7 +251,15 @@ export interface TableOptions {
    * @default false
    */
   keepRowsTogether?: boolean;
+  /**
+   * The header preparation function.
+   * @default undefined
+   */
   prepareHeader?: (this: PDFDoc) => PDFDoc | void;
+  /**
+   * The row preparation function.
+   * @default undefined
+   */
   prepareRow?: (
     this: PDFDoc,
     row?: unknown,

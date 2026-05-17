@@ -557,16 +557,42 @@ export function createPdfDocumentWithTables(
               docTable.headers!.forEach(() => h.push(columnWidth));
             }
 
-            h.reduce((prev, curr) => {
-              p.push(prev >> 0);
-              return prev + curr;
-            }, opts.x || this.page.margins.left);
+            if (opts.rtl) {
+              // RTL: column positions go right-to-left.
+              // Mirror of LTR: LTR anchors its left edge at startX (= opts.x ?? margin.left)
+              // and grows rightward by summing column widths.
+              // RTL anchors its RIGHT edge at startX + sum(columnWidths) and grows leftward.
+              // When opts.width is set, it overrides the total column width (same as LTR).
+              const rtlStartX = opts.x ?? this.page.margins.left;
+              const totalW = opts.width
+                ? parseInt(String(opts.width), 10) ||
+                  Number(String(opts.width).replace(/[^0-9]/g, "")) >> 0
+                : h.reduce((s, v) => s + v, 0);
+              const rightEdge = rtlStartX + totalW;
 
-            if (h.length) columnSizes = h;
-            if (p.length) columnPositions = p;
+              h.reduce((prev, curr) => {
+                const colStart = prev - curr;
+                p.push(colStart >> 0);
+                return colStart;
+              }, rightEdge);
 
-            w = p[p.length - 1] + h[h.length - 1];
-            if (w) tableWidth = w;
+              if (h.length) columnSizes = h;
+              if (p.length) columnPositions = p;
+
+              // tableWidth used by separationsRow — rightEdge as absolute x coordinate
+              tableWidth = rightEdge;
+            } else {
+              h.reduce((prev, curr) => {
+                p.push(prev >> 0);
+                return prev + curr;
+              }, opts.x || this.page.margins.left);
+
+              if (h.length) columnSizes = h;
+              if (p.length) columnPositions = p;
+
+              w = p[p.length - 1] + h[h.length - 1];
+              if (w) tableWidth = w;
+            }
           };
 
           calcColumnSizes();
@@ -647,14 +673,16 @@ export function createPdfDocumentWithTables(
               lastPositionX = opts.x || startX || this.x;
               startY = opts.y || startY || this.y;
             } else {
-              lastPositionX = startX;
+              lastPositionX = opts.rtl ? columnPositions[0] : startX;
             }
 
             if (!opts.hideHeader && docTable.headers!.length > 0) {
               if (typeof docTable.headers![0] === "string") {
                 docTable.headers!.forEach((header, i) => {
+                  // RTL: use pre-computed column position directly
+                  const cellX = opts.rtl ? columnPositions[i] : lastPositionX;
                   const rectCell: Rect = {
-                    x: lastPositionX,
+                    x: cellX,
                     y: startY - columnSpacing - rowDistance * 2,
                     width: columnSizes[i],
                     height: this.headerHeight + columnSpacing,
@@ -663,16 +691,16 @@ export function createPdfDocumentWithTables(
                   cellPadding = prepareCellPadding(opts.padding || 0);
                   this.text(
                     String(header),
-                    lastPositionX + cellPadding.left,
+                    cellX + cellPadding.left,
                     startY + cellPadding.top,
                     {
                       width:
                         Number(columnSizes[i]) -
                         (cellPadding.left + cellPadding.right),
-                      align: "left",
+                      align: opts.rtl ? "right" : "left",
                     },
                   );
-                  lastPositionX += columnSizes[i] >> 0;
+                  if (!opts.rtl) lastPositionX += columnSizes[i] >> 0;
                 });
               } else {
                 docTable.headers!.forEach((dataHeader, i) => {
@@ -689,14 +717,17 @@ export function createPdfDocumentWithTables(
                   } = dh;
 
                   width = (width || columnSizes[i]) >> 0;
-                  align = headerAlign || align || "left";
+                  // RTL: default align to right unless explicitly set
+                  align = headerAlign || align || (opts.rtl ? "right" : "left");
 
                   if (renderer && typeof renderer === "string") {
                     dh.renderer = fEval(renderer) as CellRenderer;
                   }
 
+                  // RTL: use pre-computed column position directly
+                  const cellX = opts.rtl ? columnPositions[i] : lastPositionX;
                   const rectCell: Rect = {
-                    x: lastPositionX,
+                    x: cellX,
                     y: startY - columnSpacing - rowDistance * 2,
                     width,
                     height: this.headerHeight + columnSpacing,
@@ -713,7 +744,7 @@ export function createPdfDocumentWithTables(
 
                   this.text(
                     String(label ?? ""),
-                    lastPositionX + cellPadding.left,
+                    cellX + cellPadding.left,
                     startY + cellPadding.top,
                     {
                       width: width - (cellPadding.left + cellPadding.right),
@@ -721,7 +752,7 @@ export function createPdfDocumentWithTables(
                     },
                   );
 
-                  lastPositionX += width;
+                  if (!opts.rtl) lastPositionX += width;
                 });
               }
 
@@ -860,7 +891,7 @@ export function createPdfDocumentWithTables(
             };
 
             prepareRowBackground(row, rectRow);
-            lastPositionX = startX;
+            lastPositionX = opts.rtl ? columnPositions[0] : startX;
 
             let rowHasOverflowed = false;
             let maxCellEndY = rowStartY;
@@ -876,11 +907,14 @@ export function createPdfDocumentWithTables(
               let { property, width, renderer, align, valign, padding } = hdr;
 
               width = width || columnWidth;
-              align = align || "left";
+              // RTL: default text align to right unless explicitly set
+              align = align || (opts.rtl ? "right" : "left");
               cellPadding = prepareCellPadding(padding || opts.padding || 0);
 
+              // RTL: use pre-computed column position directly
+              const cellX = opts.rtl ? columnPositions[index] : lastPositionX;
               const rectCell: Rect = {
-                x: lastPositionX,
+                x: cellX,
                 y: rowStartY - columnSpacing - rowDistance * 2,
                 width: width!,
                 height: rowHeight + columnSpacing,
@@ -959,7 +993,7 @@ export function createPdfDocumentWithTables(
               const cellY =
                 postOverflowCellStartY ?? rowStartY + topTextToAlignVertically;
 
-              this.text(textStr, lastPositionX + cellPadding.left, cellY, {
+              this.text(textStr, cellX + cellPadding.left, cellY, {
                 width: width! - (cellPadding.left + cellPadding.right),
                 align: align as PdfTextAlign,
               });
@@ -978,7 +1012,7 @@ export function createPdfDocumentWithTables(
                 maxCellEndY = Math.max(maxCellEndY, this.y);
               }
 
-              lastPositionX += width!;
+              if (!opts.rtl) lastPositionX += width!;
               prepareRowOptions(row);
               prepareRow(row, index, i, rectRow, rectCell);
             });
@@ -1051,7 +1085,7 @@ export function createPdfDocumentWithTables(
               height: rowHeight + columnSpacing,
             };
 
-            lastPositionX = startX;
+            lastPositionX = opts.rtl ? columnPositions[0] : startX;
 
             let rowHasOverflowed2 = false;
             let maxCellEndY2 = rowStartY2;
@@ -1059,11 +1093,14 @@ export function createPdfDocumentWithTables(
             let postOverflowCellStartY2: number | null = null;
 
             row.forEach((cell, index) => {
-              let align = "left";
+              // RTL: default text align to right unless explicitly set by header
+              let align = opts.rtl ? "right" : "left";
               let valign: string | undefined;
 
+              // RTL: use pre-computed column position directly
+              const cellX2 = opts.rtl ? columnPositions[index] : lastPositionX;
               const rectCell: Rect = {
-                x: lastPositionX,
+                x: cellX2,
                 y: rowStartY2 - columnSpacing - rowDistance * 2,
                 width: columnSizes[index],
                 height: rowHeight + columnSpacing,
@@ -1127,16 +1164,11 @@ export function createPdfDocumentWithTables(
                 postOverflowCellStartY2 ??
                 rowStartY2 + topTextToAlignVertically;
 
-              this.text(
-                String(cell),
-                lastPositionX + cellPadding.left,
-                cellY2,
-                {
-                  width:
-                    columnSizes[index] - (cellPadding.left + cellPadding.right),
-                  align: align as PdfTextAlign,
-                },
-              );
+              this.text(String(cell), cellX2 + cellPadding.left, cellY2, {
+                width:
+                  columnSizes[index] - (cellPadding.left + cellPadding.right),
+                align: align as PdfTextAlign,
+              });
 
               this.page.margins.top = origMarginTop;
 
@@ -1149,7 +1181,7 @@ export function createPdfDocumentWithTables(
                 maxCellEndY2 = Math.max(maxCellEndY2, this.y);
               }
 
-              lastPositionX += columnSizes[index];
+              if (!opts.rtl) lastPositionX += columnSizes[index];
             });
 
             restoreRowStyle = null;
