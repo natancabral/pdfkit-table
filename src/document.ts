@@ -519,10 +519,9 @@ export function createPdfDocumentWithTables(
                 align: "left",
               });
 
-              // FIX: include vertical padding in the row height calculation,
-              // but only for data rows — header height stays unaffected.
-              const verticalPad = isHeader ? 0 : cellp.top + cellp.bottom;
-              result = Math.max(result, cellHeight + verticalPad);
+              // FIX: include vertical padding in the row height calculation
+              // for both header and data rows.
+              result = Math.max(result, cellHeight + cellp.top + cellp.bottom);
             });
 
             return result + columnSpacing;
@@ -665,7 +664,7 @@ export function createPdfDocumentWithTables(
                   this.text(
                     String(header),
                     lastPositionX + cellPadding.left,
-                    startY,
+                    startY + cellPadding.top,
                     {
                       width:
                         Number(columnSizes[i]) -
@@ -715,7 +714,7 @@ export function createPdfDocumentWithTables(
                   this.text(
                     String(label ?? ""),
                     lastPositionX + cellPadding.left,
-                    startY,
+                    startY + cellPadding.top,
                     {
                       width: width - (cellPadding.left + cellPadding.right),
                       align: align as PdfTextAlign,
@@ -930,24 +929,25 @@ export function createPdfDocumentWithTables(
                 );
               }
 
-              let topTextToAlignVertically = 0;
-              // Only apply vertical alignment when the row fits within a single
-              // page.  For multi-page rows, rectCell.height equals the total row
-              // height (which can span many pages), so the centring offset would
-              // push short cells far down the page — or off it entirely.
-              if (
-                valign &&
-                valign !== "top" &&
-                rowHeight <= pageContentHeight
-              ) {
+              // Compute vertical offset respecting both valign and cellPadding.
+              // Only apply valign when row fits in one page — multi-page rows
+              // have a rectCell.height that spans pages and would mis-position.
+              let topTextToAlignVertically = cellPadding.top;
+              if (rowHeight <= pageContentHeight) {
+                const usableHeight =
+                  rectCell.height - cellPadding.top - cellPadding.bottom;
                 const heightText = this.heightOfString(textStr, {
                   width: width! - (cellPadding.left + cellPadding.right),
                   align: align as PdfTextAlign,
                 });
-                topTextToAlignVertically =
-                  rowDistance -
-                  columnSpacing +
-                  (rectCell.height - heightText) / 2;
+                if (valign === "center") {
+                  topTextToAlignVertically =
+                    cellPadding.top + (usableHeight - heightText) / 2;
+                } else if (valign === "bottom") {
+                  topTextToAlignVertically =
+                    cellPadding.top + (usableHeight - heightText);
+                }
+                // valign "top" or undefined: keep cellPadding.top
               }
 
               restoreRowStyle = () => {
@@ -956,23 +956,13 @@ export function createPdfDocumentWithTables(
               };
 
               const pageCountBefore = pageAddedCount;
-              // After a previous cell overflowed, use the post-header Y on the
-              // new page so short cells don't render at the old rowStartY.
               const cellY =
                 postOverflowCellStartY ?? rowStartY + topTextToAlignVertically;
 
-              // FIX: apply cellPadding.top to the vertical position of the text
-              // so that padding is respected in data rows (header is unaffected
-              // because it uses startY directly, not cellY).
-              this.text(
-                textStr,
-                lastPositionX + cellPadding.left,
-                cellY + cellPadding.top,
-                {
-                  width: width! - (cellPadding.left + cellPadding.right),
-                  align: align as PdfTextAlign,
-                },
-              );
+              this.text(textStr, lastPositionX + cellPadding.left, cellY, {
+                width: width! - (cellPadding.left + cellPadding.right),
+                align: align as PdfTextAlign,
+              });
 
               this.page.margins.top = origMarginTop;
 
@@ -1107,21 +1097,24 @@ export function createPdfDocumentWithTables(
                 colHeader?.padding || opts.padding || 0,
               );
 
-              let topTextToAlignVertically = 0;
-              if (
-                valign &&
-                valign !== "top" &&
-                rowHeight <= pageContentHeight2
-              ) {
+              // Compute vertical offset respecting both valign and cellPadding.
+              let topTextToAlignVertically = cellPadding.top;
+              if (rowHeight <= pageContentHeight2) {
+                const usableHeight =
+                  rectCell.height - cellPadding.top - cellPadding.bottom;
                 const heightText = this.heightOfString(String(cell), {
                   width:
                     columnSizes[index] - (cellPadding.left + cellPadding.right),
                   align: align as PdfTextAlign,
                 });
-                topTextToAlignVertically =
-                  rowDistance -
-                  columnSpacing +
-                  (rectCell.height - heightText) / 2;
+                if (valign === "center") {
+                  topTextToAlignVertically =
+                    cellPadding.top + (usableHeight - heightText) / 2;
+                } else if (valign === "bottom") {
+                  topTextToAlignVertically =
+                    cellPadding.top + (usableHeight - heightText);
+                }
+                // valign "top" or undefined: keep cellPadding.top
               }
 
               restoreRowStyle = () => {
@@ -1134,13 +1127,10 @@ export function createPdfDocumentWithTables(
                 postOverflowCellStartY2 ??
                 rowStartY2 + topTextToAlignVertically;
 
-              // FIX: apply cellPadding.top to the vertical position of the text
-              // so that padding is respected in data rows (header is unaffected
-              // because it uses startY directly, not cellY2).
               this.text(
                 String(cell),
                 lastPositionX + cellPadding.left,
-                cellY2 + cellPadding.top,
+                cellY2,
                 {
                   width:
                     columnSizes[index] - (cellPadding.left + cellPadding.right),
