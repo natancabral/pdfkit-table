@@ -1217,6 +1217,59 @@ export function createPdfDocumentWithTables(
     }
 
     // -----------------------------------------------------------------------
+    // purgeImage
+    // -----------------------------------------------------------------------
+
+    /**
+     * Removes a previously rendered image from PDFKit's internal cache
+     * (`_imageRegistry`), allowing the garbage collector to reclaim the memory
+     * occupied by that image's decoded pixel data.
+     *
+     * **When to use:**
+     * Call this immediately after the last `doc.image()` call that uses a given
+     * source, when the image will NOT appear again later in the document.
+     * This is useful for large one-off illustrations on memory-constrained
+     * servers (≤1 GB heap).
+     *
+     * **When NOT to use:**
+     * Do NOT call this for images that appear on multiple pages (e.g. watermarks,
+     * logos in headers/footers).  PDFKit's registry enables XObject reuse — if
+     * the entry is removed, the next `doc.image()` call for the same source will
+     * re-decode and re-embed the image, producing a **larger** PDF and consuming
+     * **more** memory overall, not less.
+     *
+     * **Large documents on low-memory servers:**
+     * The most effective lever for heap pressure on multi-page PDFs is the
+     * Node.js process flag, not in-process cleanup:
+     * ```
+     * node --max_old_space_size=4096 server.js
+     * ```
+     * Additionally, prefer `compress: true` in the PDFDocument constructor and
+     * pass images as `Buffer` rather than base64 strings to avoid doubling the
+     * in-memory representation.
+     *
+     * @param src - The same path, URL, or Buffer reference passed to `doc.image()`.
+     *
+     * @example
+     * ```ts
+     * // Safe: image appears exactly once
+     * doc.image('./chart.png', 50, 200, { width: 400 });
+     * doc.purgeImage('./chart.png');
+     *
+     * // Unsafe: logo appears on every page — do NOT release
+     * doc.image('./logo.png', 20, 20, { width: 80 });
+     * // doc.purgeImage('./logo.png');  ← would duplicate the XObject each page
+     * ```
+     */
+    purgeImage(src: string): void {
+      const registry = (this as unknown as Record<string, unknown>)
+        ._imageRegistry as Record<string, unknown> | undefined;
+      if (registry && Object.prototype.hasOwnProperty.call(registry, src)) {
+        delete registry[src];
+      }
+    }
+
+    // -----------------------------------------------------------------------
     // tables
     // -----------------------------------------------------------------------
 

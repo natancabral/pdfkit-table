@@ -602,7 +602,47 @@ data: [
 
 ## Changelogs
 
-### 0.1.98
+### 0.2.9
+
+- CG memory
+    - Thanks [spanwair-r](https://github.com/spanwair-r)
+```js
+doc.image('./chart-large.png', 50, 200, { width: 400 });
+// Do not use in repeated images. ex: brand
+// Use in large images
+doc.purgeImage('./chart-large.png');
+```
+
+### 0.2.8
+
+- RTL
+    - Thanks [moshfeu](https://github.com/moshfeu)
+```js
+options: {
+  rtl: true, // boolean
+}
+```
+
+### 0.2.2
+
+- Fix
+   - Thanks [***@mar10-emil***](https://github.com/mar10-emil)
+```js
+- added render queue onAddPage
+- setting renders queue in constructor
+- fixed override for addPage
+- added debugging logs
+- logging for deb debugging
+- removed event handler
+- added callback
+- rendering set in onFirePageAdded
+- removed logs and disabled event triggers
+- logging for debugging
+- testing sections order
+- refactored code 
+```
+
+### 0.2.0
 
 #### New features
 
@@ -624,36 +664,6 @@ data: [
 - **`eval()` in renderer** — replaced with `new Function()` (CSP-safe). String renderers are now `@deprecated`.
 - **`String.substr`** — replaced deprecated `substr(4, 2)` with `slice(4, 6)`.
 - **Weak types** — `any` removed from `prepareRowOptions`, `prepareRowBackground`, `computeRowHeight`; replaced with `unknown` + runtime guards and a `RowHeightInput` union.
-
-### 0.2.8
-
-- RTL
-    - Thanks  [moshfeu](https://github.com/moshfeu)
-```js
-options: {
-  rtl: true, // boolean
-}
-```
-
-### 0.2.0
-
-- Fix
-   - Thanks [***@mar10-emil***](https://github.com/mar10-emil)
-```js
-- added render queue onAddPage
-- setting renders queue in constructor
-- fixed override for addPage
-- added debugging logs
-- logging for deb debugging
-- removed event handler
-- added callback
-- rendering set in onFirePageAdded
-- removed logs and disabled event triggers
-- logging for debugging
-- testing sections order
-- refactored code 
-```
-
 
 
 ### 0.1.90
