@@ -1,6 +1,6 @@
 {
   "name": "pdfkit-table",
-  "version": "0.2.00",
+  "version": "0.2.2",
   "description": "PdfKit Table. Helps to draw informations in simple tables using pdfkit. #server-side. Generate pdf tables with TypeScript / JavaScript (PDFKIT plugin)",
   "main": "index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,8 @@
     "test": "npm run build && node --test ./tests/*.test.js",
     "examples": "npm run build && NODE_PATH=.. node example/index.js",
     "examples-legacy": "npm run build && NODE_PATH=.. node .legacy/index.js",
-    "git-push": "git add . && git commit -m 'update' && git push "
+    "git-push": "git add . && git commit -m 'update' && git push ",
+    "publish": "npm run build && npm publish"
   },
   "repository": "git+https://github.com/natancabral/pdfkit-table.git",
   "author": "natancabral",

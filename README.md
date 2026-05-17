@@ -4,7 +4,7 @@
   <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png" alt="pdfkit-table (Natan Cabral)"/>
   <br/>
   <br/>
-  <a href="https://www.buymeacoffee.com/natancabral" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+  <a href="https://www.buymeacoffee.com/natancabral" target="_blank"><img width="150" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="width: 150px !important;" ></a>
   <br/>
   <br/>
 </p>
