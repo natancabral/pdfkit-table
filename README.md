@@ -11,6 +11,16 @@
 
 # pdfkit-table
 
+<div>
+  <a href="https://www.npmjs.com/package/pdfkit-table">
+    <img src="https://img.shields.io/badge/npm-pdfkit--table-red?style=for-the-badge&logo=npm" alt="pdfkit-table on npm"/>
+  </a>
+  &nbsp;
+  <a href="https://github.com/natancabral/pdfkit-table">
+    <img src="https://img.shields.io/badge/GitHub-pdfkit--table-black?style=for-the-badge&logo=github" alt="pdfkit-table on GitHub"/>
+  </a>
+</div>
+
 #### Generate PDF tables with TypeScript / JavaScript (PDFKit plugin)
 Helps to draw information in simple tables using pdfkit. #server-side.
 
@@ -31,17 +41,24 @@ Helps to draw information in simple tables using pdfkit. #server-side.
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
 
-## Install [<img src="https://github.com/natancabral/pdfkit-table/blob/main/example/npm-tile.png">](https://www.npmjs.com/package/pdfkit-table)
+## Install 
 
 [![NPM](https://nodei.co/npm/pdfkit-table.png)](https://www.npmjs.com/package/pdfkit-table)
 
-```bash
-// yarn
-yarn add pdfkit-table
 
-// npm
+[![Yarn](https://img.shields.io/badge/yarn-install-blue.svg)](https://yarnpkg.com/package/pdfkit-table)
+```bash
+yarn add pdfkit-table
+```
+
+[![NPM](https://img.shields.io/badge/npm-install-red.svg)](https://www.npmjs.com/package/pdfkit-table)
+```bash
 npm install pdfkit-table
 ```
+
+<div>
+
+</div>
 
 ## Import
 
@@ -58,11 +75,6 @@ import { PDFDocumentWithTables, createPdfDocumentWithTables } from 'pdfkit-table
 
 // TypeScript
 import PDFDocument, { type Table, type TableOptions } from 'pdfkit-table';
-
-// Using PDFkit lib
-const pdfkit = require('pdfkit'); // PDFkit project version
-const { createPdfDocumentWithTables } = require('pdfkit-table');
-const PDFDocument = createPdfDocumentWithTables(pdfkit);
 ```
 
 ## Using your own PDFKit

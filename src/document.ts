@@ -519,7 +519,10 @@ export function createPdfDocumentWithTables(
                 align: "left",
               });
 
-              result = Math.max(result, cellHeight);
+              // FIX: include vertical padding in the row height calculation,
+              // but only for data rows — header height stays unaffected.
+              const verticalPad = isHeader ? 0 : cellp.top + cellp.bottom;
+              result = Math.max(result, cellHeight + verticalPad);
             });
 
             return result + columnSpacing;
@@ -958,10 +961,18 @@ export function createPdfDocumentWithTables(
               const cellY =
                 postOverflowCellStartY ?? rowStartY + topTextToAlignVertically;
 
-              this.text(textStr, lastPositionX + cellPadding.left, cellY, {
-                width: width! - (cellPadding.left + cellPadding.right),
-                align: align as PdfTextAlign,
-              });
+              // FIX: apply cellPadding.top to the vertical position of the text
+              // so that padding is respected in data rows (header is unaffected
+              // because it uses startY directly, not cellY).
+              this.text(
+                textStr,
+                lastPositionX + cellPadding.left,
+                cellY + cellPadding.top,
+                {
+                  width: width! - (cellPadding.left + cellPadding.right),
+                  align: align as PdfTextAlign,
+                },
+              );
 
               this.page.margins.top = origMarginTop;
 
@@ -970,7 +981,8 @@ export function createPdfDocumentWithTables(
                 // rowBottomY was updated by addHeader() inside onFirePageAdded.
                 // Anchor subsequent cells just below the new-page header and
                 // reset maxCellEndY so old-page Y values are discarded.
-                postOverflowCellStartY = rowBottomY + columnSpacing + rowDistance;
+                postOverflowCellStartY =
+                  rowBottomY + columnSpacing + rowDistance;
                 maxCellEndY = this.y;
               } else {
                 maxCellEndY = Math.max(maxCellEndY, this.y);
@@ -1122,10 +1134,13 @@ export function createPdfDocumentWithTables(
                 postOverflowCellStartY2 ??
                 rowStartY2 + topTextToAlignVertically;
 
+              // FIX: apply cellPadding.top to the vertical position of the text
+              // so that padding is respected in data rows (header is unaffected
+              // because it uses startY directly, not cellY2).
               this.text(
                 String(cell),
                 lastPositionX + cellPadding.left,
-                cellY2,
+                cellY2 + cellPadding.top,
                 {
                   width:
                     columnSizes[index] - (cellPadding.left + cellPadding.right),
