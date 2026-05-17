@@ -2,7 +2,10 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
+import PDFKitBase from "pdfkit";
 import { createPdfDocumentWithTables } from "pdfkit-table";
+
+const PDFDocument = createPdfDocumentWithTables(PDFKitBase);
 
 const app = express();
 const PORT = 3030;
@@ -14,9 +17,6 @@ app.use(express.json());
 // GET /pdf/simple   — array-based table, saves file + streams to browser
 // -----------------------------------------------------------------------
 app.get("/pdf/simple", async (req: Request, res: Response) => {
-  const PDFDocument = createPdfDocumentWithTables(
-    require("pdfkit") as typeof import("pdfkit"),
-  );
 
   const doc = new PDFDocument({ margin: 30, size: "A4" });
 
@@ -58,10 +58,6 @@ app.get("/pdf/simple", async (req: Request, res: Response) => {
 // GET /pdf/full   — object-row table with renderers, colors, padding
 // -----------------------------------------------------------------------
 app.get("/pdf/full", async (req: Request, res: Response) => {
-  const PDFDocument = createPdfDocumentWithTables(
-    require("pdfkit") as typeof import("pdfkit"),
-  );
-
   const doc = new PDFDocument({ margin: 40, size: "A4" });
 
   const outPath = path.join(__dirname, "..", "pdf", "full-table.pdf");
