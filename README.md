@@ -20,11 +20,13 @@ Helps to draw information in simple tables using pdfkit. #server-side.
 
 ## Examples
 
-[view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document.pdf) | 
-[color pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-color.pdf) | 
-[full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-example.js) |
-[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js) |
-[json example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-json-example.js) |
+[view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document-01-example.pdf) | 
+[color pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-02-color.pdf) | 
+[json pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-03-json.pdf) | 
+[full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-01-example.js) |
+[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-00-server.js) |
+[json example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-03-json.js) |
+[all features](https://github.com/natancabral/pdfkit-table/blob/main/example/document-05-all-features.js) |
 [all](https://github.com/natancabral/pdfkit-table/blob/main/example/)
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
@@ -153,7 +155,7 @@ createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
 ## Examples
 
 ### Server response
-[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/index-server-example.js)
+[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-00-server.js)
 ```js
   // router - Node + Express.js
   app.get('/create-pdf', async (req, res) => {
@@ -325,11 +327,14 @@ createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
     - headerAlign <code>String</code>
     - columnColor or ~~backgroundColor~~: <code>String</code>
     - columnOpacity or ~~backgroundOpacity~~: <code>Number</code>
+    - padding <code>Number</code> | <code>Array</code> | <code>Object</code>
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
   - data <code>Array.&lt;object&gt;</code>
+  - ~~datas~~ <code>Array.&lt;object&gt;</code> (deprecated — use `data`)
   - rows <code>Array.[]</code>
   - title <code>String</code> | <code>Object</code>
   - subtitle <code>String</code> | <code>Object</code>
+  - options <code>Object</code>
 
 ### Headers
 
@@ -345,6 +350,7 @@ createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
 | **headerAlign**      | <code>String</code>   | left               | only header       |
 | **columnColor** or ~~backgroundColor~~  | <code>String</code>   | undefined          | color of column   |
 | **columnOpacity** or ~~backgroundOpacity~~| <code>Number</code>   | undefined          | opacity of column   |
+| **padding**          | `Number \| Array \| Object` | `0`         | cell padding — overrides global `padding`. CSS shorthand: `[top, right, bottom, left]` |
 | **renderer**         | <code>Function</code> | Function           | function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value } |
 
 
@@ -404,6 +410,7 @@ const table = {
 | **minRowHeight** | `Number` | `0` | minimum row height in points |
 | **useSafelyMarginBottom** | `Boolean` | `true` | enable proactive page-break before rows that do not fit |
 | **pageBreakThreshold** | `Number` (0–1) | `0.8` | fraction of page height below which a row triggers a proactive page break. Rows **taller** than `pageContentHeight × threshold` render in-place without an empty gap. Default `0.8` means only rows that fill < 80 % of the page are moved to a new page. |
+| **endOfPageThreshold** | `Number` (0–1) | — | fraction of usable page height defining "near the bottom". A proactive break fires when remaining space ≤ this fraction AND the row fits within `pageBreakThreshold`. Default: page bottom margin |
 | **keepRowsTogether** | `Boolean` | `false` | when `true`, every row starts at the current cursor — no proactive page breaks. Ideal for tables where every cell contains multi-page text. |
 | **absolutePosition** | `Boolean` | `false` | use absolute x / y coordinates |
 | **prepareHeader** | `Function` | — | `(this: PDFDoc) => void` — called before rendering the header row |
@@ -501,7 +508,13 @@ await doc.table(myTable, opts);
 
 #### Options Row
 
-- separation <code>{Booleon}</code>
+- separation <code>{Boolean}</code>
+- color <code>{String}</code>
+- columnColor <code>{String}</code>
+- columnOpacity <code>{Number}</code>
+- backgroundColor <code>{String}</code> (deprecated — use `columnColor`)
+- backgroundOpacity <code>{Number}</code> (deprecated — use `columnOpacity`)
+- background <code>{Object}</code> `{ color, opacity }` (deprecated — use `columnColor` / `columnOpacity`)
 - fontSize <code>{Number}</code>
 - fontFamily <code>{String}</code>
 
@@ -535,6 +548,7 @@ data: [
 
 - fontSize <code>{Number}</code>
 - fontFamily <code>{String}</code>
+- color <code>{String}</code>
 
 ```js
 data: [
