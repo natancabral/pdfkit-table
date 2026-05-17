@@ -128,6 +128,12 @@ createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
 - **`Table.data` / `Table.data`**: prefer **`data`** for object rows; **`data`** is still supported. If **`data` is present** (even `[]`), it wins; otherwise **`data`** is used (backward compatible JSON and old examples).
 - **TypeScript**: older type names remain as aliases — **`Options`** (`TableOptions`), **`Data`** (`DataRow`), **`DataOptions`** (`RowStyleOptions`), **`Title`** (`TitleObject`), **`Divider`**, **`DividerOptions`** (`DividerPart`). **`CellRenderer`** keeps optional indices compatible with older typings.
 
+## Server example
+
+Go to: [Simple Server Example](https://github.com/natancabral/pdfkit-table/blob/main/example-server)
+<br />
+<img src="https://github.com/natancabral/pdfkit-table/blob/main/example-server/assets/server-terminal.png">
+
 ## Use
 
 ```js
