@@ -7,7 +7,7 @@
  * -----------------------------------------------------
  * $ node index-server-example.js
  * -----------------------------------------------------
- * 
+ *
  */
 const express = require("express");
 const cors = require("cors");
@@ -20,14 +20,13 @@ app.listen(3030, function () {
 });
 
 app.get("/", function (req, res) {
-
   const fs = require("fs");
-  const PDFDocument = require("pdfkit-table");
+  const PDFDocument = require("./lib/pdfkit-table-0.1.99");
 
   // start pdf document
-  let doc = new PDFDocument({ margin: 30, size: 'A4' });
+  let doc = new PDFDocument({ margin: 30, size: "A4" });
   // to save on server
-  doc.pipe(fs.createWriteStream("./document.pdf"));
+  doc.pipe(fs.createWriteStream("./document-server.pdf"));
 
   // -----------------------------------------------------------------------------------------------------
   // Simple Table with Array
@@ -40,7 +39,7 @@ app.get("/", function (req, res) {
       ["England", "33%", "+4.44%"],
     ],
   };
-  doc.table( tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+  doc.table(tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
 
   // move to down
   doc.moveDown(); // separate tables
@@ -51,18 +50,53 @@ app.get("/", function (req, res) {
   // A4 595.28 x 841.89 (portrait) (about width sizes)
   const table = {
     headers: [
-      { label:"Name", property: 'name', width: 60, renderer: null },
-      { label:"Description", property: 'description', width: 150, renderer: null }, 
-      { label:"Price 1", property: 'price1', width: 100, renderer: null }, 
-      { label:"Price 2", property: 'price2', width: 100, renderer: null }, 
-      { label:"Price 3", property: 'price3', width: 80, renderer: null }, 
-      { label:"Price 4", property: 'price4', width: 63, renderer: (value, indexColumn, indexRow, row) => { return `U$ ${Number(value).toFixed(2)}` } },
+      { label: "Name", property: "name", width: 60, renderer: null },
+      {
+        label: "Description",
+        property: "description",
+        width: 150,
+        renderer: null,
+      },
+      { label: "Price 1", property: "price1", width: 100, renderer: null },
+      { label: "Price 2", property: "price2", width: 100, renderer: null },
+      { label: "Price 3", property: "price3", width: 80, renderer: null },
+      {
+        label: "Price 4",
+        property: "price4",
+        width: 63,
+        renderer: (value, indexColumn, indexRow, row) => {
+          return `U$ ${Number(value).toFixed(2)}`;
+        },
+      },
     ],
-    datas: [
-      { description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', price1: '$1', price3: '$ 3', price2: '$2', price4: '4', name: 'Name 1', },
-      { name: 'bold:Name 2', description: 'bold:Lorem ipsum dolor.', price1: 'bold:$1', price3: '$3', price2: '$2', price4: '4', options: { fontSize: 10, separation: true } },
-      { name: 'Name 3', description: 'Lorem ipsum dolor.', price1: 'bold:$1', price4: '4.111111', price2: '$2', price3: { label:'PRICE $3', options: { fontSize: 12 } }, },
-      ],
+    data: [
+      {
+        description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ",
+        price1: "$1",
+        price3: "$ 3",
+        price2: "$2",
+        price4: "4",
+        name: "Name 1",
+      },
+      {
+        name: "bold:Name 2",
+        description: "bold:Lorem ipsum dolor.",
+        price1: "bold:$1",
+        price3: "$3",
+        price2: "$2",
+        price4: "4",
+        options: { fontSize: 10, separation: true },
+      },
+      {
+        name: "Name 3",
+        description: "Lorem ipsum dolor.",
+        price1: "bold:$1",
+        price4: "4.111111",
+        price2: "$2",
+        price3: { label: "PRICE $3", options: { fontSize: 12 } },
+      },
+    ],
     rows: [
       [
         "Apple",
@@ -85,7 +119,8 @@ app.get("/", function (req, res) {
 
   doc.table(table, {
     prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-    prepareRow: (row, indexColumn, indexRow, rectRow) => doc.font("Helvetica").fontSize(8),
+    prepareRow: (row, indexColumn, indexRow, rectRow) =>
+      doc.font("Helvetica").fontSize(8),
   });
 
   // if your run express.js server:
@@ -94,5 +129,4 @@ app.get("/", function (req, res) {
 
   // done
   doc.end();
-
 });

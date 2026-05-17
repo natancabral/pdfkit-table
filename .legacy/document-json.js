@@ -7,14 +7,14 @@
  * -----------------------------------------------------
  * $ node index-json-example.js
  * -----------------------------------------------------
- * 
+ *
  */
 
 const fs = require("fs");
-const PDFDocument = require("pdfkit-table");
+const PDFDocument = require("./lib/pdfkit-table-0.1.99");
 
 // start pdf document
-let doc = new PDFDocument({ margin: 30, size: 'A4' });
+let doc = new PDFDocument({ margin: 30, size: "A4" });
 // load json file
 const json = require("./table.json");
 
@@ -22,11 +22,11 @@ const json = require("./table.json");
 doc.pipe(fs.createWriteStream("./document-json.pdf"));
 
 // if json file is array
-Array.isArray(json) ? 
-// any tables
-json.forEach( table => doc.table( table, table.options || {} ) ) : 
-// one table
-doc.table( json, json.options || {} ) ;
+Array.isArray(json)
+  ? // any tables
+    json.forEach((table) => doc.table(table, table.options || {}))
+  : // one table
+    doc.table(json, json.options || {});
 
 // done
 doc.end();

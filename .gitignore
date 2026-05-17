@@ -2,9 +2,12 @@ node_modules
 example-test
 example-promise
 
+.back
 .backs
 .ideas
 
 package-lock.json
 pdfkit-guide.pdf
+
+dist/
 

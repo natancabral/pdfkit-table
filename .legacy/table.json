@@ -1,0 +1,35 @@
+[
+  { 
+    "headers": [
+      { "label":"Name", "property":"name", "width":100, "background": {"color": "grey", "opacity": 0.5}  },
+      { "label":"Age", "property":"age", "width":100 },
+      { "label":"Year", "property":"year", "width":100, "renderer": "function(value, i, irow){ return value + '('+(irow+2)+')'; }" }
+    ],
+    "datas": [
+      { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
+      { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
+      { "name":"Name 3", "age":"Age 3", "year":"Year 3" }
+    ],
+    "rows": [
+      ["Name 4", "Age 4", "Year 4"]
+    ],
+    "options": {
+      "width": 300
+    }
+  },
+  { 
+    "headers": [
+      { "label":"Country", "property":"country", "width":150 },
+      { "label":"State", "property":"state", "width":100 },
+      { "label":"City", "property":"city", "width":100, "backgroundColor":"green", "backgroundOpacity":0.7 }
+    ],
+    "datas": [
+      { "country":"United States Of America 1", "state":"Texas 1", "city":"City of Texas 1" },
+      { "country":"United States Of America 2", "state":"Texas 2", "city":"City of Texas 2" },
+      { "country":"United States Of America 3", "state":"Texas 3", "city":"City of Texas 3" }
+    ],
+    "rows": [
+      [ "United States Of America 4", "Texas 4", "City of Texas 4" ]
+    ]
+  }
+]

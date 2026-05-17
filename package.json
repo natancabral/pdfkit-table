@@ -1,17 +1,33 @@
 {
   "name": "pdfkit-table",
-  "version": "0.1.98",
-  "description": "PdfKit Table. Helps to draw informations in simple tables using pdfkit. #server-side. Generate pdf tables with javascript (PDFKIT plugin) ",
+  "version": "0.2.00",
+  "description": "PdfKit Table. Helps to draw informations in simple tables using pdfkit. #server-side. Generate pdf tables with TypeScript / JavaScript (PDFKIT plugin)",
   "main": "index.js",
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "npm run build && node --test ./tests/*.test.js",
+    "examples": "npm run build && NODE_PATH=.. node example/index.js",
+    "examples-legacy": "npm run build && NODE_PATH=.. node .legacy/index.js",
     "git-push": "git add . && git commit -m 'update' && git push "
   },
   "repository": "git+https://github.com/natancabral/pdfkit-table.git",
   "author": "natancabral",
   "keywords": [
-    "javascript",
+    "typescript",
     "node",
     "nodejs",
     "node pdf",
@@ -27,6 +43,12 @@
   },
   "homepage": "https://github.com/natancabral/pdfkit-table#readme",
   "dependencies": {
-    "pdfkit": "latest"
-  }
+    "pdfkit": "^0.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/pdfkit": "^0.17.6",
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "yarn@4.12.0+sha512.f45ab632439a67f8bc759bf32ead036a1f413287b9042726b7cc4818b7b49e14e9423ba49b18f9e06ea4941c1ad062385b1d8760a8d5091a1a31e5f6219afca8"
 }

@@ -4,12 +4,18 @@
   <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/logo.png" alt="pdfkit-table (Natan Cabral)"/>
   <br/>
   <br/>
+  <a href="https://www.buymeacoffee.com/natancabral" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+  <br/>
+  <br/>
 </p>
 
 # pdfkit-table
 
-#### Generate pdf tables with javascript (PDFKIT plugin)
-Helps to draw informations in simple tables using pdfkit. #server-side.
+#### Generate PDF tables with TypeScript / JavaScript (PDFKit plugin)
+Helps to draw information in simple tables using pdfkit. #server-side.
+
+> **v0.2.00** — full TypeScript rewrite, ESM `import` support, dependency injection,
+> multi-page cell fixes, and new page-break control options.
 
 
 ## Examples
@@ -28,8 +34,85 @@ Helps to draw informations in simple tables using pdfkit. #server-side.
 [![NPM](https://nodei.co/npm/pdfkit-table.png)](https://www.npmjs.com/package/pdfkit-table)
 
 ```bash
+// yarn
+yarn add pdfkit-table
+
+// npm
 npm install pdfkit-table
 ```
+
+## Import
+
+All three styles work out of the box — no bundler configuration needed:
+
+```js
+// CommonJS
+const PDFDocument = require('pdfkit-table');
+const { PDFDocumentWithTables, createPdfDocumentWithTables } = require('pdfkit-table');
+
+// ESM / Node ≥ 12
+import PDFDocument from 'pdfkit-table';
+import { PDFDocumentWithTables, createPdfDocumentWithTables } from 'pdfkit-table';
+
+// TypeScript
+import PDFDocument, { type Table, type TableOptions } from 'pdfkit-table';
+
+// Using PDFkit lib
+const pdfkit = require('pdfkit'); // PDFkit project version
+const { createPdfDocumentWithTables } = require('pdfkit-table');
+const PDFDocument = createPdfDocumentWithTables(pdfkit);
+```
+
+## Using your own PDFKit
+
+Use **`createPdfDocumentWithTables`** when you want to plug in **your** `pdfkit` package (different semver, fork, patched build, or single shared copy with the rest of the app). The constructor must stay compatible with **pdfkit’s `PDFDocument`** (same methods this library calls on `super`, drawing API, fonts, etc.).
+
+### CommonJS
+
+```js
+const fs = require('fs');
+const pdfkit = require('pdfkit'); // resolved from your project / fork
+const { createPdfDocumentWithTables } = require('pdfkit-table');
+
+const PDFDocument = createPdfDocumentWithTables(pdfkit);
+const doc = new PDFDocument({ margin: 30, size: 'A4' });
+doc.pipe(fs.createWriteStream('./document.pdf'));
+
+(async () => {
+  await doc.table({ headers: ['Column'], rows: [['value']] }, {});
+  doc.end();
+})();
+```
+
+### TypeScript / ESM
+
+```ts
+import pdfkit from 'pdfkit';
+import { createPdfDocumentWithTables } from 'pdfkit-table';
+
+const PDFDocument = createPdfDocumentWithTables(pdfkit);
+const doc = new PDFDocument({ margin: 30 });
+```
+
+If your fork’s typings don’t match `pdfkit`, you can cast:
+
+```ts
+import type pdfkitType from 'pdfkit';
+createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
+```
+
+### Default export
+
+`require('pdfkit-table')` (and `import PDFDocument from 'pdfkit-table'`) still builds on **`pdfkit` declared as a dependency of `pdfkit-table`** — existing snippets keep working without injection.
+
+### Backward compatibility (previous releases)
+
+- **CommonJS**: `const PDFDocument = require('pdfkit-table')` — same as before (`module.exports`, `module.exports.default`, and **`PDFDocumentWithTables`** alias).
+- **`doc.table(table, options?, callback?)`** — parameter names match the legacy API (`table`, then `options`, then optional `callback`). If the **second argument is a function**, it is treated as **`callback`** (older behaviour).
+- **`doc.tables(tables, callback?)`** — first argument is the **array of tables**, second optional callback (same shape as before).
+- **`addBackground(rect, fillColor?, fillOpacity?, callback?)`** — unchanged.
+- **`Table.data` / `Table.data`**: prefer **`data`** for object rows; **`data`** is still supported. If **`data` is present** (even `[]`), it wins; otherwise **`data`** is used (backward compatible JSON and old examples).
+- **TypeScript**: older type names remain as aliases — **`Options`** (`TableOptions`), **`Data`** (`DataRow`), **`DataOptions`** (`RowStyleOptions`), **`Title`** (`TitleObject`), **`Divider`**, **`DividerOptions`** (`DividerPart`). **`CellRenderer`** keeps optional indices compatible with older typings.
 
 ## Use
 
@@ -48,7 +131,7 @@ npm install pdfkit-table
     const table = { 
       title: '',
       headers: [],
-      datas: [ /* complex data */ ],
+      data: [ /* complex data */ ],
       rows: [ /* or simple data */ ],
     };
 
@@ -130,7 +213,7 @@ npm install pdfkit-table
         },
       ],
       // complex data
-      datas: [
+      data: [
         { 
           name: 'Name 1', 
           description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', 
@@ -190,7 +273,7 @@ npm install pdfkit-table
         { "label":"Age", "property":"age", "width":100 },
         { "label":"Year", "property":"year", "width":100 }
       ],
-      "datas": [
+      "data": [
         { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
         { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
         { "name":"Name 3", "age":"Age 3", "year":"Year 3",
@@ -243,7 +326,7 @@ npm install pdfkit-table
     - columnColor or ~~backgroundColor~~: <code>String</code>
     - columnOpacity or ~~backgroundOpacity~~: <code>Number</code>
     - renderer <code>Function</code> function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value }
-  - datas <code>Array.&lt;object&gt;</code>
+  - data <code>Array.&lt;object&gt;</code>
   - rows <code>Array.[]</code>
   - title <code>String</code> | <code>Object</code>
   - subtitle <code>String</code> | <code>Object</code>
@@ -269,7 +352,7 @@ npm install pdfkit-table
 
 ```js
 const table = {
-  // simple headers only with ROWS (not DATAS)  
+  // simple headers only with ROWS (not DATA)  
   headers: ['Name', 'Age'],
   // simple content
   rows: [
@@ -283,13 +366,13 @@ const table = {
 
 ```js
 const table = {
-  // complex headers work with ROWS and DATAS  
+  // complex headers work with ROWS and DATA  
   headers: [
     { label:"Name", property: 'name', width: 100, renderer: null },
     { label:"Age", property: 'age', width: 100, renderer: (value) => `U$ ${Number(value).toFixed(1)}` },
   ],
   // complex content
-  datas: [
+  data: [
     { name: 'bold:Jack', age: 32, },
     // age is object value with style options
     { name: 'Maria', age: { label: 30 , options: { fontSize: 12 }}, },
@@ -305,45 +388,115 @@ const table = {
 
 ### Options
 
-| Properties           | Type                  | Default            | Description       |
------------------------|-----------------------|--------------------|-------------------|
-| **title**            | <code>String</code> <code>Object</code>  | undefined          | title             |
-| **subtitle**         | <code>String</code> <code>Object</code>  | undefined          | subtitle          |
-| **width**            | <code>Number</code>   | undefined          | width of table    |
-| **x**                | <code>Number</code>   | undefined  | position x (left). To reset x position set "x: null" |
-| **y**                | <code>Number</code>   | undefined  | position y (top)  |
-| **divider**          | <code>Object</code>   | undefined          | define divider lines |
-| **columnsSize**      | <code>Array</code>    | undefined          | define sizes      |
-| **columnSpacing**    | <code>Number</code>   | 5                  |                   |
-| **padding**    | <code>Number</code> <code>Array</code>   | 1 or [1, 5]                   |                   |
-| **addPage**          | <code>Boolean</code>  | false              | add table on new page |
-| **hideHeader**       | <code>Boolean</code>  | false              | hide header |
-| **minRowHeight**     | <code>Number</code>  | 0              | min row height |
-| **prepareHeader**    | <code>Function</code> | Function           | ()                  |
-| **prepareRow**       | <code>Function</code> | Function           | (row, indexColumn, indexRow, rectRow, rectCell) => {} |
+| Property | Type | Default | Description |
+|---|---|---|---|
+| **title** | `String \| Object` | undefined | table title |
+| **subtitle** | `String \| Object` | undefined | table subtitle |
+| **width** | `Number` | undefined | total table width |
+| **x** | `Number \| null` | undefined | x position. Pass `null` or `-1` to reset to left margin |
+| **y** | `Number` | undefined | y position (top) |
+| **divider** | `Object` | — | divider line config `{ header, horizontal, vertical }` |
+| **columnsSize** | `Array` | `[]` | column widths (simple tables) |
+| **columnSpacing** | `Number` | `3` | vertical space between rows |
+| **padding** | `Number \| Array \| Object` | `0` | cell padding — CSS shorthand `[top, right, bottom, left]` |
+| **addPage** | `Boolean` | `false` | start table on a fresh page |
+| **hideHeader** | `Boolean` | `false` | hide the header row |
+| **minRowHeight** | `Number` | `0` | minimum row height in points |
+| **useSafelyMarginBottom** | `Boolean` | `true` | enable proactive page-break before rows that do not fit |
+| **pageBreakThreshold** | `Number` (0–1) | `0.8` | fraction of page height below which a row triggers a proactive page break. Rows **taller** than `pageContentHeight × threshold` render in-place without an empty gap. Default `0.8` means only rows that fill < 80 % of the page are moved to a new page. |
+| **keepRowsTogether** | `Boolean` | `false` | when `true`, every row starts at the current cursor — no proactive page breaks. Ideal for tables where every cell contains multi-page text. |
+| **absolutePosition** | `Boolean` | `false` | use absolute x / y coordinates |
+| **prepareHeader** | `Function` | — | `(this: PDFDoc) => void` — called before rendering the header row |
+| **prepareRow** | `Function` | — | `(row, indexColumn, indexRow, rectRow, rectCell) => void` — called before each cell |
 
 #### Options example
 
 ```js
 const options = {
-  // properties
-  title: "Title", // { label: 'Title', fontSize: 30, color: 'blue', fontFamily: "./fonts/type.ttf" },
-  subtitle: "Subtitle", // { label: 'Subtitle', fontSize: 20, color: 'green', fontFamily: "./fonts/type.ttf" },
-  width: 500, // {Number} default: undefined // A4 595.28 x 841.89 (portrait) (about width sizes)
-  x: 0, // {Number} default: undefined | To reset x position set "x: null"
-  y: 0, // {Number} default: undefined | 
+  title: "Title", // or { label: 'Title', fontSize: 18, color: 'blue', fontFamily: "./fonts/type.ttf" }
+  subtitle: "Subtitle",
+  width: 500,           // A4 portrait ≈ 595 pt wide
+  x: 0,                 // pass null or -1 to reset to left margin
+  y: 0,
   divider: {
-    header: { disabled: false, width: 2, opacity: 1 },
+    header:     { disabled: false, width: 2,   opacity: 1   },
     horizontal: { disabled: false, width: 0.5, opacity: 0.5 },
   },
-  padding: 5, // {Number} default: 0
-  columnSpacing: 5, // {Number} default: 5
-  hideHeader: false, 
+  padding: 5,           // or [top, right, bottom, left] like CSS
+  columnSpacing: 5,
+  hideHeader: false,
   minRowHeight: 0,
-  // functions
-  prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8), // {Function} 
-  prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => doc.font("Helvetica").fontSize(8), // {Function} 
+  prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
+  prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) =>
+    doc.font("Helvetica").fontSize(8),
 }
+```
+
+#### Page-break control
+
+```js
+// Option A — pageBreakThreshold
+// Only move rows to a new page if they fit in < 60 % of the page.
+// Rows taller than 60 % start in-place and flow naturally across pages.
+await doc.table(table, {
+  pageBreakThreshold: 0.6,
+  prepareHeader: () => doc.font('Helvetica-Bold').fontSize(8),
+  prepareRow:    () => doc.font('Helvetica').fontSize(8),
+});
+
+// Option B — keepRowsTogether
+// Never insert a proactive page break — every row starts where the cursor is.
+// Best for tables where every cell contains long multi-page text.
+await doc.table(table, {
+  keepRowsTogether: true,
+  prepareHeader: () => doc.font('Helvetica-Bold').fontSize(8),
+  prepareRow:    () => doc.font('Helvetica').fontSize(8),
+});
+```
+
+| `pageBreakThreshold` | Effect |
+|---|---|
+| `0.8` (**default**) | Only rows shorter than 80 % of the page are moved proactively — tall rows stay in-place and overflow naturally. Equivalent to "only `addPage()` breaks the page for big rows." |
+| `1.0` | Old behaviour — every row that doesn't fit in remaining space gets a page break, regardless of height. |
+| `0.6` | Only move if row < 60 % of page height — tall rows flow in-place |
+| `0.0` | Never move any row (same as `keepRowsTogether: true`) |
+
+#### `doc.checkPageBreak(minHeight?)` — prevent orphaned titles
+
+A chainable helper method available on any `PDFDocumentWithTables` instance.
+Call it **before** a section title, heading, or `doc.table()` to ensure there
+is enough room on the current page.  If the remaining vertical space is less
+than `minHeight`, a new page is added automatically.
+
+| Argument | Type | Default | Meaning |
+|---|---|---|---|
+| *(none)* | — | 10 % of usable height | add a page if less than 10 % remains |
+| `0 < n ≤ 1` | `Number` (fraction) | — | treat as percentage of usable page height |
+| `n > 1` | `Number` (points) | — | minimum absolute space required (pt) |
+
+Returns `this` so calls can be chained fluently.
+
+```js
+// Default — add a page if less than 10 % of usable height remains
+doc.checkPageBreak();
+
+// At least 80 pt must remain, otherwise add a new page
+doc.checkPageBreak(80);
+
+// At least 15 % of the usable page height must remain
+doc.checkPageBreak(0.15);
+
+// Typical chained usage — keeps a title and its table together
+doc
+  .checkPageBreak(0.2)          // ensure 20 % space before writing the title
+  .fontSize(11)
+  .font('Helvetica-Bold')
+  .text('Section Title')
+  .font('Helvetica')
+  .fontSize(9)
+  .moveDown(0.3);
+
+await doc.table(myTable, opts);
 ```
 
 #### Options Row
@@ -353,7 +506,7 @@ const options = {
 - fontFamily <code>{String}</code>
 
 ```js
-datas: [
+data: [
   // options row
   { name: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold', separation: true } },
 ]
@@ -367,7 +520,7 @@ datas: [
     - 'size20:Jack'
 
 ```js
-datas: [
+data: [
   // bold
   { name: 'bold:Jack' },
   // size{n}
@@ -384,7 +537,7 @@ datas: [
 - fontFamily <code>{String}</code>
 
 ```js
-datas: [
+data: [
   // options cell | value is object | label is string
   { name: { label: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold' } },
 ]
@@ -416,6 +569,29 @@ datas: [
 - margin: marginBottom before, marginTop after
 
 ## Changelogs
+
+### 0.1.98
+
+#### New features
+
+- **Full TypeScript rewrite** — source moved to `src/` (`types.ts`, `document.ts`, `index.ts`). Ships compiled `dist/` + `.d.ts` declarations. Backward-compatible type aliases preserved (`Options`, `Data`, `Title`, `Divider`, …).
+- **ESM `import` support** — `import PDFDocument from 'pdfkit-table'` works in Node.js ESM, TypeScript, and bundlers (Vite, Webpack). `package.json` now includes an `"exports"` map.
+- **Dependency injection** — `createPdfDocumentWithTables(PDFKit)` lets you plug in your own `pdfkit` version or fork.
+- **`pageBreakThreshold`** option (Number 0–1, default `0.8`) — controls when a tall row is moved to a new page. Rows taller than `80 %` of the page start in-place and overflow naturally; only shorter rows are moved proactively. Set to `1.0` to restore the old always-break behaviour.
+- **`keepRowsTogether`** option (Boolean, default `false`) — disables all proactive page breaks; every row starts at the current cursor and overflows naturally.
+- **`doc.checkPageBreak(minHeight?)`** — new chainable helper that adds a page when remaining vertical space is less than `minHeight` (default: 10 % of usable height; fractions ≤ 1 are treated as percentages; values > 1 as absolute points). Ideal for keeping section titles and their tables on the same page.
+
+#### Bug fixes
+
+- **`pageAdded` event listener** — `onFirePageAdded` was defined but never registered; repeated header rendering now works correctly on overflow pages.
+- **Font mismatch in height calculation** — `computeRowHeight` now applies `prepareRow` before `heightOfString`, so measured height matches rendered height (eliminates gap between text and divider line).
+- **Page-break forced for multi-page rows** — rows taller than one full page no longer trigger a forced new page before every row.
+- **Text style after mid-row page break** — continued text on overflow pages no longer inherits the header font / color (`restoreRowStyle` mechanism).
+- **Text overlap with header on overflow pages** — fixed by temporarily raising `page.margins.top` after the header is drawn so PDFKit's `LineWrapper.nextSection()` positions continued text below the header.
+- **`prepareCellPadding` case 3** — corrected CSS shorthand: `[top, right, bottom, left=right]` (was incorrectly `[top, right, bottom, 0]`).
+- **`eval()` in renderer** — replaced with `new Function()` (CSP-safe). String renderers are now `@deprecated`.
+- **`String.substr`** — replaced deprecated `substr(4, 2)` with `slice(4, 6)`.
+- **Weak types** — `any` removed from `prepareRowOptions`, `prepareRowBackground`, `computeRowHeight`; replaced with `unknown` + runtime guards and a `RowHeightInput` union.
 
 ### 0.1.90
 
@@ -591,13 +767,13 @@ const table = {
       { label:"Name", property: 'name', ***backgroundColor: 'red', backgroundOpacity: 0.5*** },
       { label:"Age", property: 'age', ***background: { color: 'green', opacity: 0.5 } }***,
   ]
-+ **Background** color inside row options datas
-  - datas: [
++ **Background** color inside row options data
+  - data: [
       { name:"My Name", age: 20, ***options: { backgroundColor: 'red', backgroundOpacity: 0.5 }*** },
       { name:"My Name", age: 20, ***options: { background: { color: 'green', opacity: 0.5 } }*** },
   ]
-+ **Background** color inside cell options datas
-  - datas: [
++ **Background** color inside cell options data
+  - data: [
       { name:{ label: "My Name", age: 20, ***options: { backgroundColor: 'red', backgroundOpacity: 0.5 }*** }},
       { name:{ label: "My Name", age: 20, ***options: { background: { color: 'green', opacity: 0.5 } }*** }},
   ]
