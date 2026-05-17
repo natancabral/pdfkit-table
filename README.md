@@ -625,6 +625,27 @@ data: [
 - **`String.substr`** — replaced deprecated `substr(4, 2)` with `slice(4, 6)`.
 - **Weak types** — `any` removed from `prepareRowOptions`, `prepareRowBackground`, `computeRowHeight`; replaced with `unknown` + runtime guards and a `RowHeightInput` union.
 
+### 0.2.00
+
+- Fix
+   - Thanks [***@mar10-emil***](https://github.com/mar10-emil)
+```js
+- added render queue onAddPage
+- setting renders queue in constructor
+- fixed override for addPage
+- added debugging logs
+- logging for deb debugging
+- removed event handler
+- added callback
+- rendering set in onFirePageAdded
+- removed logs and disabled event triggers
+- logging for debugging
+- testing sections order
+- refactored code 
+```
+
+
+
 ### 0.1.90
 
 - Add options minRowHeight
