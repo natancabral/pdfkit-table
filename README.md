@@ -33,7 +33,7 @@ Helps to draw information in simple tables using pdfkit.
 - Basic table — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-01-example.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-01-example.pdf)
 - Colors — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-02-color.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-02-color.pdf)
 - JSON + `table.json` — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-03-json.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-03-json.pdf)
-- Sample / Claude scenarios — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-04-claude-sample.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-04-claude-sample.pdf)
+- All scenarios — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-04-all-scenerios.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-04-all-scenerios.pdf)
 - All features — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-05-all-features.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-05-all-features.pdf)
 - Pages in row — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-06-pages-in-row.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-06-pages-in-row.pdf)
 - Images — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-07-images.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-07-images.pdf)
