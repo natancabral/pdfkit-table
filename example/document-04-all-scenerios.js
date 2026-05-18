@@ -25,7 +25,7 @@ const PDFDocument = require("pdfkit-table");
 
 (async () => {
   const doc = new PDFDocument({ margin: 40, size: "A4" });
-  doc.pipe(fs.createWriteStream("./document-04-claude-sample.pdf"));
+  doc.pipe(fs.createWriteStream("./document-04-all-scenerios.pdf"));
 
   // =============================================================================
   // Capa / Cabeçalho do documento

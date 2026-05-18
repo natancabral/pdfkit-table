@@ -40,6 +40,7 @@ Helps to draw information in simple tables using pdfkit.
 - Headers — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-08-headers.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-08-headers.pdf)
 - RTL (right-to-left) — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-09-tls.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-09-tls.pdf)
 - Landscape — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-10-landscape.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-10-landscape.pdf)
+- Many lines — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-11-many-lines.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-11-many-lines.pdf)
 
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
@@ -607,6 +608,13 @@ data: [
 
 ## Changelogs
 
+### 0.2.11
+- accept relative column sizes: (null, undefined or '*') [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-11-many-lines.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-11-many-lines.pdf)
+    - columnsSize: [50, 300, null],
+    - columnsSize: [50, 300, undefined, 200],
+    - columnsSize: [100, '*', 50, null],
+
+
 ### 0.2.9
 
 - CG memory
@@ -617,6 +625,7 @@ doc.image('./chart-large.png', 50, 200, { width: 400 });
 // Use in large images
 doc.purgeImage('./chart-large.png');
 ```
+
 
 ### 0.2.8
 

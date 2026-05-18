@@ -27,17 +27,39 @@ doc.pipe(fs.createWriteStream("./document-10-landscape.pdf"));
 // -----------------------------------------------------------------------------------------------------
 // Simple Table with Array
 // -----------------------------------------------------------------------------------------------------
+
 const tableArray = {
-  headers: ["Country", "Conversion rate", "Trend"],
-  rows: [
-    ["Switzerland", "12%", "+1.12%"],
-    ["France", "67%", "-0.98%"],
-    ["England", "33%", "+4.44%"],
+  headers: [
+    { label: "Country", property: "country", renderer: null },
+    { label: "Conversion rate", property: "conversionRate", renderer: null },
+    { label: "Trend", property: "trend", renderer: null },
+  ],
+  data: [
+    { country: "Switzerland", conversionRate: "12%", trend: "+1.12%" },
+    { country: "France", conversionRate: "67%", trend: "-0.98%" },
+    { country: "England", conversionRate: "33%", trend: "+4.44%" },
   ],
 };
+
+const tableWithPadding = Object.assign({}, tableArray, {
+  headers: tableArray.headers.map((header) => ({
+    ...header,
+    padding: 5,
+  })),
+});
+const tableWithPaddingTopRight = Object.assign({}, tableArray, {
+  headers: tableArray.headers.map((header) => ({
+    ...header,
+    padding: 15,
+    align: "right",
+    valign: "center",
+  })),
+});
+
 doc.table(tableArray, { width: 300 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
-doc.table(tableArray, { width: 300, landscape: true }); // A4 595.28 x 841.89 (portrait) (about width sizes)
-doc.table(tableArray, { landscape: true, package: 10 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+doc.table(tableWithPadding); // A4 595.28 x 841.89 (portrait) (about width sizes)
+doc.table(tableArray, { padding: 10 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
+doc.table(tableArray, { padding: 15 }); // A4 595.28 x 841.89 (portrait) (about width sizes)
 doc.table(tableArray);
 
 // move to down
@@ -115,7 +137,6 @@ const table = {
 };
 
 doc.table(table, {
-  width: 795,
   prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
   prepareRow: (row, indexColumn, indexRow, rectRow) => {
     doc.font("Helvetica").fontSize(8);
@@ -135,9 +156,7 @@ const tableArrayColor = {
   ],
 };
 doc.table(tableArrayColor, {
-  x: 150,
-  columnsSize: [200, 100, 100],
-
+  columnsSize: [50, 300, null],
   prepareRow: (row, indexColumn, indexRow, rectRow) => {
     doc.font("Helvetica").fontSize(10);
     indexColumn === 0 &&

@@ -53,7 +53,6 @@ const table = {
     {
       label: "Price 4",
       property: "price4",
-      width: 63,
       renderer: (value, indexColumn, indexRow, row) => {
         return `U$ ${Number(value).toFixed(2)}`;
       },
@@ -130,6 +129,27 @@ doc.table(tableArrayColor, {
   width: 400,
   x: 150,
   columnsSize: [200, 100, 100],
+
+  prepareRow: (row, indexColumn, indexRow, rectRow) => {
+    doc.font("Helvetica").fontSize(10);
+    indexColumn === 0 &&
+      doc.addBackground(rectRow, indexRow % 2 ? "red" : "green", 0.5);
+  },
+}); // A4 595.28 x 841.89 (portrait) (about width sizes)
+
+doc.moveDown(1);
+
+const tableArrayColor2 = {
+  headers: ["Country", "Conversion rate", "Trend"],
+  rows: [
+    ["Switzerland", "12%", "+1.12%"],
+    ["France", "67%", "-0.98%"],
+    ["Brazil", "88%", "2.77%"],
+  ],
+};
+doc.table(tableArrayColor, {
+  x: 150,
+  columnsSize: [100, "*", undefined],
 
   prepareRow: (row, indexColumn, indexRow, rectRow) => {
     doc.font("Helvetica").fontSize(10);

@@ -276,7 +276,7 @@ export function createPdfDocumentWithTables(
 
           const prepareHeader = (): void => {
             if (opts.prepareHeader) {
-              opts.prepareHeader.call(this);
+              opts.prepareHeader.call(this as unknown as PDFDoc);
               return;
             }
             this.fillColor("black").font("Helvetica-Bold").fontSize(8).fill();
@@ -291,7 +291,7 @@ export function createPdfDocumentWithTables(
           ): void => {
             if (opts.prepareRow) {
               opts.prepareRow.call(
-                this,
+                this as unknown as PDFDoc,
                 row,
                 indexColumn,
                 indexRow,
@@ -411,6 +411,21 @@ export function createPdfDocumentWithTables(
           };
 
           /**
+           * Resolve the effective padding for a cell, respecting explicit `0`.
+           *
+           * The plain `||` operator treats `0` as falsy, so `padding: 0` on a
+           * header column would silently fall through to `opts.padding`.
+           * This helper uses `!== undefined` so an explicitly-set `0` wins
+           * over the global option.
+           *
+           * Priority: per-column `padding` > `opts.padding` > 0
+           */
+          const resolvePadding = (
+            columnPadding: PaddingInput | undefined,
+          ): PaddingInput =>
+            columnPadding !== undefined ? columnPadding : (opts.padding ?? 0);
+
+          /**
            * Apply per-row font/color overrides declared in `row.options`.
            */
           const prepareRowOptions = (row: unknown): void => {
@@ -509,9 +524,9 @@ export function createPdfDocumentWithTables(
 
               const hdr = docTable.headers![i];
               const cellp = prepareCellPadding(
-                (typeof hdr === "object" ? hdr.padding : undefined) ||
-                  opts.padding ||
-                  0,
+                resolvePadding(
+                  typeof hdr === "object" ? hdr.padding : undefined,
+                ),
               );
 
               const cellHeight = this.heightOfString(text, {
@@ -546,16 +561,64 @@ export function createPdfDocumentWithTables(
                 Number(String(opts.width).replace(/[^0-9]/g, "")) >> 0;
             }
 
-            docTable.headers!.forEach((el) => {
-              if (typeof el === "object" && el.width) h.push(el.width);
-            });
+            // ------------------------------------------------------------------
+            // Flexible column sizing: null | undefined | '*' in columnsSize or
+            // header.width means "fill the remaining available width equally".
+            //
+            // Examples:
+            //   columnsSize: [50, 300, null]          → last col fills remainder
+            //   columnsSize: [50, '*', '*', 20, null]  → three cols share space
+            // ------------------------------------------------------------------
 
-            if (h.length === 0) h = opts.columnsSize!;
+            /** Returns true when a column-size entry is a flex placeholder. */
+            const isFlex = (v: unknown): boolean =>
+              v === null || v === undefined || v === "*";
+
+            // Build raw size list from headers (object form) or opts.columnsSize.
+            // We allow null/undefined/'*' at this stage; they are resolved below.
+            const rawSizes: (number | null | undefined | "*")[] = (() => {
+              // Priority 1: object headers with explicit width
+              const fromHeaders = docTable.headers!.map((el) =>
+                typeof el === "object" && "width" in el
+                  ? (el.width as number | null | undefined)
+                  : undefined,
+              );
+              if (fromHeaders.some((v) => v !== undefined)) return fromHeaders;
+
+              // Priority 2: opts.columnsSize (may contain flex markers)
+              if (opts.columnsSize && opts.columnsSize.length > 0)
+                return opts.columnsSize as unknown as (
+                  | number
+                  | null
+                  | undefined
+                  | "*"
+                )[];
+
+              // Priority 3: no sizing info — every column is flex
+              return docTable.headers!.map(() => undefined);
+            })();
+
+            // Count flex slots and sum of fixed widths.
+            const fixedSum = rawSizes.reduce<number>(
+              (acc, v) => acc + (isFlex(v) ? 0 : (v as number)),
+              0,
+            );
+            const flexCount = rawSizes.filter(isFlex).length;
+            const flexWidth =
+              flexCount > 0 ? Math.max(0, w - fixedSum) / flexCount : 0;
+
+            // Resolve final numeric sizes.
+            h = rawSizes.map((v) => (isFlex(v) ? flexWidth : (v as number)));
 
             if (h.length === 0) {
               columnWidth = w / docTable.headers!.length;
               docTable.headers!.forEach(() => h.push(columnWidth));
             }
+
+            // Store the representative columnWidth for callers that use it
+            // for cells without an explicit header width.
+            columnWidth =
+              h.length > 0 ? h.reduce((s, v) => s + v, 0) / h.length : w;
 
             if (opts.rtl) {
               // RTL: column positions go right-to-left.
@@ -716,7 +779,9 @@ export function createPdfDocumentWithTables(
                     padding,
                   } = dh;
 
-                  width = (width || columnSizes[i]) >> 0;
+                  width =
+                    ((typeof width === "number" ? width : undefined) ||
+                      columnSizes[i]) >> 0;
                   // RTL: default align to right unless explicitly set
                   align = headerAlign || align || (opts.rtl ? "right" : "left");
 
@@ -738,9 +803,7 @@ export function createPdfDocumentWithTables(
                   // to the header row (as well as to data cells in that column).
                   this.addBackground(rectCell, headerColor, headerOpacity);
                   prepareRowBackground(dh, rectCell);
-                  cellPadding = prepareCellPadding(
-                    padding || opts.padding || 0,
-                  );
+                  cellPadding = prepareCellPadding(resolvePadding(padding));
 
                   this.text(
                     String(label ?? ""),
@@ -816,10 +879,12 @@ export function createPdfDocumentWithTables(
               lockAddHeader || addHeader();
               // Push page.margins.top below the header so PDFKit continues the
               // overflowing text beneath it instead of behind it.
-              // Add columnSpacing * 3 so the continued text has comfortable
-              // breathing room below the header divider line.
-              this.page.margins.top = this.y + columnSpacing * 2;
-              this.y = this.page.margins.top;
+              // cellPadding is captured via closure from the active cell loop —
+              // add cellPadding.top so the continued text respects the same
+              // top padding that was applied on the first page of the cell.
+              const headerBottom = this.y + columnSpacing * 2 + cellPadding.top;
+              this.page.margins.top = headerBottom;
+              this.y = headerBottom;
               this.fillColor("black");
               restoreRowStyle();
             }
@@ -848,11 +913,16 @@ export function createPdfDocumentWithTables(
             // ----------------------------------------------------------------
             // Proactive page-break logic:
             //
-            // Break proactively when the row is "normal-sized" (fits within
-            // pageBreakThreshold of the page) AND either:
-            //   a) The row doesn't fit in the remaining space, OR
-            //   b) We are in the last endOfPageThreshold% of the page
-            //      (avoids orphaned rows squeezed against the bottom margin).
+            // The decision is based solely on WHERE THE CURSOR IS NOW,
+            // not on the total height of the row. A tall row (multi-page
+            // text) should start on a new page only if the cursor is already
+            // in the last endOfPageThreshold% of the page — otherwise let
+            // PDFKit render and break naturally across pages.
+            //
+            // Rule:
+            //   • cursor is in the last 10% of usable height → break
+            //   • cursor is in the first 90% → always continue (even for
+            //     tall rows that will overflow — PDFKit handles that)
             //
             // Rows taller than pageBreakThreshold always flow naturally —
             // a proactive break would produce a blank gap before them.
@@ -861,20 +931,24 @@ export function createPdfDocumentWithTables(
             const spaceRemaining = maxY - this.y;
             const rowFitsInPage =
               rowHeight <= pageContentHeight * pageBreakThreshold;
-            // Minimum space that must remain before we break proactively.
-            // When endOfPageThreshold is set, use it as a fraction of the page.
-            // Default: safelyMarginBottom (= page.margins.top / 2).
-            const endOfPageMinSpace =
+
+            // Fraction of page height that defines "near the bottom".
+            const endOfPageFraction =
               opts.endOfPageThreshold !== undefined
-                ? pageContentHeight *
-                  Math.min(1, Math.max(0, opts.endOfPageThreshold))
-                : safelyMarginBottom;
+                ? Math.min(1, Math.max(0, opts.endOfPageThreshold))
+                : 0.1;
+            const endOfPageMinSpace = pageContentHeight * endOfPageFraction;
+
+            // Only break proactively when the cursor itself is in the last
+            // endOfPageThreshold% of the page — the row height is irrelevant
+            // for this decision. PDFKit handles natural overflow for tall rows.
+            const cursorNearBottom = spaceRemaining < endOfPageMinSpace;
 
             if (
               opts.useSafelyMarginBottom &&
               !lockAddPage &&
               rowFitsInPage &&
-              spaceRemaining < rowHeight + endOfPageMinSpace
+              cursorNearBottom
             )
               addNewPage();
 
@@ -906,17 +980,22 @@ export function createPdfDocumentWithTables(
               const hdr = dataHeader as Header;
               let { property, width, renderer, align, valign, padding } = hdr;
 
-              width = width || columnWidth;
+              // Use the pre-computed column size for this index.
+              // columnWidth is only an average fallback — columnSizes[index]
+              // has the correct resolved width (including flex columns).
+              width =
+                (typeof width === "number" ? width : undefined) ??
+                columnSizes[index];
               // RTL: default text align to right unless explicitly set
               align = align || (opts.rtl ? "right" : "left");
-              cellPadding = prepareCellPadding(padding || opts.padding || 0);
+              cellPadding = prepareCellPadding(resolvePadding(padding));
 
               // RTL: use pre-computed column position directly
               const cellX = opts.rtl ? columnPositions[index] : lastPositionX;
               const rectCell: Rect = {
                 x: cellX,
                 y: rowStartY - columnSpacing - rowDistance * 2,
-                width: width!,
+                width: width as number,
                 height: rowHeight + columnSpacing,
               };
 
@@ -971,7 +1050,8 @@ export function createPdfDocumentWithTables(
                 const usableHeight =
                   rectCell.height - cellPadding.top - cellPadding.bottom;
                 const heightText = this.heightOfString(textStr, {
-                  width: width! - (cellPadding.left + cellPadding.right),
+                  width:
+                    (width as number) - (cellPadding.left + cellPadding.right),
                   align: align as PdfTextAlign,
                 });
                 if (valign === "center") {
@@ -994,7 +1074,8 @@ export function createPdfDocumentWithTables(
                 postOverflowCellStartY ?? rowStartY + topTextToAlignVertically;
 
               this.text(textStr, cellX + cellPadding.left, cellY, {
-                width: width! - (cellPadding.left + cellPadding.right),
+                width:
+                  (width as number) - (cellPadding.left + cellPadding.right),
                 align: align as PdfTextAlign,
               });
 
@@ -1012,7 +1093,7 @@ export function createPdfDocumentWithTables(
                 maxCellEndY = Math.max(maxCellEndY, this.y);
               }
 
-              if (!opts.rtl) lastPositionX += width!;
+              if (!opts.rtl) lastPositionX += width as number;
               prepareRowOptions(row);
               prepareRow(row, index, i, rectRow, rectCell);
             });
@@ -1053,23 +1134,26 @@ export function createPdfDocumentWithTables(
             const rowHeight = computeRowHeight(row, false);
 
             // ----------------------------------------------------------------
-            // Mesma lógica de page break do bloco tableData acima.
+            // Same page-break logic as the tableData loop above.
             // ----------------------------------------------------------------
             const pageContentHeight2 = maxY - origMarginTop;
             const spaceRemaining2 = maxY - this.y;
             const rowFitsInPage2 =
               rowHeight <= pageContentHeight2 * pageBreakThreshold;
-            const endOfPageMinSpace2 =
+
+            const endOfPageFraction2 =
               opts.endOfPageThreshold !== undefined
-                ? pageContentHeight2 *
-                  Math.min(1, Math.max(0, opts.endOfPageThreshold))
-                : safelyMarginBottom;
+                ? Math.min(1, Math.max(0, opts.endOfPageThreshold))
+                : 0.1;
+            const endOfPageMinSpace2 = pageContentHeight2 * endOfPageFraction2;
+
+            const cursorNearBottom2 = spaceRemaining2 < endOfPageMinSpace2;
 
             if (
               opts.useSafelyMarginBottom &&
               !lockAddPage &&
               rowFitsInPage2 &&
-              spaceRemaining2 < rowHeight + endOfPageMinSpace2
+              cursorNearBottom2
             )
               addNewPage();
 
@@ -1131,7 +1215,7 @@ export function createPdfDocumentWithTables(
               }
 
               cellPadding = prepareCellPadding(
-                colHeader?.padding || opts.padding || 0,
+                resolvePadding(colHeader?.padding),
               );
 
               // Compute vertical offset respecting both valign and cellPadding.

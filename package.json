@@ -1,6 +1,6 @@
 {
   "name": "pdfkit-table",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "PdfKit Table. Helps to draw informations in simple tables using pdfkit. #server-side. Generate pdf tables with TypeScript / JavaScript (PDFKIT plugin)",
   "main": "index.js",
   "types": "dist/index.d.ts",
@@ -50,5 +50,6 @@
     "@types/node": "^20.0.0",
     "@types/pdfkit": "^0.17.6",
     "typescript": "^6.0.3"
-  }
+  },
+  "packageManager": "yarn@4.14.1"
 }
