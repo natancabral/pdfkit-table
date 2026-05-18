@@ -22,22 +22,25 @@
 </div>
 
 #### Generate PDF tables with TypeScript / JavaScript (PDFKit plugin)
-Helps to draw information in simple tables using pdfkit. #server-side.
+Helps to draw information in simple tables using pdfkit.
 
-> **v0.2.00** — full TypeScript rewrite, ESM `import` support, dependency injection,
-> multi-page cell fixes, and new page-break control options.
+> **v0.2.00** — full TypeScript rewrite, ESM `import` support and pdfkit dependency injection,
 
 
-## Examples
+## Examples ([open](https://github.com/natancabral/pdfkit-table/tree/main/example/))
 
-[view pdf example](https://github.com/natancabral/pdfkit-table/raw/main/example/document-01-example.pdf) | 
-[color pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-02-color.pdf) | 
-[json pdf](https://github.com/natancabral/pdfkit-table/raw/main/example/document-03-json.pdf) | 
-[full code example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-01-example.js) |
-[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-00-server.js) |
-[json example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-03-json.js) |
-[all features](https://github.com/natancabral/pdfkit-table/blob/main/example/document-05-all-features.js) |
-[all](https://github.com/natancabral/pdfkit-table/blob/main/example/)
+- HTTP server — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-00-server.js) | *(streamed response)*
+- Basic table — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-01-example.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-01-example.pdf)
+- Colors — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-02-color.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-02-color.pdf)
+- JSON + `table.json` — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-03-json.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-03-json.pdf)
+- Sample / Claude scenarios — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-04-claude-sample.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-04-claude-sample.pdf)
+- All features — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-05-all-features.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-05-all-features.pdf)
+- Pages in row — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-06-pages-in-row.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-06-pages-in-row.pdf)
+- Images — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-07-images.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-07-images.pdf)
+- Headers — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-08-headers.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-08-headers.pdf)
+- RTL (right-to-left) — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-09-tls.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-09-tls.pdf)
+- Landscape — [JS](https://github.com/natancabral/pdfkit-table/blob/main/example/document-10-landscape.js) | [PDF](https://github.com/natancabral/pdfkit-table/raw/main/example/document-10-landscape.pdf)
+
 
 <img src="https://github.com/natancabral/pdfkit-table/blob/main/example/pdf-sample.png"/>
 
@@ -65,16 +68,17 @@ npm install pdfkit-table
 All three styles work out of the box — no bundler configuration needed:
 
 ```js
-// CommonJS
-const PDFDocument = require('pdfkit-table');
-const { PDFDocumentWithTables, createPdfDocumentWithTables } = require('pdfkit-table');
-
 // ESM / Node ≥ 12
 import PDFDocument from 'pdfkit-table';
 import { PDFDocumentWithTables, createPdfDocumentWithTables } from 'pdfkit-table';
 
 // TypeScript
 import PDFDocument, { type Table, type TableOptions } from 'pdfkit-table';
+
+// CommonJS
+const PDFDocument = require('pdfkit-table');
+const { PDFDocumentWithTables, createPdfDocumentWithTables } = require('pdfkit-table');
+
 ```
 
 ## Using your own PDFKit
@@ -101,20 +105,22 @@ doc.pipe(fs.createWriteStream('./document.pdf'));
 ### TypeScript / ESM
 
 ```ts
+import fs from 'fs';
 import pdfkit from 'pdfkit';
 import { createPdfDocumentWithTables } from 'pdfkit-table';
 
 const PDFDocument = createPdfDocumentWithTables(pdfkit);
-const doc = new PDFDocument({ margin: 30 });
+const doc = new PDFDocument({ margin: 30, size: 'A4' });
+doc.pipe(fs.createWriteStream('./document.pdf'));
+
+void (async () => {
+  await doc.table({ headers: ['Column'], rows: [['value']] }, {});
+  doc.end();
+})();
 ```
 
-If your fork’s typings don’t match `pdfkit`, you can cast:
 
-```ts
-import type pdfkitType from 'pdfkit';
-createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
-```
-
+<!---
 ### Default export
 
 `require('pdfkit-table')` (and `import PDFDocument from 'pdfkit-table'`) still builds on **`pdfkit` declared as a dependency of `pdfkit-table`** — existing snippets keep working without injection.
@@ -127,209 +133,206 @@ createPdfDocumentWithTables(ForkCtor as typeof pdfkitType);
 - **`addBackground(rect, fillColor?, fillOpacity?, callback?)`** — unchanged.
 - **`Table.data` / `Table.data`**: prefer **`data`** for object rows; **`data`** is still supported. If **`data` is present** (even `[]`), it wins; otherwise **`data`** is used (backward compatible JSON and old examples).
 - **TypeScript**: older type names remain as aliases — **`Options`** (`TableOptions`), **`Data`** (`DataRow`), **`DataOptions`** (`RowStyleOptions`), **`Title`** (`TitleObject`), **`Divider`**, **`DividerOptions`** (`DividerPart`). **`CellRenderer`** keeps optional indices compatible with older typings.
+-->
 
-## Server example
-
-Go to: [Simple Server Example](https://github.com/natancabral/pdfkit-table/blob/main/example-server)
-<br />
-<img src="https://github.com/natancabral/pdfkit-table/blob/main/example-server/assets/server-terminal.png">
 
 ## Use
 
+Minimal flow: create a document, **`await doc.table(...)`** (tables are asynchronous), then `doc.end()`.
+
 ```js
-  // requires
-  const fs = require("fs");
-  const PDFDocument = require("pdfkit-table");
+const fs = require('fs');
+const PDFDocument = require('pdfkit-table');
 
-  // init document
-  let doc = new PDFDocument({ margin: 30, size: 'A4' });
-  // save document
-  doc.pipe(fs.createWriteStream("./document.pdf"));
-  
-  ;(async function createTable(){
-    // table
-    const table = { 
-      title: '',
-      headers: [],
-      data: [ /* complex data */ ],
-      rows: [ /* or simple data */ ],
-    };
+const doc = new PDFDocument({ margin: 30, size: 'A4' });
+doc.pipe(fs.createWriteStream('./document.pdf'));
 
-    // the magic (async/await)
-    await doc.table(table, { /* options */ });
-    // -- or --
-    // doc.table(table).then(() => { doc.end() }).catch((err) => { })
+(async () => {
+  const table = {
+    title: '',
+    headers: [],
+    data: [],   // keyed rows ({ property } per header)
+    rows: [],   // or simple string[][] when headers are strings
+  };
 
-    // if your run express.js server
-    // to show PDF on navigator
-    // doc.pipe(res);
+  await doc.table(table, { /* TableOptions — width, prepareRow, … */ });
 
-    // done!
-    doc.end();
-  })();
-
+  // Express: pipe once — doc.pipe(res);
+  doc.end(); // closes the stream after all awaited tables resolve
+})();
 ```
 
-## Examples
+## Recipe examples
 
-### Server response
-[server example](https://github.com/natancabral/pdfkit-table/blob/main/example/document-00-server.js)
+The **Examples** section at the top lists every script and PDF under [`example/`](https://github.com/natancabral/pdfkit-table/tree/main/example/). Below are the same patterns in short form for documentation.
+
+### Server example
+
+- [Simple Server Example — TypeScript](https://github.com/natancabral/pdfkit-table/blob/main/example-server)
+<br />
+<img src="https://github.com/natancabral/pdfkit-table/blob/main/example-server/assets/server-terminal.png">
+
+Pipe the PDFKit stream **once** (to `res` or to `fs`). Avoid `doc.pipe(fs)` and `doc.pipe(res)` on the same document.
+
 ```js
-  // router - Node + Express.js
-  app.get('/create-pdf', async (req, res) => {
-    // ...await table code
-    // if your run express.js server
-    // to show PDF on navigator
-    doc.pipe(res);
-    // done!
-    doc.end();
-  });
+app.get('/create-pdf', async (req, res) => {
+  const PDFDocument = require('pdfkit-table');
+
+  res.setHeader('Content-Type', 'application/pdf');
+
+  const doc = new PDFDocument({ margin: 30, size: 'A4' });
+  doc.pipe(res);
+
+  const table = {
+    headers: ['Country', 'Conversion rate'],
+    rows: [['Switzerland', '12%']],
+  };
+
+  await doc.table(table, { width: 300 });
+  doc.end();
+});
 ```
 
-### Example 1 - Simple Array
+See also [`example/document-00-server.js`](https://github.com/natancabral/pdfkit-table/blob/main/example/document-00-server.js).
+
+### Example 1 — simple array (`rows`)
+
 ```js
-  ;(async function(){
-    // table 
-    const table = {
-      title: "Title",
-      subtitle: "Subtitle",
-      headers: [ "Country", "Conversion rate", "Trend" ],
-      rows: [
-        [ "Switzerland", "12%", "+1.12%" ],
-        [ "France", "67%", "-0.98%" ],
-        [ "England", "33%", "+4.44%" ],
-      ],
-    };
-    // A4 595.28 x 841.89 (portrait) (about width sizes)
-    // width
-    await doc.table(table, { 
-      width: 300,
-    });
-    // or columnsSize
-    await doc.table(table, { 
-      columnsSize: [ 200, 100, 100 ],
-    });
-    // done!
-    doc.end();
-  })();
+;(async () => {
+  const table = {
+    title: 'Title',
+    subtitle: 'Subtitle',
+    headers: ['Country', 'Conversion rate', 'Trend'],
+    rows: [
+      ['Switzerland', '12%', '+1.12%'],
+      ['France', '67%', '-0.98%'],
+      ['England', '33%', '+4.44%'],
+    ],
+  };
+
+  await doc.table(table, { width: 300 });
+  // …or explicit column widths (pt): { columnsSize: [200, 100, 100] }
+
+  doc.end();
+})();
 ```
 
 
-### Example 2 - Table
+### Example 2 — `data` + `rows`, custom renderers
+
 ```js
-  ;(async function(){
-    // table
-    const table = {
-      title: "Title",
-      subtitle: "Subtitle",
-      headers: [
-        { label: "Name", property: 'name', width: 60, renderer: null },
-        { label: "Description", property: 'description', width: 150, renderer: null }, 
-        { label: "Price 1", property: 'price1', width: 100, renderer: null }, 
-        { label: "Price 2", property: 'price2', width: 100, renderer: null }, 
-        { label: "Price 3", property: 'price3', width: 80, renderer: null }, 
-        { label: "Price 4", property: 'price4', width: 43, 
-          renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) => { return `U$ ${Number(value).toFixed(2)}` } 
-        },
-      ],
-      // complex data
-      data: [
-        { 
-          name: 'Name 1', 
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ', 
-          price1: '$1', 
-          price3: '$ 3', 
-          price2: '$2', 
-          price4: '4', 
-        },
-        { 
-          options: { fontSize: 10, separation: true},
-          name: 'bold:Name 2', 
-          description: 'bold:Lorem ipsum dolor.', 
-          price1: 'bold:$1', 
-          price3: { 
-            label: 'PRICE $3', options: { fontSize: 12 } 
-          }, 
-          price2: '$2', 
-          price4: '4', 
-        },
-        // {...},
-      ],
-      // simeple data
-      rows: [
-        [
-          "Apple",
-          "Nullam ut facilisis mi. Nunc dignissim ex ac vulputate facilisis.",
-          "$ 105,99",
-          "$ 105,99",
-          "$ 105,99",
-          "105.99",
-        ],
-        // [...],
-      ],
-    };
-    // the magic
-    doc.table(table, {
-      prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-      prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
-        doc.font("Helvetica").fontSize(8);
-        indexColumn === 0 && doc.addBackground(rectRow, 'blue', 0.15);
+;(async () => {
+  const table = {
+    title: 'Title',
+    subtitle: 'Subtitle',
+    headers: [
+      { label: 'Name', property: 'name', width: 60, renderer: null },
+      { label: 'Description', property: 'description', width: 150, renderer: null },
+      { label: 'Price 1', property: 'price1', width: 100, renderer: null },
+      { label: 'Price 2', property: 'price2', width: 100, renderer: null },
+      { label: 'Price 3', property: 'price3', width: 80, renderer: null },
+      {
+        label: 'Price 4',
+        property: 'price4',
+        width: 43,
+        renderer: (value, indexColumn, indexRow, row, rectRow, rectCell) =>
+          `U$ ${Number(value).toFixed(2)}`,
       },
-    });
-    // done!
-    doc.end();
-  })();
+    ],
+    data: [
+      {
+        name: 'Name 1',
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mattis ante in laoreet egestas. ',
+        price1: '$1',
+        price3: '$ 3',
+        price2: '$2',
+        price4: '4',
+      },
+      {
+        options: { fontSize: 10, separation: true },
+        name: 'bold:Name 2',
+        description: 'bold:Lorem ipsum dolor.',
+        price1: 'bold:$1',
+        price3: { label: 'PRICE $3', options: { fontSize: 12 } },
+        price2: '$2',
+        price4: '4',
+      },
+    ],
+    rows: [
+      [
+        'Apple',
+        'Nullam ut facilisis mi. Nunc dignissim ex ac vulputate facilisis.',
+        '$ 105,99',
+        '$ 105,99',
+        '$ 105,99',
+        '105.99',
+      ],
+    ],
+  };
 
+  await doc.table(table, {
+    prepareHeader: () => doc.font('Helvetica-Bold').fontSize(8),
+    prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+      doc.font('Helvetica').fontSize(8);
+      if (indexColumn === 0) doc.addBackground(rectRow, 'blue', 0.15);
+    },
+  });
+
+  doc.end();
+})();
 ```
 
-### Example 3 - Json
+### Example 3 — JSON **string** (`JSON.stringify` → `doc.table`)
+
+String renderers belong on **`headers[].renderer`** when you need serialized JSON (`@deprecated` — prefer real functions).
 
 ```js
-  ;(async function(){
-    // renderer function inside json file
-    const tableJson = '{ 
-      "headers": [
-        { "label":"Name", "property":"name", "width":100 },
-        { "label":"Age", "property":"age", "width":100 },
-        { "label":"Year", "property":"year", "width":100 }
-      ],
-      "data": [
-        { "name":"bold:Name 1", "age":"Age 1", "year":"Year 1" },
-        { "name":"Name 2", "age":"Age 2", "year":"Year 2" },
-        { "name":"Name 3", "age":"Age 3", "year":"Year 3",
-          "renderer": "function(value, i, irow){ return value + `(${(1+irow)})`; }"
-        }
-      ],
-      "rows": [
-        [ "Name 4", "Age 4", "Year 4" ]
-      ],
-      "options": {
-        "width": 300
-      }
-    }';
-    // the magic
-    doc.table(tableJson);
-    // done!
-    doc.end();
-  })();
+;(async () => {
+  const tableJson = JSON.stringify({
+    headers: [
+      { label: 'Name', property: 'name', width: 100 },
+      { label: 'Age', property: 'age', width: 100 },
+      {
+        label: 'Year',
+        property: 'year',
+        width: 100,
+        renderer:
+          'function(value, indexColumn, indexRow){ return value + "(" + (1 + indexRow) + ")"; }',
+      },
+    ],
+    data: [
+      { name: 'bold:Name 1', age: 'Age 1', year: 'Year 1' },
+      { name: 'Name 2', age: 'Age 2', year: 'Year 2' },
+      { name: 'Name 3', age: 'Age 3', year: 'Year 3' },
+    ],
+    rows: [['Name 4', 'Age 4', 'Year 4']],
+    options: { width: 300 },
+  });
+
+  await doc.table(tableJson); // parses JSON; merges embedded `options`
+  doc.end();
+})();
 ```
 
-### Example 4 - Json file (many tables)
+### Example 4 — JSON file (object **or** array)
+
+See [`example/table.json`](https://github.com/natancabral/pdfkit-table/blob/main/example/table.json).
 
 ```js
-  ;(async function(){
-    // json file
-    const json = require('./table.json');
-    // if json file is array
-    Array.isArray(json) ? 
-    // any tables - array
-    await doc.tables(json) : 
-    // one table - string
-    await doc.table(json) ;
-    // done!
-    doc.end();
-  })();
+;(async () => {
+  const json = require('./table.json');
+
+  if (Array.isArray(json)) {
+    await doc.tables(json);
+  } else {
+    await doc.table(json, json.options ?? {});
+  }
+
+  doc.end();
+})();
 ```
+
 
 ## Table
 
@@ -368,7 +371,7 @@ Go to: [Simple Server Example](https://github.com/natancabral/pdfkit-table/blob/
 | **headerAlign**      | <code>String</code>   | left               | only header       |
 | **columnColor** or ~~backgroundColor~~  | <code>String</code>   | undefined          | color of column   |
 | **columnOpacity** or ~~backgroundOpacity~~| <code>Number</code>   | undefined          | opacity of column   |
-| **padding**          | `Number \| Array \| Object` | `0`         | cell padding — overrides global `padding`. CSS shorthand: `[top, right, bottom, left]` |
+| **padding**          | `Number | Array | Object` | `0`         | cell padding — overrides global `padding`. CSS shorthand: `[top, right, bottom, left]` |
 | **renderer**         | <code>Function</code> | Function           | function( value, indexColumn, indexRow, row, rectRow, rectCell ) { return value } |
 
 
@@ -414,15 +417,15 @@ const table = {
 
 | Property | Type | Default | Description |
 |---|---|---|---|
-| **title** | `String \| Object` | undefined | table title |
-| **subtitle** | `String \| Object` | undefined | table subtitle |
+| **title** | `String | Object` | undefined | table title |
+| **subtitle** | `String | Object` | undefined | table subtitle |
 | **width** | `Number` | undefined | total table width |
-| **x** | `Number \| null` | undefined | x position. Pass `null` or `-1` to reset to left margin |
+| **x** | `Number | null` | undefined | x position. Pass `null` or `-1` to reset to left margin |
 | **y** | `Number` | undefined | y position (top) |
 | **divider** | `Object` | — | divider line config `{ header, horizontal, vertical }` |
 | **columnsSize** | `Array` | `[]` | column widths (simple tables) |
 | **columnSpacing** | `Number` | `3` | vertical space between rows |
-| **padding** | `Number \| Array \| Object` | `0` | cell padding — CSS shorthand `[top, right, bottom, left]` |
+| **padding** | `Number | Array | Object` | `0` | cell padding — CSS shorthand `[top, right, bottom, left]` |
 | **addPage** | `Boolean` | `false` | start table on a fresh page |
 | **hideHeader** | `Boolean` | `false` | hide the header row |
 | **minRowHeight** | `Number` | `0` | minimum row height in points |
@@ -570,8 +573,10 @@ data: [
 
 ```js
 data: [
-  // options cell | value is object | label is string
-  { name: { label: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold' } },
+  // options cell — value is { label, options }
+  {
+    name: { label: 'Jack', options: { fontSize: 10, fontFamily: 'Courier-Bold' } },
+  },
 ]
 ``` 
 
